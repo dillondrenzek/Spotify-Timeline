@@ -1,6 +1,6 @@
 {
   "name": "spotify-timeline",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "A web app that takes your Spotify account and creates a timeline of all your songs, when they were added and attempts to make playlists or 'eras' of your music listening history.",
   "repository": {
     "type": "git",
@@ -26,7 +26,9 @@
     "tsc:w": "tsc -w",
     "typings": "typings",
     "gulp": "gulp",
-    "style:w": "gulp watch:styl"
+    "style:w": "gulp watch:styl",
+    "serve": "tsc && concurrently \"npm run tsc:w\" \"npm run style:w\" \"npm run serve:dev\" ",
+    "serve:dev": "node-dev server.js"
   },
   "dependencies": {
     "@angular/common": "2.0.0-rc.1",
@@ -57,6 +59,7 @@
     "gulp-stylus": "^2.3.1",
     "gulp-watch": "^4.3.5",
     "lite-server": "^2.2.0",
+    "node-dev": "^3.1.1",
     "typescript": "^1.8.10",
     "typings": "^0.8.1"
   }
