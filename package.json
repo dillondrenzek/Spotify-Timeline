@@ -1,0 +1,24 @@
+{
+  "name": "spotify-timeline",
+  "version": "0.0.1",
+  "description": "A web app that takes your Spotify account and creates a timeline of all your songs, when they were added and attempts to make playlists or 'eras' of your music listening history.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dillondrenzek/Spotify-Timeline.git"
+  },
+  "keywords": [
+    "spotify",
+    "music",
+    "timeline"
+  ],
+  "author": "Dillon Drenzek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dillondrenzek/Spotify-Timeline/issues"
+  },
+  "homepage": "https://github.com/dillondrenzek/Spotify-Timeline#readme"
+}
