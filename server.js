@@ -3,9 +3,8 @@
 
 var express = require('express'),
 	app = express(),
-	path = require('path');
-
-
+	path = require('path'),
+	_config = require('./_config.js');
 
 //-----------
 // App Setup

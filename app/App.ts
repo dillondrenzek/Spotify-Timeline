@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { SpotifyLogin } from './components/SpotifyLogin';
+import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
 
 @Component({
   selector: 'app',
@@ -8,6 +9,9 @@ import { SpotifyLogin } from './components/SpotifyLogin';
   styleUrls: ['built/css/app.css'],
   directives: [
       SpotifyLogin
+  ],
+  providers: [
+      SpotifyUserAuthService
   ]
 })
 export class App { }

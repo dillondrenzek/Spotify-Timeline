@@ -1,0 +1,72 @@
+<h3>Logged in as {{user.display_name}}</h3>
+
+<table>
+	<tr>
+		<th>
+			Display name
+		</th>
+		<td>
+			{{user.display_name}}
+		</td>
+	</tr>
+
+	<tr>
+		<th>
+			Id
+		</th>
+		<td>
+			{{user.id}}
+		</td>
+	</tr>
+
+
+	<tr>
+		<th>
+			Email
+		</th>
+		<td>
+			{{user.email}}
+		</td>
+	</tr>
+
+
+	<tr>
+		<th>
+			Spotify URI
+		</th>
+		<td>
+			{{user.external_urls.spotify}}
+		</td>
+	</tr>
+
+
+	<tr>
+		<th>
+			Link
+		</th>
+		<td>
+			{{user.href}}
+		</td>
+	</tr>
+
+
+	<tr>
+		<th>
+			Profile Image
+		</th>
+		<td>
+			<!-- {{user.images['0'].url}} -->
+		</td>
+	</tr>
+
+
+	<tr>
+		<th>
+			Country
+		</th>
+		<td>
+			{{user.country}}
+		</td>
+	</tr>
+
+</table>
