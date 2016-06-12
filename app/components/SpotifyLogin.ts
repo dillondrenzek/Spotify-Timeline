@@ -15,7 +15,17 @@ import { SpotifyUserAuthService } from '../services/SpotifyUserAuthService';
 
 export class SpotifyLogin {
 
-
+	user = {
+		display_name: 'test',
+		id: null,
+		email: null,
+		external_urls: {
+			spotify: null
+		},
+		href: null,
+		images: [{url: null}],
+		country: null
+	};
 
 	constructor(
 		@Inject(SpotifyUserAuthService) private _spotifyUserAuthService: SpotifyUserAuthService
@@ -23,8 +33,9 @@ export class SpotifyLogin {
 
 	}
 
-	login() {
-
+	loginButtonClicked() {
+		console.info('login button clicked');
+		this._spotifyUserAuthService.login();
 	}
 
 }

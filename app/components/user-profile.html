@@ -2,71 +2,43 @@
 
 <table>
 	<tr>
-		<th>
-			Display name
-		</th>
-		<td>
-			{{user.display_name}}
-		</td>
+		<th>Display name</th>
+		<td>{{user.display_name || 'null'}}</td>
 	</tr>
 
 	<tr>
-		<th>
-			Id
-		</th>
-		<td>
-			{{user.id}}
-		</td>
+		<th>Id</th>
+		<td>{{user.id || 'null'}}</td>
 	</tr>
 
 
 	<tr>
-		<th>
-			Email
-		</th>
-		<td>
-			{{user.email}}
-		</td>
+		<th>Email</th>
+		<td>{{user.email || 'null'}}</td>
 	</tr>
 
 
 	<tr>
-		<th>
-			Spotify URI
-		</th>
-		<td>
-			{{user.external_urls.spotify}}
-		</td>
+		<th>Spotify URI</th>
+		<td>{{user.external_urls.spotify || 'null'}}</td>
 	</tr>
 
 
 	<tr>
-		<th>
-			Link
-		</th>
-		<td>
-			{{user.href}}
-		</td>
+		<th>Link</th>
+		<td>{{user.href || 'null'}}</td>
 	</tr>
 
 
 	<tr>
-		<th>
-			Profile Image
-		</th>
-		<td>
-			<!-- {{user.images['0'].url}} -->
-		</td>
+		<th>Profile Image</th>
+		<td>{{user.images['0'].url || 'null'}}</td>
 	</tr>
 
 
 	<tr>
-		<th>
-			Country
-		</th>
-		<td>
-			{{user.country}}
-		</td>
+		<th>Country</th>
+		<td>{{user.country || 'null'}}</td>
 	</tr>
 
 </table>

@@ -17,7 +17,7 @@
     "url": "https://github.com/dillondrenzek/Spotify-Timeline/issues"
   },
   "homepage": "https://github.com/dillondrenzek/Spotify-Timeline#readme",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "tsc && concurrently \"npm run tsc:w\" \"npm run style:w\" \"npm run lite\" ",
     "lite": "lite-server",
@@ -28,7 +28,7 @@
     "gulp": "gulp",
     "style:w": "gulp watch:styl",
     "serve": "tsc && concurrently \"npm run tsc:w\" \"npm run style:w\" \"npm run serve:dev\" ",
-    "serve:dev": "node-dev server.js"
+    "serve:dev": "node-dev index.js"
   },
   "dependencies": {
     "@angular/common": "2.0.0-rc.1",

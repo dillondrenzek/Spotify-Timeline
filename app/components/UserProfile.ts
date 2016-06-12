@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
+declare var localStorage: any;
 
 export interface UserProfileObject {
 	display_name: string,
@@ -18,16 +19,8 @@ export interface UserProfileObject {
 })
 export class UserProfile {
 
-	user: UserProfileObject = {
-		display_name: 'display_name',
-		id: 'id',
-		email: 'email',
-		external_urls: {
-			spotify: 'external_urls.spotify'
-		},
-		href: 'href',
-		images: [{url: 'images[0].url'}],
-		country: 'country'
-	}
+	@Input() user: UserProfileObject;
+
+	
 
 }
