@@ -1,5 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Http, HTTP_PROVIDERS } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import { Http, Response } from '@angular/http';
+// // Statics
+// import 'rxjs/add/observable/throw';
+//
+// // Operators
+// import 'rxjs/add/operator/catch';
+// import 'rxjs/add/operator/debounceTime';
+// import 'rxjs/add/operator/distinctUntilChanged';
+// import 'rxjs/add/operator/map';
+// import 'rxjs/add/operator/switchMap';
+// import 'rxjs/add/operator/toPromise';
+
 
 declare var localStorage: any;
 
@@ -9,39 +21,43 @@ declare var localStorage: any;
 @Injectable()
 export class SpotifyUserAuthService {
 
-	stateKey: string = 'spotify_auth_state';
-	response_type: string = 'token';
-	client_id: string = '68cbe79b60c240079457182cbca17761';
-	redirect_uri: string = 'http://localhost:8888/';
+
 
 	constructor(private _http: Http) {
 
 	}
 
-
-
 	login() {
-		var state = this.generateState(16);
-		var scopes: string[] = ['playlist-modify-public', 'streaming', 'user-library-read', 'user-read-birthdate', 'user-top-read'];
-		var queryString: string = this.assembleQueryString(state);
-
-		console.info('queryString', queryString);
-
-
-		// this.setLocalStorageItem(this.stateKey, )
+		let state = this.generateState(16);
 	}
 
-
-	/**
-	 * Assemble the query string for the Spotify API
-	 */
-	private assembleQueryString(state: string): string {
-		var client_id: string = this.client_id;
-		var response_type: string = 'token';
-		var redirect_uri: string = this.redirect_uri;
-
-		return '';
+	private extractData(res: Response) {
+		let body = res.json();
+	    return body.data || { };
 	}
+
+	private handleError(error: any) {
+	  // In a real world app, we might use a remote logging infrastructure
+	  // We'd also dig deeper into the error to get a better message
+	  let errMsg = (error.message) ? error.message :
+		error.status ? `${error.status} - ${error.statusText}` : 'Server error';
+	  console.error(errMsg); // log to console instead
+	  return Observable.throw(errMsg);
+	}
+	//
+	// /**
+	//  * Assemble the query string for the Spotify API
+	//  */
+	// private assembleQueryString(state: string): string {
+	// 	var client_id: string = this.client_id;
+	// 	var response_type: string = 'token';
+	// 	var redirect_uri: string = this.redirect_uri;
+	//
+	// 	return ['?client_id=', client_id,
+	// 	'&response_type=', response_type,
+	// 	'&redirect_uri=', redirect_uri,
+	// 	'&state=', state].join('');
+	// }
 
 
 
