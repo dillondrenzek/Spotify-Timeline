@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Http, Response, Headers } from '@angular/http';
+import 'rxjs/Rx';
 import { Observable } from 'rxjs/Observable';
-import { Http, Response } from '@angular/http';
 // // Statics
 // import 'rxjs/add/observable/throw';
 //
@@ -21,45 +22,42 @@ declare var localStorage: any;
 @Injectable()
 export class SpotifyUserAuthService {
 
-
+	postResponse: any;
 
 	constructor(private _http: Http) {
 
 	}
 
+	postResponded(res: any) {
+		console.log('response', this.postResponse);
+	}
+
 	login() {
+
+		// set state
 		let state = this.generateState(16);
+		let headers = new Headers();
+		headers.append('Content-Type', 'application/json');
+
+		// POST parameters
+		let url = 'http://localhost:8081/spotify/authorize';
+		let body = JSON.stringify({state: state});
+		let options = {headers: headers};
+
+		// console.info('url', url);
+		// console.info('body', body);
+		// console.info('--state', state);
+		// console.info('options', options);
+
+		this._http
+			.post(url, body, options)
+			.map(this.extractData).subscribe();
 	}
 
 	private extractData(res: Response) {
-		let body = res.json();
-	    return body.data || { };
+		this.postResponse = res.json();
+		console.info('postResponse', this.postResponse);
 	}
-
-	private handleError(error: any) {
-	  // In a real world app, we might use a remote logging infrastructure
-	  // We'd also dig deeper into the error to get a better message
-	  let errMsg = (error.message) ? error.message :
-		error.status ? `${error.status} - ${error.statusText}` : 'Server error';
-	  console.error(errMsg); // log to console instead
-	  return Observable.throw(errMsg);
-	}
-	//
-	// /**
-	//  * Assemble the query string for the Spotify API
-	//  */
-	// private assembleQueryString(state: string): string {
-	// 	var client_id: string = this.client_id;
-	// 	var response_type: string = 'token';
-	// 	var redirect_uri: string = this.redirect_uri;
-	//
-	// 	return ['?client_id=', client_id,
-	// 	'&response_type=', response_type,
-	// 	'&redirect_uri=', redirect_uri,
-	// 	'&state=', state].join('');
-	// }
-
-
 
 	/**
 	 * Generate the state parameter to help track transactions
