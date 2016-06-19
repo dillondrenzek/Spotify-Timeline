@@ -1,35 +1,48 @@
 var express = require('express'),
 	http	= require('http'),
+	bodyParser = require('body-parser'),
 	_config = require('../_config');
 
+var spotifyAuth = express();
+
+spotifyAuth.use(bodyParser.json());
+
+spotifyAuth.get('/', function(req, res) {
+	res.send('GET ' + req.originalUrl);
+});
+
+spotifyAuth.post('/', function(req, res){
+
+	var string = [
+		'POST', req.originalUrl, "\n",
+		'-- params:', JSON.stringify(req.params), "\n",
+		'-- body:', JSON.stringify(req.body), "\n"
+	].join(' ');
+
+	console.log(string);
+
+	res.json(req.body);
+
+	// res.send(string);
+	// var options = {
+	// 	host: 'www.spotify.com',
+	//
+	// }
+	//
+	// var state = this.generateState(16);
+	// var scopes: string[] = ['playlist-modify-public', 'streaming', 'user-library-read', 'user-read-birthdate', 'user-top-read'];
+	// var queryString: string = this.assembleQueryString(state);
+	//
+	// console.info('queryString', queryString);
+	//
+	// var getAddress: string = 'https://accounts.spotify.com/authorize/'+queryString;
+	//
+	// console.info('getAddress', getAddress);
 
 
-module.exports = function(){
+});
 
-	var spotifyAuth = express();
-
-	spotifyAuth.post('/', function(req, res){
-		console.log('AUTHORIZE MODULE!!!');
-
-		// var options = {
-		// 	host: 'www.spotify.com',
-		//
-		// }
-		//
-		// var state = this.generateState(16);
-		// var scopes: string[] = ['playlist-modify-public', 'streaming', 'user-library-read', 'user-read-birthdate', 'user-top-read'];
-		// var queryString: string = this.assembleQueryString(state);
-		//
-		// console.info('queryString', queryString);
-		//
-		// var getAddress: string = 'https://accounts.spotify.com/authorize/'+queryString;
-		//
-		// console.info('getAddress', getAddress);
-
-
-	});
-
-};
+module.exports = spotifyAuth;
 
 
 // Helper Functions

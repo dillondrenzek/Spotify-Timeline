@@ -1,10 +1,9 @@
 var express = require('express');
 var spotifyAuth = require('./authorize');
 
-module.exports = function(){
+var spotify = express();
 
-	var spotify = express();
+spotify.use('/authorize', spotifyAuth);
 
-	spotify.use('/authorize', spotifyAuth);
 
-};
+module.exports = spotify;
