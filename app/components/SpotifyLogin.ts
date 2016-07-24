@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { Http } from '@angular/http';
 
 import { UserProfile } from './UserProfile';
 
@@ -28,6 +29,7 @@ export class SpotifyLogin {
 	};
 
 	constructor(
+		private _http: Http,
 		@Inject(SpotifyUserAuthService) private _spotifyUserAuthService: SpotifyUserAuthService
 	) {
 

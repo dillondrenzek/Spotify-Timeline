@@ -34,24 +34,14 @@ export class SpotifyUserAuthService {
 
 	login() {
 
-		// set state
-		let state = this.generateState(16);
-		let headers = new Headers();
-		headers.append('Content-Type', 'application/json');
-
-		// POST parameters
-		let url = 'http://localhost:8081/spotify/authorize';
-		let body = JSON.stringify({state: state});
-		let options = {headers: headers};
-
-		// console.info('url', url);
-		// console.info('body', body);
-		// console.info('--state', state);
-		// console.info('options', options);
-
 		this._http
-			.post(url, body, options)
-			.map(this.extractData).subscribe();
+			.get('http://localhost:8081/spotify/authorize')
+			.map(this.extractData)
+			.subscribe((response) => {
+				// this.postResponse = JSON.stringify(response);
+				console.log(response);
+			});
+
 	}
 
 	private extractData(res: Response) {

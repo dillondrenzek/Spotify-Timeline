@@ -29,11 +29,11 @@ gulp.task('watch:styl', function(){
 	return gulp.src('app/**/*.styl')
 		.pipe(watch('app/**/*.styl', {verbose: true}))
 		.pipe(plumber())
-    .pipe(stylus())
+    	.pipe(stylus())
 		.pipe(sourcemaps.init())
 		.pipe(postcss([ autoprefixer() ]))
 		.pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('built/css/'));
+    	.pipe(gulp.dest('built/css/'));
 });
 
 

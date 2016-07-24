@@ -1,7 +1,6 @@
 var express = require('express'),
 	path = require('path'),
 	spotify = require('./spotify'),
-	spotifyAuth = require('./spotify/authorize'),
 	_config = require('./_config');
 
 //-----------
@@ -30,6 +29,9 @@ app.use('/node_modules', express.static(__dirname + '/node_modules'));
 app.use('/built', express.static(__dirname + '/built'));
 app.use('/public', express.static(__dirname + '/public'));
 app.use('/app', express.static(__dirname + '/app'));
+app.get('/me', function(req, res) {
+	res.sendFile(__dirname + '/public/index.html');
+});
 app.get('/', function(req, res) {
 	res.sendFile(__dirname + '/public/index.html');
 });
