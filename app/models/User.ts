@@ -30,5 +30,15 @@ export class User {
 
 	get country(): string { return this.upo['country']; }
 
-
+	static create(upo?: UserProfileObject) {
+		return new User({
+			display_name: null,
+			id: null,
+			email: null,
+			external_urls: {spotify: null},
+			href: null,
+			images: [{url: null}],
+			country: null
+		})
+	}
 }

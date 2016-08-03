@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, ROUTER_DIRECTIVES } from '@angular/router';
 
 import { SpotifyLogin } from './components/SpotifyLogin';
 import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
@@ -10,7 +10,7 @@ import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
   styleUrls: ['built/css/app.css'],
   directives: [
       SpotifyLogin,
-      RouterOutlet
+      ROUTER_DIRECTIVES
   ],
   providers: [
       SpotifyUserAuthService

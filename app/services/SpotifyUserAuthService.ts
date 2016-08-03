@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers, Request, RequestOptions, RequestMethod } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { User, UserProfileObject } from '../models/User';
 
 
@@ -20,9 +20,7 @@ export class SpotifyUserAuthService {
 
 	sessionTokens: SessionToken;
 
-
-	currentUser$: Subject<User> = new Subject<User>();
-
+	currentUser$: BehaviorSubject<User> = new BehaviorSubject<User>(User.create());
 	currentUser: Observable<User>;
 
 	constructor(private _http: Http) {
@@ -68,13 +66,6 @@ export class SpotifyUserAuthService {
 		};
 
 		let newUser = new User(newUserOptions);
-
-		// this.currentUser$ = new Subject<User>();
-		// this.currentUser = this.currentUser$.asObservable();
-
-		console.info('newUser', newUser);
-		// console.info('currentUser', this.currentUser);
-		// console.info('currentUser$', this.currentUser$);
 
 		this.currentUser$.next(newUser);
 	}
