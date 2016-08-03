@@ -1,44 +1,47 @@
-<h3>Logged in as {{user.display_name}}</h3>
+<div *ngIf="user">
+	<h3>Logged in as {{user.display_name || 'null'}}</h3>
 
-<table>
-	<tr>
-		<th>Display name</th>
-		<td>{{user.display_name || 'null'}}</td>
-	</tr>
+	<table>
+		<tr>
+			<th>Display name</th>
+			<td>{{user.display_name || 'null'}}</td>
+		</tr>
 
-	<tr>
-		<th>Id</th>
-		<td>{{user.id || 'null'}}</td>
-	</tr>
-
-
-	<tr>
-		<th>Email</th>
-		<td>{{user.email || 'null'}}</td>
-	</tr>
+		<tr>
+			<th>Id</th>
+			<td>{{user.id || 'null'}}</td>
+		</tr>
 
 
-	<tr>
-		<th>Spotify URI</th>
-		<td>{{user.external_urls.spotify || 'null'}}</td>
-	</tr>
+		<tr>
+			<th>Email</th>
+			<td>{{user.email || 'null'}}</td>
+		</tr>
 
 
-	<tr>
-		<th>Link</th>
-		<td>{{user.href || 'null'}}</td>
-	</tr>
+		<tr>
+			<th>Spotify URI</th>
+			<td><a href="{{user.external_urls.spotify}}">{{user.external_urls.spotify}}</a></td>
+		</tr>
 
 
-	<tr>
-		<th>Profile Image</th>
-		<td>{{user.images['0'].url || 'null'}}</td>
-	</tr>
+		<tr>
+			<th>Link</th>
+			<td>{{user.href || 'null'}}</td>
+		</tr>
 
 
-	<tr>
-		<th>Country</th>
-		<td>{{user.country || 'null'}}</td>
-	</tr>
+		<tr>
+			<th>Profile Image</th>
+			<td><img src="{{user.images[0].url}}" /></td>
+		</tr>
 
-</table>
+
+		<tr>
+			<th>Country</th>
+			<td>{{user.country || 'null'}}</td>
+		</tr>
+
+	</table>
+
+</div>

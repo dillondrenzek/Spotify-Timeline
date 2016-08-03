@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Http } from '@angular/http';
 
 import { UserProfile } from './UserProfile';
@@ -30,7 +31,9 @@ export class SpotifyLogin {
 
 	constructor(
 		private _http: Http,
-		@Inject(SpotifyUserAuthService) private _spotifyUserAuthService: SpotifyUserAuthService
+		@Inject(SpotifyUserAuthService) private _spotifyUserAuthService: SpotifyUserAuthService,
+		private router: Router,
+		private route: ActivatedRoute
 	) {
 
 	}

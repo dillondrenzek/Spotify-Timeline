@@ -1,22 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
-import 'rxjs/Rx';
+import { Http, Response, Headers, Request, RequestOptions, RequestMethod } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-// // Statics
-// import 'rxjs/add/observable/throw';
-//
-// // Operators
-// import 'rxjs/add/operator/catch';
-// import 'rxjs/add/operator/debounceTime';
-// import 'rxjs/add/operator/distinctUntilChanged';
-// import 'rxjs/add/operator/map';
-// import 'rxjs/add/operator/switchMap';
-// import 'rxjs/add/operator/toPromise';
+import { Subject } from 'rxjs/Subject';
+import { User, UserProfileObject } from '../models/User';
 
 
 declare var localStorage: any;
 
-
+export interface SessionToken {
+	access: string,
+	refresh: string
+};
 
 
 @Injectable()
@@ -24,29 +18,65 @@ export class SpotifyUserAuthService {
 
 	postResponse: any;
 
-	constructor(private _http: Http) {
+	sessionTokens: SessionToken;
 
+
+	currentUser$: Subject<User> = new Subject<User>();
+
+	currentUser: Observable<User>;
+
+	constructor(private _http: Http) {
+		this.currentUser = this.currentUser$.asObservable();
 	}
 
-	postResponded(res: any) {
-		console.log('response', this.postResponse);
+	setSessionTokens(queryTokens: SessionToken){
+		this.sessionTokens = queryTokens;
 	}
 
 	login() {
+		console.info('login');
+		var access_token = (this.sessionTokens) ? this.sessionTokens['access'] : '';
+		var options: RequestOptions = new RequestOptions({
+			method: RequestMethod.Get,
+			url: 'https://api.spotify.com/v1/me',
+			headers: new Headers({
+				'Authorization': 'Bearer ' + access_token
+			})
+		});
 
 		this._http
-			.get('http://localhost:8081/spotify/authorize')
-			.map(this.extractData)
-			.subscribe((response) => {
-				// this.postResponse = JSON.stringify(response);
-				console.log(response);
-			});
-
+			.request(new Request(options))
+			.map(res => this.extractData(res))
+			.subscribe();
 	}
+
+
 
 	private extractData(res: Response) {
 		this.postResponse = res.json();
-		console.info('postResponse', this.postResponse);
+		res = this.postResponse;
+		// console.info('postResponse', this.postResponse);
+
+		let newUserOptions: UserProfileObject = {
+			display_name: 	res['display_name'],
+			id: 			res['id'],
+			email: 			res['email'],
+			external_urls: 	res['external_urls'],
+			href: 			res['href'],
+			images: 		res['images'],
+			country: 		res['country']
+		};
+
+		let newUser = new User(newUserOptions);
+
+		// this.currentUser$ = new Subject<User>();
+		// this.currentUser = this.currentUser$.asObservable();
+
+		console.info('newUser', newUser);
+		// console.info('currentUser', this.currentUser);
+		// console.info('currentUser$', this.currentUser$);
+
+		this.currentUser$.next(newUser);
 	}
 
 	/**
