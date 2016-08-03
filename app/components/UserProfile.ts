@@ -27,10 +27,7 @@ export class UserProfile {
 		this.router.routerState
 			.queryParams.subscribe( query => this.queryParamsChanged(query));
 
-		this._suas.currentUser.subscribe( user => {
-			console.info(user);
-			this.currentUserChanged(user);
-		});
+		this._suas.currentUser.subscribe( user => this.currentUserChanged(user));
 	}
 
 
@@ -53,7 +50,6 @@ export class UserProfile {
 	}
 
 	currentUserChanged(user: any) {
-		console.warn('user', user);
 		this.user = <User>user;
 	}
 }
