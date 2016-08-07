@@ -1,0 +1,84 @@
+<h3>Now Playing</h3>
+
+<a href="">Play</a>
+
+<div *ngIf="!track">No Track Found.</div>
+
+<table *ngIf="track">
+	<tr>
+		<th>Album</th>
+		<td>
+			<pre>{{(track.album | json) || 'null'}}</pre>
+		</td>
+	</tr>
+
+	<tr>
+		<th>Artists</th>
+		<td>
+			<pre>{{(track.artists) ? track.artists.length : 'null'}} | {{(track.artists | json) || 'null'}}</pre>
+		</td>
+	</tr>
+
+	<tr>
+		<th>Duration</th>
+		<td>
+			<pre>{{track.duration_ms || 'null'}} ms</pre>
+		</td>
+	</tr>
+
+	<tr>
+		<th>Explicit</th>
+		<td>
+			<pre>{{(track.explicit) ? 'Explicit' : 'Clean'}}</pre>
+		</td>
+	</tr>
+
+
+	<tr>
+		<th>Spotify URI</th>
+		<td>
+			<pre>{{(track.external_urls) ? (track.external_urls.spotify | json) : 'null'}}</pre>
+		</td>
+	</tr>
+
+
+	<tr>
+		<th>Link</th>
+		<td>
+			<pre>{{track.href || 'null'}}
+		</pre></td>
+	</tr>
+
+
+	<tr>
+		<th>Id</th>
+		<td><pre>{{track.id || 'null'}}</pre></td>
+	</tr>
+
+
+	<tr>
+		<th>Is Playable</th>
+		<td><pre>{{(track.is_playable) ? 'Playable' : 'Not Playable'}}</pre></td>
+	</tr>
+
+	<tr>
+		<th>Name</th>
+		<td><pre>{{track.name || 'null'}}</pre></td>
+	</tr>
+
+	<tr>
+		<th>Popularity</th>
+		<td><pre>{{track.popularity || 'null'}}</pre></td>
+	</tr>
+
+	<tr>
+		<th>Preview URL</th>
+		<td><pre>{{track.preview_url || 'null'}}</pre></td>
+	</tr>
+
+	<tr>
+		<th>spotify URI</th>
+		<td><pre>{{track.uri || 'null'}}</pre></td>
+	</tr>
+
+</table>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, ROUTER_DIRECTIVES } from '@angular/router';
 
+import { NowPlaying } from './components/NowPlaying';
 import { UserProfile } from './components/UserProfile';
 import { SpotifyLogin } from './components/SpotifyLogin';
 import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
@@ -10,7 +11,6 @@ import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
   templateUrl: 'app/app.html',
   styleUrls: ['built/css/app.css'],
   directives: [
-      SpotifyLogin,
       ROUTER_DIRECTIVES
   ],
   providers: [
@@ -18,7 +18,8 @@ import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
   ],
   precompile: [
       SpotifyLogin,
-      UserProfile
+      UserProfile,
+      NowPlaying
   ]
 })
 export class App {
