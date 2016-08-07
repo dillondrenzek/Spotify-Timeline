@@ -32,7 +32,6 @@ export class SpotifyUserAuthService {
 	}
 
 	login() {
-		console.info('login');
 		var access_token = (this.sessionTokens) ? this.sessionTokens['access'] : '';
 		var options: RequestOptions = new RequestOptions({
 			method: RequestMethod.Get,
