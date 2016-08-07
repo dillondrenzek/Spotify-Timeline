@@ -21,13 +21,13 @@ export class UserProfile {
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
-		private _suas: SpotifyUserAuthService
+		private _spotifyUserAuthService: SpotifyUserAuthService
 	) {
 
 		this.router.routerState
 			.queryParams.subscribe( query => this.queryParamsChanged(query));
 
-		this._suas.currentUser.subscribe( user => this.currentUserChanged(user));
+		this._spotifyUserAuthService.currentUser.subscribe( user => this.currentUserChanged(user));
 	}
 
 
@@ -36,7 +36,7 @@ export class UserProfile {
 		let refresh_token: string = query['refresh_token'];
 
 		if (access_token && refresh_token) {
-			this._suas.setSessionTokens({
+			this._spotifyUserAuthService.setSessionTokens({
 				access: access_token,
 				refresh: refresh_token
 			});
@@ -44,12 +44,17 @@ export class UserProfile {
 			this.router.navigateByUrl('/me');
 		} else {
 			if (this.authorized) {
-				this._suas.login();
+				this._spotifyUserAuthService.login();
 			}
 		}
 	}
 
 	currentUserChanged(user: any) {
 		this.user = <User>user;
+	}
+
+	loginButtonClicked() {
+		// console.info('login button clicked');
+		this._spotifyUserAuthService.login();
 	}
 }

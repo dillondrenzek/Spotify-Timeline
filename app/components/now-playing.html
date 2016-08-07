@@ -1,23 +1,33 @@
 <h3>Now Playing</h3>
 
-<a href="">Play</a>
+<!-- <a href="">Play</a> -->
 
 <div *ngIf="!track">No Track Found.</div>
 
 <table *ngIf="track">
+
 	<tr>
-		<th>Album</th>
-		<td>
-			<pre>{{(track.album | json) || 'null'}}</pre>
-		</td>
+		<th>Name</th>
+		<td>{{track.name || 'null'}}</td>
 	</tr>
 
 	<tr>
 		<th>Artists</th>
 		<td>
-			<pre>{{(track.artists) ? track.artists.length : 'null'}} | {{(track.artists | json) || 'null'}}</pre>
+			<!-- <pre>{{(track.artists) ? track.artists.length : 'null'}}</pre> -->
+			<artist *ngFor="let artist of track.artists" [artist]="artist"></artist>
 		</td>
 	</tr>
+
+	<tr>
+		<th>Album</th>
+		<td>
+			<!-- <pre>{{(track.album | json) || 'null'}}</pre> -->
+			<album [album]="track.album"></album>
+		</td>
+	</tr>
+
+
 
 	<tr>
 		<th>Duration</th>
@@ -61,10 +71,7 @@
 		<td><pre>{{(track.is_playable) ? 'Playable' : 'Not Playable'}}</pre></td>
 	</tr>
 
-	<tr>
-		<th>Name</th>
-		<td><pre>{{track.name || 'null'}}</pre></td>
-	</tr>
+
 
 	<tr>
 		<th>Popularity</th>

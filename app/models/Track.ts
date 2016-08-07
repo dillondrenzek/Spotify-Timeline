@@ -1,17 +1,33 @@
+import { Album } from './Album';
+import { Artist } from './Artist';
+
 export class Track {
 
+	private _artists: Artist[];
+	private _album: Album;
 	private _track: Object = {};
 
 	constructor(spotifyTrack: any){
 		this._track = spotifyTrack;
+		this._album = new Album(this._track['album']);
+		this._artists = this.getArtists(this._track['artists']);
+	}
+
+	private getArtists(artists: Object[]): Artist[] {
+		let ret: Artist[] = [];
+		for (var i = 0; i < artists.length; i++ ) {
+			let artist = new Artist(artists[i]);
+			ret.push(artist);
+		}
+		return ret;
 	}
 
 	/**
 	 * `album`
-	 * { Object } - a simplified album object
+	 * { Album }
 	 * The album on which the track appears. The album object includes a link in href to full information about the album.
 	 */
-	get album(): Object { return this._track['album'] || null; }
+	get album(): Album { return this._album || null; }
 
 
 

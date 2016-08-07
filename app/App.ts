@@ -3,7 +3,6 @@ import { RouterOutlet, ROUTER_DIRECTIVES } from '@angular/router';
 
 import { NowPlaying } from './components/NowPlaying';
 import { UserProfile } from './components/UserProfile';
-import { SpotifyLogin } from './components/SpotifyLogin';
 import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
 
 @Component({
@@ -17,7 +16,6 @@ import { SpotifyUserAuthService } from './services/SpotifyUserAuthService';
       SpotifyUserAuthService
   ],
   precompile: [
-      SpotifyLogin,
       UserProfile,
       NowPlaying
   ]

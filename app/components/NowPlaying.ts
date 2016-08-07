@@ -3,10 +3,14 @@ import { Http, Response } from '@angular/http';
 
 import { Track } from '../models/Track';
 
+import { ArtistComponent } from './ArtistComponent';
+import { AlbumComponent } from './AlbumComponent';
+
 @Component({
 	selector: 'now-playing',
 	templateUrl: 'app/components/now-playing.html',
-	styleUrls: ['built/css/components/now-playing.html']
+	styleUrls: ['built/css/components/now-playing.html'],
+	directives: [ ArtistComponent, AlbumComponent ]
 })
 
 export class NowPlaying {
