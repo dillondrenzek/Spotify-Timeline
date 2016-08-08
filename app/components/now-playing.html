@@ -2,6 +2,11 @@
 
 <!-- <a href="">Play</a> -->
 
+<ul>
+	<li><a (click)="getTrackById('3ZD3kjn80pQ9keYO8eqp9d')">Track 1</a></li>
+	<li><a (click)="getTrackById('0Sl8C9oeS3b5Kv9bSvTPDr')">Track 2</a></li>
+</ul>
+
 <div *ngIf="!track">No Track Found.</div>
 
 <table *ngIf="track">
@@ -19,7 +24,9 @@
 	<tr>
 		<th>Play</th>
 		<td>
-			<iframe [src]="track.uri | embed_uri" width="540" height="300" frameborder="0" allowtransparency="true"></iframe>
+			<div [style.height.px]="80" [style.width.px]="320" [style.overflow]="'hidden'">
+				<iframe [src]="track.uri | embed_uri" width="320" height="80" frameborder="0" allowtransparency="true"></iframe>
+			</div>
 		</td>
 	</tr>
 
@@ -69,18 +76,7 @@
 	</tr> -->
 
 
-	<tr>
-		<th>Link</th>
-		<td>
-			<pre>{{track.href || 'null'}}</pre>
-		</td>
-	</tr>
 
-
-	<tr>
-		<th>Id</th>
-		<td><pre>{{track.id || 'null'}}</pre></td>
-	</tr>
 
 
 	<tr>
@@ -105,9 +101,23 @@
 		</td>
 	</tr> -->
 
+
+
+	<tr>
+		<th>Id</th>
+		<td><pre>{{track.id || 'null'}}</pre></td>
+	</tr>
+
 	<tr>
 		<th>spotify URI</th>
 		<td><pre>{{track.uri || 'null'}}</pre></td>
+	</tr>
+
+	<tr>
+		<th>Link</th>
+		<td>
+			<pre>{{track.href || 'null'}}</pre>
+		</td>
 	</tr>
 
 </table>

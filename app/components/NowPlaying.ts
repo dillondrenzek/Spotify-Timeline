@@ -21,7 +21,7 @@ import { EmbedUriPipe } from '../pipes/EmbedUriPipe';
 export class NowPlaying {
 
 	track: Track;
-	track_embed_uri: SafeResourceUrl;
+	// track_embed_uri: SafeResourceUrl;
 
 	constructor(
 		private http: Http,
@@ -30,8 +30,17 @@ export class NowPlaying {
 	) {}
 
 	ngOnInit() {
+		// https://open.spotify.com/track/3ZD3kjn80pQ9keYO8eqp9d
+
+		// spotify:track:0Sl8C9oeS3b5Kv9bSvTPDr
+
+		this.getTrackById('0Sl8C9oeS3b5Kv9bSvTPDr');
+	}
+
+	getTrackById(id: string) {
+		let url: string = 'https://api.spotify.com/v1/tracks/'+ id;
 		this.http
-			.get('https://api.spotify.com/v1/tracks/1iP5UMdOsGz6EdltGbbcb7')
+			.get(url)
 			.subscribe(tO => this.receivedTrackObject(tO));
 	}
 
@@ -39,7 +48,6 @@ export class NowPlaying {
 		console.warn('res:', res);
 		let track = res.json();
 		this.track = new Track(track);
-		this.track_embed_uri = this.sanitizer.bypassSecurityTrustResourceUrl('your url');
 		this._cdr.detectChanges();
 		console.warn('track:', this.track);
 	}

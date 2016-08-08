@@ -7,17 +7,10 @@ import { SafeResourceUrl, DomSanitizationService } from '@angular/platform-brows
 })
 export class EmbedUriPipe {
 
-	constructor(private sanitizer: DomSanitizationService) {
-
-	}
+	constructor(private sanitizer: DomSanitizationService) {}
 
 	transform(v: string, args: any[]){
-		let ret = 'https://embed.spotify.com/?uri=' + encodeURIComponent(v);
-		console.warn(v);
-		console.warn(encodeURIComponent(v));
-		console.warn(ret);
-		return this.sanitizer.bypassSecurityTrustResourceUrl(ret);
+		let url = 'https://embed.spotify.com/?uri=' + encodeURIComponent(v);
+		return this.sanitizer.bypassSecurityTrustResourceUrl(url);
 	}
-
-
 }

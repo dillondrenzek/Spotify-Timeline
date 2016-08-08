@@ -1,7 +1,9 @@
 import { Component, Input, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SpotifyUserAuthService, SessionToken } from '../services/SpotifyUserAuthService';
+import { SpotifyUserService, SessionToken } from '../services/SpotifyUserService';
 import { User, UserProfileObject } from '../models/User';
+import { PlaylistComponent } from './PlaylistComponent';
+import { Playlist } from '../models/Playlist';
 
 declare var localStorage: any;
 
@@ -10,24 +12,28 @@ declare var localStorage: any;
 @Component({
 	selector: 'user-profile',
 	templateUrl: 'app/components/user-profile.html',
-	styleUrls: ['built/css/components/user-profile.css']
+	styleUrls: ['built/css/components/user-profile.css'],
+	directives: [ PlaylistComponent ]
 })
 export class UserProfile {
 
 	user: User;
+	playlists: Playlist[];
 
 	authorized: boolean = false;
 
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
-		private _spotifyUserAuthService: SpotifyUserAuthService
+		private _spotifyUserService: SpotifyUserService
 	) {
 
 		this.router.routerState
 			.queryParams.subscribe( query => this.queryParamsChanged(query));
 
-		this._spotifyUserAuthService.currentUser.subscribe( user => this.currentUserChanged(user));
+		this._spotifyUserService.currentUser$.subscribe( user => this.currentUserChanged(user));
+
+		this._spotifyUserService.currentUserPlaylists$.subscribe( playlists => this.currentUserPlaylistsChanged(playlists));
 	}
 
 
@@ -36,7 +42,7 @@ export class UserProfile {
 		let refresh_token: string = query['refresh_token'];
 
 		if (access_token && refresh_token) {
-			this._spotifyUserAuthService.setSessionTokens({
+			this._spotifyUserService.setSessionTokens({
 				access: access_token,
 				refresh: refresh_token
 			});
@@ -44,7 +50,7 @@ export class UserProfile {
 			this.router.navigateByUrl('/me');
 		} else {
 			if (this.authorized) {
-				this._spotifyUserAuthService.login();
+				this._spotifyUserService.login();
 			}
 		}
 	}
@@ -53,8 +59,21 @@ export class UserProfile {
 		this.user = <User>user;
 	}
 
+	currentUserPlaylistsChanged(playlists: any) {
+		// console.warn('playlists changed:', playlists);
+		this.playlists = playlists;
+	}
+
 	loginButtonClicked() {
-		// console.info('login button clicked');
-		this._spotifyUserAuthService.login();
+		this._spotifyUserService.login();
+	}
+
+	getPlaylistsClicked() {
+		this._spotifyUserService.getPlaylists();
+	}
+
+	ngOnInit() {
+		// this._spotifyUserService.getPlaylists();
+		// this._spotifyUserService.getPlaylists().subscribe( playlists => this.currentUserPlaylistsChanged(playlists));
 	}
 }

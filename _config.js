@@ -5,8 +5,10 @@ module.exports = {
 		redirect_uri: 'http://localhost:8081/spotify/authorize/callback',
 		scopes: [
 			'playlist-modify-public',
+			'playlist-modify-private',
 			'streaming',
 			'user-library-read',
+			'user-library-modify',
 			'user-read-birthdate',
 			'user-top-read'
 		]

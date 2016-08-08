@@ -46,4 +46,14 @@
 
 </div>
 
+<div>
+	<h3>Playlists</h3>
+	<ul>
+		<li *ngFor="let plist of playlists">
+			<playlist [playlist]="plist"></playlist>
+		</li>
+	</ul>
+</div>
+
 <a href="/spotify/authorize">Authorize Spotify</a>
+<a (click)="_spotifyUserService.getPlaylists()">Get Playlists</a>
