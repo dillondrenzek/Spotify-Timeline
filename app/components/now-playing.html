@@ -6,9 +6,26 @@
 
 <table *ngIf="track">
 
+	<!-- <tr *ngIf="track.preview_url">
+		<th>Preview URL</th>
+		<td>
+			<audio controls>
+				<source src="{{track.preview_url}}" type="audio/mpeg">
+				Your browser does not support the audio element.
+			</audio>
+		</td>
+	</tr> -->
+
+	<tr>
+		<th>Play</th>
+		<td>
+			<iframe [src]="track.uri | embed_uri" width="540" height="300" frameborder="0" allowtransparency="true"></iframe>
+		</td>
+	</tr>
+
 	<tr>
 		<th>Name</th>
-		<td>{{track.name || 'null'}}</td>
+		<td><a href="{{track.external_urls.spotify}}">{{track.name}}</a></td>
 	</tr>
 
 	<tr>
@@ -32,7 +49,7 @@
 	<tr>
 		<th>Duration</th>
 		<td>
-			<pre>{{track.duration_ms || 'null'}} ms</pre>
+			{{track.duration_ms | duration}}
 		</td>
 	</tr>
 
@@ -44,19 +61,19 @@
 	</tr>
 
 
-	<tr>
+	<!-- <tr>
 		<th>Spotify URI</th>
 		<td>
-			<pre>{{(track.external_urls) ? (track.external_urls.spotify | json) : 'null'}}</pre>
+			<pre>{{(track.external_urls) ? (track.external_urls.spotify) : 'null'}}</pre>
 		</td>
-	</tr>
+	</tr> -->
 
 
 	<tr>
 		<th>Link</th>
 		<td>
-			<pre>{{track.href || 'null'}}
-		</pre></td>
+			<pre>{{track.href || 'null'}}</pre>
+		</td>
 	</tr>
 
 
@@ -78,10 +95,15 @@
 		<td><pre>{{track.popularity || 'null'}}</pre></td>
 	</tr>
 
-	<tr>
+	<!-- <tr>
 		<th>Preview URL</th>
-		<td><pre>{{track.preview_url || 'null'}}</pre></td>
-	</tr>
+		<td>
+			<audio controls>
+				<source src="{{track.preview_url}}" type="audio/mpeg">
+				Your browser does not support the audio element.
+			</audio>
+		</td>
+	</tr> -->
 
 	<tr>
 		<th>spotify URI</th>

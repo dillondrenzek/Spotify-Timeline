@@ -182,4 +182,8 @@ export class Track {
 	 */
 	get uri(): string { return this._track['uri'] || null; }
 
+
+
+	// get embed_uri(): string { return 'https://embed.spotify.com/?uri='+this._track['uri']; }
+
 }
