@@ -18,90 +18,115 @@ export interface SessionToken {
 @Injectable()
 export class SpotifyUserService {
 
-	private _sessionTokens: SessionToken = { access: null, refresh: null };
+	/**
+	 * Current User
+	 */
 
-	private _currentUser: User = null;
-	private currentUserSource: BehaviorSubject<User> = new BehaviorSubject<User>(this._currentUser);
+	// Observable currentUser
 	currentUser$: Observable<User>;
+	// currentUser reference
+	private _cU: User = null;
+	// currentUser subject
+	private cUSource: BehaviorSubject<User> = new BehaviorSubject<User>(this._cU);
 
-	private _currentUserPlaylists: Playlist[] = null;
-	private currentUserPlaylistsSource: BehaviorSubject<Playlist[]> = new BehaviorSubject<Playlist[]>(this._currentUserPlaylists);
+	/**
+	 * Current User Playlists
+	 */
+
+	// Observable currentUserPlaylists
 	currentUserPlaylists$: Observable<Playlist[]>;
+	// currentUserPlaylist reference
+	private _cUP: Playlist[] = null;
+	// currentUserPlaylist subject
+	private cUPSource: BehaviorSubject<Playlist[]> = new BehaviorSubject<Playlist[]>(this._cUP);
 
+
+	/**
+	 * Spotify API session tokens
+	 */
+	sessionTokens: SessionToken = null;
+	localStoragePrefix: string = 'spotify-timeline:';
+	access_token_key: string = this.localStoragePrefix + 'access_token';
+	refresh_token_key: string = this.localStoragePrefix + 'refresh_token';
 
 	constructor(private _http: Http) {
-		this.currentUser$ = this.currentUserSource.asObservable();
-		this.currentUserPlaylists$ = this.currentUserPlaylistsSource.asObservable();
+		// initialize Observables
+		this.currentUser$ = this.cUSource.asObservable();
+		this.currentUserPlaylists$ = this.cUPSource.asObservable();
 	}
 
-	get sessionTokens(): SessionToken { return this._sessionTokens; }
-	set sessionTokens(queryTokens: SessionToken){
-		this._sessionTokens = queryTokens;
-	}
 
+	/**
+	 * Public method for logging in to Spotify API service
+	 */
 	login() {
-		var access_token = (this.sessionTokens) ? this.sessionTokens['access'] : '';
-		var options: RequestOptions = new RequestOptions({
+		console.warn('login', this.sessionTokens);
+		if (!this.sessionTokens) {
+			this.sessionTokens = this.getSessionTokens();
+		} else {
+			return;
+		}
+		var req = new Request({
 			method: RequestMethod.Get,
 			url: 'https://api.spotify.com/v1/me',
 			headers: new Headers({
-				'Authorization': 'Bearer ' + access_token
+				'Authorization': 'Bearer ' + this.sessionTokens['access']
 			})
 		});
 
 		this._http
-			.request(new Request(options))
+			.request(req)
 			.map(res => {
-
-				let data = res.json();
-
-				let newUserOptions: UserProfileObject = {
-					display_name: 	data['display_name'],
-					id: 			data['id'],
-					email: 			data['email'],
-					external_urls: 	data['external_urls'],
-					href: 			data['href'],
-					images: 		data['images'],
-					country: 		data['country']
-				};
-
-				let user = new User(newUserOptions);
-
+				let user = User.fromJSON(res.json());
 				this.setCurrentUser(user);
-
 			}).subscribe();
+	}
+
+	getSessionTokens(): SessionToken {
+		let tokens: SessionToken = {access: null, refresh: null};
+		if (!this.sessionTokens) {
+			tokens = {
+				access: localStorage.getItem(this.access_token_key),
+				refresh: localStorage.getItem(this.refresh_token_key)
+			};
+		} else {
+			tokens = this.sessionTokens;
+		}
+		console.warn('getSessionTokens', tokens);
+		return tokens;
 	}
 
 	setSessionTokens(queryTokens: SessionToken) {
 		this.sessionTokens = queryTokens;
+		localStorage.setItem(this.access_token_key, this.sessionTokens.access);
+		localStorage.setItem(this.refresh_token_key, this.sessionTokens.refresh);
 	}
 
 	getCurrentUser(): User {
-		return this._currentUser;
+		return this._cU;
 	}
 
 	setCurrentUser(u: User) {
-
-
-		this._currentUser = u;
-		this.currentUserSource.next(u);
+		console.warn('setCurrentUser', u);
+		this._cU = u;
+		this.cUSource.next(u);
 	}
 
 	getPlaylists() {
-		if (!this._currentUser) { console.warn('no currentUser'); return; }
+		if (!this._cU) { console.warn('no currentUser'); return; }
 
 
 		var access_token = (this.sessionTokens) ? this.sessionTokens['access'] : '';
-		var options: RequestOptions = new RequestOptions({
+		var req: Request = new Request({
 			method: RequestMethod.Get,
-			url: 'https://api.spotify.com/v1/users/'+this._currentUser.id+'/playlists',
+			url: 'https://api.spotify.com/v1/users/'+this._cU.id+'/playlists',
 			headers: new Headers({
 				'Authorization': 'Bearer ' + access_token
 			})
 		});
 
 		this._http
-			.request(new Request(options))
+			.request(req)
 			.map(res => {
 
 				let data: any = res.json();
@@ -112,10 +137,10 @@ export class SpotifyUserService {
 				for (var i = 0; i < playlist_objects.length; i++) {
 					playlists.push(new Playlist(playlist_objects[i]));
 				}
-				console.warn('get playlists', playlists);
+				// console.warn('get playlists', playlists);
 
-				this._currentUserPlaylists = playlists;
-				this.currentUserPlaylistsSource.next(playlists);
+				this._cUP = playlists;
+				this.cUPSource.next(playlists);
 			}).subscribe();
 	}
 

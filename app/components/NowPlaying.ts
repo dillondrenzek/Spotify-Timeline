@@ -21,7 +21,6 @@ import { EmbedUriPipe } from '../pipes/EmbedUriPipe';
 export class NowPlaying {
 
 	track: Track;
-	// track_embed_uri: SafeResourceUrl;
 
 	constructor(
 		private http: Http,
@@ -30,10 +29,6 @@ export class NowPlaying {
 	) {}
 
 	ngOnInit() {
-		// https://open.spotify.com/track/3ZD3kjn80pQ9keYO8eqp9d
-
-		// spotify:track:0Sl8C9oeS3b5Kv9bSvTPDr
-
 		this.getTrackById('0Sl8C9oeS3b5Kv9bSvTPDr');
 	}
 

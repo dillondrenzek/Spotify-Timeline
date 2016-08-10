@@ -24,6 +24,8 @@ export class App {
 
     constructor(
         private _spotifyUserService: SpotifyUserService
-    ) {}
+    ) {
+        this._spotifyUserService.login();
+    }
 
 }

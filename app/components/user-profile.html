@@ -1,59 +1,27 @@
+<a *ngIf="!user" href="/spotify/authorize">Authorize Spotify</a>
+
 <div *ngIf="user">
-	<h3>Logged in as {{user.display_name || 'null'}}</h3>
-
-	<table>
-		<tr>
-			<th>Display name</th>
-			<td>{{user.display_name || 'null'}}</td>
-		</tr>
-
-		<tr>
-			<th>Id</th>
-			<td>{{user.id || 'null'}}</td>
-		</tr>
+	<!-- <h3>Logged in as {{user.display_name || 'null'}}</h3> -->
 
 
-		<tr>
-			<th>Email</th>
-			<td>{{user.email || 'null'}}</td>
-		</tr>
+	<div class="user-card">
+		<figure>
+			<img src="{{user.images[0].url}}"/>
+		</figure>
+		<div class="info">
+			<h3>{{user.display_name}}</h3>
+			<small>{{user.id}}</small>
+			<a href="{{user.external_urls.spotify}}">On Spotify</a>
+		</div>
+	</div>
 
-
-		<tr>
-			<th>Spotify URI</th>
-			<td><a href="{{user.external_urls.spotify}}">{{user.external_urls.spotify}}</a></td>
-		</tr>
-
-
-		<tr>
-			<th>Link</th>
-			<td>{{user.href || 'null'}}</td>
-		</tr>
-
-
-		<tr>
-			<th>Profile Image</th>
-			<td><img src="{{user.images[0].url}}" /></td>
-		</tr>
-
-
-		<tr>
-			<th>Country</th>
-			<td>{{user.country || 'null'}}</td>
-		</tr>
-
-	</table>
-
+	<a *ngIf="!playlists" (click)="_spotifyUserService.getPlaylists()">Get Playlists</a>
+	<div *ngIf="playlists" class="user-playlists">
+		<h3>Playlists</h3>
+		<ul>
+			<li *ngFor="let plist of playlists">
+				<playlist [playlist]="plist"></playlist>
+			</li>
+		</ul>
+	</div>
 </div>
-
-<div>
-	<h3>Playlists</h3>
-	<ul>
-		<li *ngFor="let plist of playlists">
-			<playlist [playlist]="plist"></playlist>
-		</li>
-	</ul>
-</div>
-
-<a href="/spotify/authorize">Authorize Spotify</a>
-<a (click)="_spotifyUserService.getPlaylists()">Get Playlists</a>

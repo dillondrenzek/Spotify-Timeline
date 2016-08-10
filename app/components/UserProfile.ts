@@ -1,4 +1,4 @@
-import { Component, Input, Inject } from '@angular/core';
+import { Component, Input, Inject, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SpotifyUserService, SessionToken } from '../services/SpotifyUserService';
 import { User, UserProfileObject } from '../models/User';
@@ -23,6 +23,7 @@ export class UserProfile {
 	authorized: boolean = false;
 
 	constructor(
+		private _cdr: ChangeDetectorRef,
 		private router: Router,
 		private route: ActivatedRoute,
 		private _spotifyUserService: SpotifyUserService
@@ -56,11 +57,11 @@ export class UserProfile {
 	}
 
 	currentUserChanged(user: any) {
+		console.warn('currentUserChanged', user);
 		this.user = <User>user;
 	}
 
 	currentUserPlaylistsChanged(playlists: any) {
-		// console.warn('playlists changed:', playlists);
 		this.playlists = playlists;
 	}
 
@@ -72,8 +73,11 @@ export class UserProfile {
 		this._spotifyUserService.getPlaylists();
 	}
 
+	ngAfterViewInit() {
+		this._spotifyUserService.getPlaylists();
+	}
+
 	ngOnInit() {
-		// this._spotifyUserService.getPlaylists();
-		// this._spotifyUserService.getPlaylists().subscribe( playlists => this.currentUserPlaylistsChanged(playlists));
+		this._spotifyUserService.login();
 	}
 }

@@ -32,7 +32,7 @@ export class User {
 
 	get country(): string { return this.upo['country']; }
 
-	static create(upo?: UserProfileObject) {
+	static create(upo?: UserProfileObject): User {
 		return new User({
 			display_name: null,
 			id: null,
@@ -42,5 +42,17 @@ export class User {
 			images: [{url: null}],
 			country: null
 		})
+	}
+
+	static fromJSON(data: any): User {
+		return new User({
+			display_name: 	data['display_name'],
+			id: 			data['id'],
+			email: 			data['email'],
+			external_urls: 	data['external_urls'],
+			href: 			data['href'],
+			images: 		data['images'],
+			country: 		data['country']
+		});
 	}
 }
