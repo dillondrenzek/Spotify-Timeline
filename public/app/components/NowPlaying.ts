@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { SafeResourceUrl } from '@angular/platform-browser';
 
-import { Track } from '../models/Track';
+import { Track } from '../tracks/tracks.module';
 
 import { ArtistComponent } from './ArtistComponent';
 import { AlbumComponent } from './AlbumComponent';

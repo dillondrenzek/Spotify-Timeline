@@ -4,8 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscriber } from 'rxjs/Subscriber';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Track } from '../models/Track';
-import { Playlist } from '../playlists/models/Playlist';
+import { Track } from '../tracks/tracks.module';
+import { Playlist } from '../playlists/playlists.module';
 
 declare var localStorage: any;
 
