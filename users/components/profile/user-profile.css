@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+img {
+  display: block;
+}
+figure,
+.info {
+  float: left;
+}
+.user-card,
+.user-playlists {
+  width: 100%;
+  overflow: auto;
+}
+.user-playlists ul {
+  list-style-type: none;
+  width: 100%;
+  overflow: auto;
+}
+.user-playlists li {
+  float: left;
+  width: 25%;
+  padding: 10px 0;
+}
+.user-playlists playlist {
+  margin-bottom: 10px;
+}
+
+/*# sourceMappingURL=user-profile.css.map */

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
+    moduleId: module.id,
   selector: 'app',
-  templateUrl: 'public/app/app.html',
-  styleUrls: ['public/app/app.css']
+  templateUrl: './app.html',
+  styleUrls: ['./app.css']
 })
 export class App {
 

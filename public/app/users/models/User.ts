@@ -1,5 +1,3 @@
-import { Playlist } from './Playlist';
-
 export interface UserProfileObject {
 	display_name: string,
 	id: string,

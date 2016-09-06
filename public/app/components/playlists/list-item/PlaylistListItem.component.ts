@@ -14,7 +14,7 @@ import { Playlist } from '../../../models/Playlist';
 
 export class PlaylistListItem {
 
-	@Input() playlist: Playlist;
+	@Input('playlist') playlist: Playlist;
 
 
 	// 'list' or 'page'

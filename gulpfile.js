@@ -26,14 +26,14 @@ gulp.task('styl', function(){
 });
 
 gulp.task('watch:styl', function(){
-	return gulp.src('app/**/*.styl')
-		.pipe(watch('app/**/*.styl', {verbose: true}))
+	return gulp.src('public/app/**/*.styl')
+		.pipe(watch('public/app/**/*.styl', {verbose: true}))
 		.pipe(plumber())
     	.pipe(stylus())
 		.pipe(sourcemaps.init())
 		.pipe(postcss([ autoprefixer() ]))
 		.pipe(sourcemaps.write('.'))
-    	.pipe(gulp.dest('built/css/'));
+    	.pipe(gulp.dest('public/app/'));
 });
 
 
@@ -49,8 +49,10 @@ gulp.task('clean:app', function(){
 });
 gulp.task('clean:build', function(){
 	return clean([
-		'built/css/*',
-		'built/js/*']);
+		'public/app/**/*.css',
+		'public/app/**/*.map',
+		'public/app/**/*.js'
+	]);
 });
 gulp.task('clean:npm', function(){
 	return clean([

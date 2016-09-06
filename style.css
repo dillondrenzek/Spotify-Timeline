@@ -1,0 +1,21 @@
+h1 {
+  color: #bad443;
+}
+body {
+  background: #232425;
+}
+app {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #f7f7f7;
+  overflow-y: auto;
+}
+nav a.active {
+  background: #fff;
+}
+
+/*# sourceMappingURL=style.css.map */

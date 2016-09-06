@@ -1,0 +1,1 @@
+{"version":3,"sources":["components/now-playing.css"],"names":[],"mappings":"AAAA;EACE,eAAe;CAChB;AACD;EACE,oBAAoB;EACpB,YAAY;CACb","file":"components/now-playing.css","sourcesContent":[":host {\n  display: block;\n}\ntable {\n  table-layout: fixed;\n  width: 100%;\n}\n"],"sourceRoot":"/source/"}
