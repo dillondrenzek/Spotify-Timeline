@@ -1,8 +1,10 @@
 import { Component, Input, Inject, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+
 import { SpotifyUserService, SessionToken } from '../../spotify/spotifyUser.service';
 import { User, UserProfileObject } from '../../models/User';
-import { Playlist } from '../../../models/Playlist';
+
+import { Playlist } from '../../../playlists/playlists.module';
 
 declare var localStorage: any;
 

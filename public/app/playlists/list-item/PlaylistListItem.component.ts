@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { Playlist } from '../../../models/Playlist';
+import { Playlist } from '../models/Playlist';
 
 @Component({
 	selector: 'playlist-list-item',

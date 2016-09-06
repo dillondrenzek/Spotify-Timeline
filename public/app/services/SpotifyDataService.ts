@@ -5,7 +5,7 @@ import { Subscriber } from 'rxjs/Subscriber';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Track } from '../models/Track';
-import { Playlist } from '../models/Playlist';
+import { Playlist } from '../playlists/models/Playlist';
 
 declare var localStorage: any;
 

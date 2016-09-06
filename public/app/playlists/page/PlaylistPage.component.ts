@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { Playlist } from '../../../models/Playlist';
+import { Playlist } from '../models/Playlist';
 
 @Component({
 	selector: 'playlist-page',

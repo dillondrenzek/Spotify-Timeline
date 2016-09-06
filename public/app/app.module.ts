@@ -8,8 +8,6 @@ import { appRoutes } from './app.routes';
 
 import { ArtistComponent } from './components/ArtistComponent';
 import { AlbumComponent } from './components/AlbumComponent';
-import { PlaylistListItem } from './components/playlists/list-item/PlaylistListItem.component';
-import { PlaylistPageComponent } from './components/playlists/page/PlaylistPage.component';
 import { NowPlaying } from './components/NowPlaying';
 
 // Pipes
@@ -18,9 +16,9 @@ import { EmbedUriPipe } from './pipes/EmbedUriPipe';
 
 // Services
 import { SpotifyDataService } from './services/SpotifyDataService';
-// import { SpotifyUserService } from './services/SpotifyUserService';
 
-import { UsersModule } from './users/users.module';
+import { UsersModule } 				from './users/users.module';
+import { PlaylistsModule } 			from './playlists/playlists.module';
 
 @NgModule({
 	declarations: [
@@ -29,8 +27,6 @@ import { UsersModule } from './users/users.module';
 		EmbedUriPipe,
 		ArtistComponent,
 		AlbumComponent,
-		PlaylistPageComponent,
-		PlaylistListItem,
 		NowPlaying
 	],
 	providers: [
@@ -40,7 +36,8 @@ import { UsersModule } from './users/users.module';
 		BrowserModule,
 		HttpModule,
 		RouterModule.forRoot(appRoutes),
-		UsersModule
+		UsersModule,
+		PlaylistsModule
 	],
 	bootstrap: [ App ]
 })
