@@ -4,14 +4,23 @@ import { RouterModule } from '@angular/router';
 
 import { tracksRoutes } from './tracks.routes';
 
+import { TrackComponent } from './component/Track.component';
+import { TracksListComponent } from './list/TracksList.component';
+
+export { TrackComponent } from './component/Track.component';
+export { TracksListComponent } from './list/TracksList.component';
 export { Track } from './models/Track';
+
+
 
 @NgModule({
 	declarations: [
-
+		TrackComponent,
+		TracksListComponent
 	],
 	exports: [
-		
+		TrackComponent,
+		TracksListComponent
 	],
 	imports: [
 		CommonModule,

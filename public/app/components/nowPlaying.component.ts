@@ -4,18 +4,18 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 
 import { Track } from '../tracks/tracks.module';
 
-import { ArtistComponent } from './ArtistComponent';
-import { AlbumComponent } from './AlbumComponent';
+import { ArtistComponent } from './artist.component';
+import { AlbumComponent } from './album.component';
 
-import { DurationPipe } from '../pipes/DurationPipe';
-import { EmbedUriPipe } from '../pipes/EmbedUriPipe';
+import { DurationPipe } from '../commonPipes/commonPipes.module';
+import { EmbedUriPipe } from '../commonPipes/commonPipes.module';
 import { SpotifyDataService } from '../services/SpotifyDataService';
 
 @Component({
 	selector: 'now-playing',
 	moduleId: module.id,
-	templateUrl: './now-playing.html',
-	styleUrls: ['./now-playing.css']
+	templateUrl: './nowPlaying.component.html',
+	styleUrls: ['./nowPlaying.component.css']
 })
 
 export class NowPlaying {

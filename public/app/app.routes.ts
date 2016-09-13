@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { NowPlaying } 	from './components/NowPlaying';
+import { NowPlaying } 	from './components/nowPlaying.component';
 // import { UserProfile } 	from './components/UserProfile';
 // import { PlaylistPageComponent } from './components/playlists/page/PlaylistPage.component';
 

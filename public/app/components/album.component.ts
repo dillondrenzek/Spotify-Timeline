@@ -5,8 +5,8 @@ import { Album } from '../models/Album';
 @Component({
 	selector: 'album',
 	moduleId: module.id,
-	templateUrl: './album-component.html',
-	styleUrls: ['./album-component.css']
+	templateUrl: './album.component.html',
+	styleUrls: ['./album.component.css']
 })
 
 export class AlbumComponent {

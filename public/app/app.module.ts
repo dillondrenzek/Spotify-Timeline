@@ -1,30 +1,31 @@
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
-import { App } from './App';
+// External modules
+import { NgModule } 				from '@angular/core';
+import { RouterModule } 			from '@angular/router';
+import { BrowserModule } 			from '@angular/platform-browser';
+import { HttpModule } 				from '@angular/http';
 
-import { appRoutes } from './app.routes';
-
-import { ArtistComponent } from './components/ArtistComponent';
-import { AlbumComponent } from './components/AlbumComponent';
-import { NowPlaying } from './components/NowPlaying';
-
-// Pipes
-import { DurationPipe } from './pipes/DurationPipe';
-import { EmbedUriPipe } from './pipes/EmbedUriPipe';
-
-// Services
-import { SpotifyDataService } from './services/SpotifyDataService';
-
+// Internal modules
+import { CommonPipesModule }		from './commonPipes/commonPipes.module';
 import { UsersModule } 				from './users/users.module';
 import { PlaylistsModule } 			from './playlists/playlists.module';
+
+import { App } 						from './App';
+
+import { appRoutes } 				from './app.routes';
+
+import { ArtistComponent } 			from './components/artist.component';
+import { AlbumComponent } 			from './components/album.component';
+import { NowPlaying } 				from './components/nowPlaying.component';
+
+
+// Services
+import { SpotifyDataService } 		from './services/SpotifyDataService';
+
+
 
 @NgModule({
 	declarations: [
 		App,
-		DurationPipe,
-		EmbedUriPipe,
 		ArtistComponent,
 		AlbumComponent,
 		NowPlaying
@@ -37,7 +38,8 @@ import { PlaylistsModule } 			from './playlists/playlists.module';
 		HttpModule,
 		RouterModule.forRoot(appRoutes),
 		UsersModule,
-		PlaylistsModule
+		PlaylistsModule,
+		CommonPipesModule
 	],
 	bootstrap: [ App ]
 })

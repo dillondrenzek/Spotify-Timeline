@@ -1,25 +1,8 @@
 <h3>Now Playing</h3>
 
-<!-- <a href="">Play</a> -->
-
-<!-- <ul>
-	<li><a (click)="getTrackById('3ZD3kjn80pQ9keYO8eqp9d')">Track 1</a></li>
-	<li><a (click)="getTrackById('0Sl8C9oeS3b5Kv9bSvTPDr')">Track 2</a></li>
-</ul> -->
-
 <div *ngIf="!track">No Track Found.</div>
 
 <table *ngIf="track">
-
-	<!-- <tr *ngIf="track.preview_url">
-		<th>Preview URL</th>
-		<td>
-			<audio controls>
-				<source src="{{track.preview_url}}" type="audio/mpeg">
-				Your browser does not support the audio element.
-			</audio>
-		</td>
-	</tr> -->
 
 	<tr>
 		<th>Play</th>
@@ -38,7 +21,6 @@
 	<tr>
 		<th>Artists</th>
 		<td>
-			<!-- <pre>{{(track.artists) ? track.artists.length : 'null'}}</pre> -->
 			<artist *ngFor="let artist of track.artists" [artist]="artist"></artist>
 		</td>
 	</tr>
@@ -46,7 +28,6 @@
 	<tr>
 		<th>Album</th>
 		<td>
-			<!-- <pre>{{(track.album | json) || 'null'}}</pre> -->
 			<album [album]="track.album"></album>
 		</td>
 	</tr>
