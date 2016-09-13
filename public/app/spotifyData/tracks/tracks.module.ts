@@ -14,6 +14,10 @@ export { Track } 					from './models/Track';
 
 
 @NgModule({
+	imports: [
+		CommonModule,
+		RouterModule.forChild(tracksRoutes)
+	],
 	declarations: [
 		TrackComponent,
 		TracksListComponent
@@ -21,10 +25,6 @@ export { Track } 					from './models/Track';
 	exports: [
 		TrackComponent,
 		TracksListComponent
-	],
-	imports: [
-		CommonModule,
-		RouterModule.forChild(tracksRoutes)
 	]
 })
 export class TracksModule {}
