@@ -1,17 +1,21 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NgModule } 				from '@angular/core';
+import { CommonModule } 			from '@angular/common';
+import { RouterModule } 			from '@angular/router';
 
-import { PlaylistListItem } from './list-item/PlaylistListItem.component';
-import { PlaylistPageComponent } from './page/PlaylistPage.component';
+import { PlaylistListItem } 		from './components/list-item/playlistListItem.component';
+import { PlaylistPageComponent } 	from './components/page/playlistPage.component';
 
-export { PlaylistListItem } from './list-item/PlaylistListItem.component';
-export { PlaylistPageComponent } from './page/PlaylistPage.component';
-export { Playlist } from './models/Playlist';
+export { PlaylistListItem } 		from './components/list-item/playlistListItem.component';
+export { PlaylistPageComponent } 	from './components/page/playlistPage.component';
+export { Playlist } 				from './models/Playlist';
 
 
 
 @NgModule({
+	imports: [
+		CommonModule,
+		RouterModule
+	],
 	declarations: [
 		PlaylistListItem,
 		PlaylistPageComponent
@@ -19,10 +23,6 @@ export { Playlist } from './models/Playlist';
 	exports: [
 		PlaylistListItem,
 		PlaylistPageComponent
-	],
-	imports: [
-		CommonModule,
-		RouterModule
 	]
 })
 export class PlaylistsModule {}

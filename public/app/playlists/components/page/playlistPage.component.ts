@@ -1,13 +1,13 @@
-import { Component, Input } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, Input } 			from '@angular/core';
+import { Router, ActivatedRoute } 		from '@angular/router';
 
-import { Playlist } from '../models/Playlist';
+import { Playlist } 					from '../../models/Playlist';
 
 @Component({
 	selector: 'playlist-page',
 	moduleId: module.id,
-	templateUrl: './playlist-page.component.html',
-	styleUrls: ['./playlist-page.component.css']
+	templateUrl: './playlistPage.component.html',
+	styleUrls: ['./playlistPage.component.css']
 })
 
 export class PlaylistPageComponent {

@@ -1,12 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } 	from '@angular/core';
 
-import { Playlist } from '../models/Playlist';
+import { Playlist } 			from '../../models/Playlist';
 
 @Component({
 	selector: 'playlist-list-item',
 	moduleId: module.id,
-	templateUrl: './playlist-list-item.component.html',
-	styleUrls: ['./playlist-list-item.component.css'],
+	templateUrl: './playlistListItem.component.html',
+	styleUrls: ['./playlistListItem.component.css'],
 	host: {
 		// '[routerLink]': "routerLinkPath"
 	}
