@@ -6,40 +6,31 @@ import { HttpModule } 				from '@angular/http';
 
 // Internal modules
 import { CommonPipesModule }		from './commonPipes/commonPipes.module';
+import { SpotifyDataModule } 		from './spotifyData/spotifyData.module';
 import { UsersModule } 				from './users/users.module';
-import { PlaylistsModule } 			from './playlists/playlists.module';
 
-import { App } 						from './App';
-
+// Routes
 import { appRoutes } 				from './app.routes';
 
-import { ArtistComponent } 			from './components/artist.component';
-import { AlbumComponent } 			from './components/album.component';
+// Components
+import { App } 						from './App';
 import { NowPlaying } 				from './components/nowPlaying.component';
 
-
-// Services
-import { SpotifyDataService } 		from './services/SpotifyDataService';
 
 
 
 @NgModule({
-	declarations: [
-		App,
-		ArtistComponent,
-		AlbumComponent,
-		NowPlaying
-	],
-	providers: [
-		SpotifyDataService
-	],
 	imports: [
 		BrowserModule,
 		HttpModule,
 		RouterModule.forRoot(appRoutes),
-		UsersModule,
-		PlaylistsModule,
-		CommonPipesModule
+		CommonPipesModule,
+		SpotifyDataModule,
+		UsersModule
+	],
+	declarations: [
+		App,
+		NowPlaying
 	],
 	bootstrap: [ App ]
 })

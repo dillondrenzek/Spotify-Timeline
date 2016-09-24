@@ -1,7 +1,8 @@
 import { Component, Input, Inject, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { SpotifyUserService, SessionToken } from '../../spotify/spotifyUser.service';
+import { SpotifyUserService, SessionToken } from '@timeline/spotify-users';
+// import { SpotifyUserService, SessionToken } from '../../spotify/spotifyUser.service';
 import { User, UserProfileObject } from '../../models/User';
 
 import { Playlist } from '../../../playlists/playlists.module';
