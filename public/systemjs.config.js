@@ -18,6 +18,7 @@
       'app':                                'public/app',
 
       '@timeline/core':                     'public/app/core/index.js',
+      '@timeline/users':                    'public/app/users/index.js',
       '@timeline/spotify-users':            'public/app/spotifyData/users/index.js',
 
       '@angular/core':                      'npm:@angular/core/bundles/core.umd.js',
