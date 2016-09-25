@@ -14,26 +14,24 @@ gulp.task('watch', ['watch:styl']);
 
 
 // Render Stylus
-
-
 gulp.task('styl', function(){
-	return gulp.src('app/**/*.styl')
+	return gulp.src('public/**/*.styl')
 		.pipe(stylus())
 		.pipe(sourcemaps.init())
 		.pipe(postcss([ autoprefixer() ]))
 		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest('built/css/'));
+		.pipe(gulp.dest('public/'));
 });
 
 gulp.task('watch:styl', function(){
-	return gulp.src('public/app/**/*.styl')
-		.pipe(watch('public/app/**/*.styl', {verbose: true}))
+	return gulp.src('public/**/*.styl')
+		.pipe(watch('public/**/*.styl', {verbose: true}))
 		.pipe(plumber())
     	.pipe(stylus())
 		.pipe(sourcemaps.init())
 		.pipe(postcss([ autoprefixer() ]))
 		.pipe(sourcemaps.write('.'))
-    	.pipe(gulp.dest('public/app/'));
+    	.pipe(gulp.dest('public/'));
 });
 
 
@@ -41,21 +39,29 @@ gulp.task('watch:styl', function(){
 // Clean Tasks
 // clean:build is usually sufficient
 
-gulp.task('clean:all', ['clean:app', 'clean:build', 'clean:npm']);
+gulp.task('clean:all', ['clean:typings', 'clean:css', 'clean:js']);
+gulp.task('clean:build', ['clean:css', 'clean:js']);
 gulp.task('clean:app', function(){
 	return clean([
 		'app/**/*.js',
 		'app/**/*.map']);
 });
-gulp.task('clean:build', function(){
+gulp.task('clean:js', function(){
 	return clean([
-		'public/app/**/*.css',
 		'public/app/**/*.map',
 		'public/app/**/*.js'
 	]);
 });
-gulp.task('clean:npm', function(){
+
+gulp.task('clean:css', function(){
 	return clean([
-		'node_modules/**',
-		'npm-debug.log*']);
+		'public/**/*.css',
+		'public/**/*.map'
+	]);
+});
+
+gulp.task('clean:typings', function(){
+	return clean([
+		'typings'
+  ]);
 });

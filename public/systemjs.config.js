@@ -4,22 +4,21 @@
    * Adjust as necessary for your application needs.
    */
 
-  System.config({
-
+  let config = {
 
 
     // paths serve as alias
     paths: {
-      'npm:':                               'node_modules/'
+      'npm:':                               '../node_modules/'
     },
-
 
 
     // map tells the System loader where to look for things
     map: {
-      'app':                                'app',
+      'app':                                'public/app',
 
-      '@timeline/spotify-users':            'app/spotifyData/users/index.js',
+      '@timeline/core':                     'public/app/core/index.js',
+      '@timeline/spotify-users':            'public/app/spotifyData/users/index.js',
 
       '@angular/core':                      'npm:@angular/core/bundles/core.umd.js',
       '@angular/common':                    'npm:@angular/common/bundles/common.umd.js',
@@ -34,16 +33,15 @@
     },
 
 
-
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
-      'app':                            { main: './boot.js', defaultExtension: 'js' },
+      'app':                            { main: 'boot.js', defaultExtension: 'js' },
+      '@timeline':                      { defaultExtension: 'js' },
       'rxjs':                           { defaultExtension: 'js' },
-      'angular2-in-memory-web-api':     { main: './index.js', defaultExtension: 'js' }
+      'angular2-in-memory-web-api':     { main: 'index.js', defaultExtension: 'js' }
     }
 
+  };
 
-
-
-  });
+  System.config(config);
 })(this);
