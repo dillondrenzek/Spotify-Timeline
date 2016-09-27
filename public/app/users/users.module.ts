@@ -5,8 +5,10 @@ import { usersRoutes } 			from './users.routes';
 
 import { Login }            from './components/login/login.component';
 import { UserProfile }      from './components/userProfile/userProfile.component';
+import { UserProfileCallback }      from './components/userProfileCallback/userProfileCallback.component';
 
 import { UserService }      from './services/user.service';
+import { UserSession, userSessionProvider }      from './services/userSession/userSession';
 
 @NgModule({
 	imports: [
@@ -15,13 +17,16 @@ import { UserService }      from './services/user.service';
 	],
 	declarations: [
 		Login,
-    UserProfile
+    UserProfile,
+    UserProfileCallback
 	],
 	exports: [
 		Login,
-    UserProfile
+    UserProfile,
+    UserProfileCallback
 	],
   providers: [
+    userSessionProvider,
     UserService
   ]
 })

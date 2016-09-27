@@ -1,16 +1,3 @@
-<div>
-  <h3>Access Token</h3>
-  <p>
-    {{access_token}}
-  </p>
-</div>
-<div>
-  <h3>Refresh Token</h3>
-  <p>
-    {{refresh_token}}
-  </p>
-</div>
-
 <div *ngIf="user">
 	<!-- <h3>Logged in as {{user.display_name || 'null'}}</h3> -->
 
@@ -24,6 +11,7 @@
 			<small>{{user.id}}</small>
 			<a href="{{user.external_urls.spotify}}">On Spotify</a>
 		</div>
+    <a class="btn btn-default" (click)="logout()">Logout</a>
 	</div>
 
 	<!-- <a *ngIf="!playlists" (click)="_spotifyUserService.getPlaylists()">Get Playlists</a>

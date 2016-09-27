@@ -1,5 +1,6 @@
 import { NgModule }       from '@angular/core';
 import { BrowserModule }   from '@angular/platform-browser';
+import { HttpModule }   from '@angular/http';
 
 import { UsersModule }    from '@timeline/users';
 
@@ -13,6 +14,7 @@ import { Timeline }       from './components/timeline/timeline.component';
 @NgModule({
   imports: [
     BrowserModule,
+    HttpModule,
     UsersModule,
     coreRoutes
   ],

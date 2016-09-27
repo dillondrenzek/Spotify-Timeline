@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { Login } from './components/login/login.component';
 import { UserProfile } from './components/userProfile/userProfile.component';
+import { UserProfileCallback } from './components/userProfileCallback/userProfileCallback.component';
 
 const routes: Routes = [
   {
@@ -10,13 +11,14 @@ const routes: Routes = [
     component: Login
   },
   {
-    path: 'me',
-    component: UserProfile
+    path: 'me/callback',
+    component: UserProfileCallback
   },
   {
-    path: 'me/:query',
+    path: 'me',
     component: UserProfile
   }
+
 ];
 
 export const usersRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
