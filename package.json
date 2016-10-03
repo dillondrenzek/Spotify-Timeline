@@ -1,6 +1,6 @@
 {
   "name": "spotify-timeline",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A web app that takes your Spotify account and creates a timeline of all your songs, when they were added and attempts to make playlists or 'eras' of your music listening history.",
   "repository": {
     "type": "git",
@@ -23,8 +23,8 @@
     "start:w": "npm run clean ; concurrently \"npm run build:watch\" \"npm run serve:dev\"",
 
     "serve": "npm run serve:dev",
-    "serve:dev": "node-dev index.js",
-    "serve:prod": "node index.js",
+    "serve:dev": "node-dev server.js",
+    "serve:prod": "node server.js",
 
     "build": "concurrently \"npm run build:ts\" \"npm run build:styl\"",
     "prebuild:ts": "typings install",
