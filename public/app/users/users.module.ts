@@ -4,7 +4,7 @@ import { CommonModule } 		from '@angular/common';
 import { usersRoutes } 			from './users.routes';
 
 import { Login }            from './components/login/login.component';
-import { MiniUser }         from './components/miniUser/miniUser';
+import { MiniUser }         from './components/miniUser/miniUser.component';
 import { UserProfile }      from './components/userProfile/userProfile.component';
 import { UserProfileCallback }      from './components/userProfileCallback/userProfileCallback.component';
 
@@ -19,11 +19,13 @@ import { UserSession, userSessionProvider }      from './services/userSession/us
 	declarations: [
 		Login,
     UserProfile,
+    MiniUser,
     UserProfileCallback
 	],
 	exports: [
 		Login,
     UserProfile,
+    MiniUser,
     UserProfileCallback
 	],
   providers: [

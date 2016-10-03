@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Request, RequestMethod, Headers } from '@angular/http';
-import { Observable, Subscriber } from 'rxjs/Rx';
+import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 
 import { User } from '../models/User';
 import { UserSession } from './userSession/userSession';
@@ -8,13 +8,19 @@ import { UserSession } from './userSession/userSession';
 @Injectable()
 export class UserService {
 
-  currentUser: User;
+  // currentUser: User;
+
+  private currentUser$_source = new BehaviorSubject<User>(null);
+
+  currentUser$: Observable<User> = this.currentUser$_source.asObservable();
 
   constructor(
     private http: Http,
     private userSession: UserSession
   ) {
-    if (this.userSession.valid) this.login();
+    if (this.userSession.valid) this.login().subscribe(
+      (user: User) => { this.currentUser$_source.next(user); }
+    );
   }
 
 
@@ -46,8 +52,8 @@ export class UserService {
         .request(req)
         .subscribe(res => {
           let user = User.fromJSON(res.json());
-          this.currentUser = user;
-          obs.next(this.currentUser);
+          this.currentUser$_source.next(user);
+          obs.next(user);
           console.info('Logged in user:', user);
           return user;
         });
@@ -59,7 +65,7 @@ export class UserService {
 
   logout() {
     this.userSession.end();
-    this.currentUser = null;
+    this.currentUser$_source.next(null);
     console.info('Logged Out.');
   }
 

@@ -1,0 +1,13 @@
+
+  <h3 class="text-right">
+    <div *ngIf="_user">
+      <img class="profile" src="{{_user.images[0].url}}"/>
+      <a class="user-profile">{{_user.display_name}}</a>
+      <small><a (click)="userService.logout()">Logout</a></small>
+    </div>
+
+
+    <div *ngIf="!_user">
+      <a routerLink="/login">Login</a>
+    </div>
+  </h3>
