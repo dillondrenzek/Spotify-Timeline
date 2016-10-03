@@ -57,7 +57,7 @@ export class UserProfileCallback {
 
       this.userService.login().subscribe((user: User) => {
         if (user) {
-          this.router.navigate(['me']);
+          this.router.navigate(['timeline']);
         } else {
           this.router.navigate(['login']);
         }

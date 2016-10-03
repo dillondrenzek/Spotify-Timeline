@@ -7,6 +7,10 @@ const routes: Routes = [
 	{
     path: '',
     component: Timeline
+  },
+  {
+    path: 'timeline',
+    component: Timeline
   }
 ];
 

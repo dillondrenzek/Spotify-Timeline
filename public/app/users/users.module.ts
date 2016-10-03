@@ -4,6 +4,7 @@ import { CommonModule } 		from '@angular/common';
 import { usersRoutes } 			from './users.routes';
 
 import { Login }            from './components/login/login.component';
+import { MiniUser }         from './components/miniUser/miniUser';
 import { UserProfile }      from './components/userProfile/userProfile.component';
 import { UserProfileCallback }      from './components/userProfileCallback/userProfileCallback.component';
 

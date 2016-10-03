@@ -1,1 +1,91 @@
-<h1>timeline</h1>
+<header class="row">
+  <div class="col-xs-8">
+    <h1 class="inline">Timeline</h1>
+    <small class="inline">
+      <a target="_blank" href="https://github.com/dillondrenzek/Spotify-Timeline">v0.3.0</a>
+    </small>
+  </div>
+  <div class="col-xs-4">
+    <h3 class="text-right">
+      <a class="user-profile">Username</a>
+      <small><a>Logout</a></small>
+    </h3>
+  </div>
+</header>
+
+<div class="main center col-xs-8">
+  <header class="row">
+    <h4 class="col-xs-10">All Added Songs</h4>
+    <button class="btn btn-default">Get</button>
+    <button class="btn btn-default">Clear</button>
+  </header>
+  <table class="table table-hover">
+    <tr>
+      <th>
+        <input type="checkbox"/>
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Artist
+      </th>
+      <th>
+        Date Added
+      </th>
+    </tr>
+    <tr class="track" *ngFor="let track of mockTracks; let i = index">
+      <td>
+        <input type="checkbox"/>
+      </td>
+      <td>
+        {{track.name}}
+      </td>
+      <td>
+        {{track.artist}}
+      </td>
+      <td>
+        {{track.dateAdded}}
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="col-xs-4">
+  <header class="row">
+    <h4 class="col-xs-8">Make New Playlist</h4>
+    <button type="button" class="btn btn-default">Save</button>
+    <button type="button" class="btn btn-default">Reset</button>
+  </header>
+
+  <table class="table table-hover">
+    <tr>
+      <th>
+        <input type="checkbox"/>
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Artist
+      </th>
+      <th>
+        Date Added
+      </th>
+    </tr>
+    <tr class="track" *ngFor="let track of addedTracks; let i = index">
+      <td>
+        <input type="checkbox"/>
+      </td>
+      <td>
+        {{track.name}}
+      </td>
+      <td>
+        {{track.artist}}
+      </td>
+      <td>
+        {{track.dateAdded}}
+      </td>
+    </tr>
+  </table>
+</div>
