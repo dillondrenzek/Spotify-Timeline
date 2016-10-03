@@ -4,10 +4,10 @@ import { HttpModule }   from '@angular/http';
 
 import { UsersModule }    from '@timeline/users';
 
-import { coreRoutes }     from './core.routes';
+import { coreRoutes }     from './routes/core.routes';
 
 import { App }            from './app/app.component';
-import { Timeline }       from './components/timeline/timeline.component';
+import { Timeline }       from './routes/pages/timeline/timeline.component';
 import { AppVersion }     from './components/appVersion/appVersion.component';
 
 import { MetaService }    from './services/meta/meta.service';

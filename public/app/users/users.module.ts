@@ -9,6 +9,7 @@ import { UserProfile }      from './components/userProfile/userProfile.component
 import { UserProfileCallback }      from './components/userProfileCallback/userProfileCallback.component';
 
 import { UserService }      from './services/user.service';
+import { UserGuard }        from './services/userGuard/user.guard';
 import { UserSession, userSessionProvider }      from './services/userSession/userSession';
 
 @NgModule({
@@ -30,7 +31,8 @@ import { UserSession, userSessionProvider }      from './services/userSession/us
 	],
   providers: [
     userSessionProvider,
-    UserService
+    UserService,
+    UserGuard
   ]
 })
 export class UsersModule {}

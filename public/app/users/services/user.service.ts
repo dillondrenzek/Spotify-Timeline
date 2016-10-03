@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Http, Request, RequestMethod, Headers } from '@angular/http';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 
@@ -16,6 +17,7 @@ export class UserService {
 
   constructor(
     private http: Http,
+    private router: Router,
     private userSession: UserSession
   ) {
     if (this.userSession.valid) this.login().subscribe(
@@ -66,6 +68,7 @@ export class UserService {
   logout() {
     this.userSession.end();
     this.currentUser$_source.next(null);
+    this.router.navigate(['/login']);
     console.info('Logged Out.');
   }
 

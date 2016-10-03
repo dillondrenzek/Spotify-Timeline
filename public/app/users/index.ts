@@ -6,3 +6,5 @@ export { MiniUser } from './components/miniUser/miniUser.component';
 
 export { UserService } from './services/user.service';
 export { UserSession } from './services/userSession/userSession';
+
+export { UserGuard } from './services/userGuard/user.guard';
