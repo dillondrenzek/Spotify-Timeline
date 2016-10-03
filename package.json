@@ -1,6 +1,6 @@
 {
   "name": "spotify-timeline",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A web app that takes your Spotify account and creates a timeline of all your songs, when they were added and attempts to make playlists or 'eras' of your music listening history.",
   "repository": {
     "type": "git",
