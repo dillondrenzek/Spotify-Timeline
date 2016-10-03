@@ -2,6 +2,7 @@ var express = require('express'),
 	path = require('path'),
 	spotify = require('./spotify'),
   meta = require('./meta'),
+  api = require('./api'),
 	_config = require('./_config');
 
 //-----------
@@ -25,6 +26,7 @@ app.use('/*', function(req, res, next){
 
 app.use('/spotify', spotify);
 app.use('/meta', meta);
+app.use('/api', api);
 
 // Static files
 app.use('/node_modules', express.static(__dirname + '/node_modules'));

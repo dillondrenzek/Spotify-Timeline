@@ -11,6 +11,24 @@ export class Timeline {
   mockTracks = [];
   addedTracks = [];
 
+  timelineGeneratedKey = 'timeline-generated';
+
+  get generated(): boolean {
+    let value = localStorage.getItem(this.timelineGeneratedKey);
+    return (value === 'true');
+  }
+
+  getTracks() {
+    if (!this.mockTracks.length) this.seedTracks();
+
+    if (!this.generated) localStorage.setItem(this.timelineGeneratedKey, 'true');
+  }
+
+  clearTracks() {
+    this.mockTracks = [];
+    localStorage.removeItem(this.timelineGeneratedKey);
+  }
+
   seedTracks() {
     let seedTrack = {
       name: 'Track',
@@ -28,6 +46,6 @@ export class Timeline {
   }
 
   ngOnInit() {
-    this.seedTracks();
+    this.getTracks();
   }
 }

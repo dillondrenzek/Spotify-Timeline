@@ -60,16 +60,24 @@ export class UserService {
           return user;
         });
     });
-
-
-
   }
 
+
+
+  /**
+   * Logout User
+   */
   logout() {
     this.userSession.end();
     this.currentUser$_source.next(null);
     this.router.navigate(['/login']);
     console.info('Logged Out.');
   }
+
+  /**
+   * Get user playlist
+   */
+  
+
 
 }

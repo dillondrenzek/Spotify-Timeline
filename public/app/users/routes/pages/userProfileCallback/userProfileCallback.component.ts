@@ -2,24 +2,15 @@ import { Component, Input, Inject, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, Observable, Subscriber} from 'rxjs/Rx';
 
-import { UserService } from '../../services/user.service';
-import { UserSession } from '../../services/userSession/userSession';
-import { UserSessionToken } from '../../services/userSession/userSession.token';
-import { User }                          from '../../models/User';
-// // import { SpotifyUserService, UserSessionToken } from '@timeline/spotify-users';
-// // import { SpotifyUserService, UserSessionToken } from '../../spotify/spotifyUser.service';
-// // import { User, UserProfileObject } from '../../models/User';
-// //
-// // import { Playlist } from '../../../playlists/playlists.module';
-//
-// declare var localStorage: any;
-//
-//
-//
+import { UserService }        from '../../../services/user.service';
+import { UserSession }        from '../../../services/userSession/userSession';
+import { UserSessionToken }   from '../../../services/userSession/userSession.token';
+import { User }               from '../../../models/User';
+
 @Component({
 	selector: '',
 	moduleId: module.id,
-	template: `Callback`
+	template: `Redirecting...`
 })
 export class UserProfileCallback {
 
