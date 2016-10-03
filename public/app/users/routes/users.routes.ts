@@ -1,9 +1,9 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { Login } from './components/login/login.component';
-import { UserProfile } from './components/userProfile/userProfile.component';
-import { UserProfileCallback } from './components/userProfileCallback/userProfileCallback.component';
+import { Login }                from './pages/login/login.component';
+import { UserProfile }          from './pages/userProfile/userProfile.component';
+import { UserProfileCallback }  from './pages/userProfileCallback/userProfileCallback.component';
 
 const routes: Routes = [
   {

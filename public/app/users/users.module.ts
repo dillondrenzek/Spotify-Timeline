@@ -1,16 +1,18 @@
-import { NgModule } 			   from '@angular/core';
-import { CommonModule } 		from '@angular/common';
+import { NgModule } 			      from '@angular/core';
+import { CommonModule } 		    from '@angular/common';
 
-import { usersRoutes } 			from './users.routes';
+import { usersRoutes } 			    from './routes/users.routes';
 
-import { Login }            from './components/login/login.component';
-import { MiniUser }         from './components/miniUser/miniUser.component';
-import { UserProfile }      from './components/userProfile/userProfile.component';
-import { UserProfileCallback }      from './components/userProfileCallback/userProfileCallback.component';
+import { MiniUser }             from './components/miniUser/miniUser.component';
 
-import { UserService }      from './services/user.service';
-import { UserGuard }        from './services/userGuard/user.guard';
-import { UserSession, userSessionProvider }      from './services/userSession/userSession';
+import { Login }                from './routes/pages/login/login.component';
+import { UserProfile }          from './routes/pages/userProfile/userProfile.component';
+import { UserProfileCallback }  from './routes/pages/userProfileCallback/userProfileCallback.component';
+
+import { UserService }          from './services/user.service';
+import { UserGuard }            from './services/userGuard/user.guard';
+import { UserSession,
+  userSessionProvider }         from './services/userSession/userSession';
 
 @NgModule({
 	imports: [
