@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { User, UserService } from '@timeline/users';
+
 @Component({
   moduleId: module.id,
   selector: 'timeline',
@@ -13,21 +15,41 @@ export class Timeline {
 
   timelineGeneratedKey = 'timeline-generated';
 
+  constructor( private userService: UserService ){
+
+    this.userService.currentUser$.subscribe(
+      (user: User) => {
+        // this.getTracks();
+      }
+    );
+
+  }
+
   get generated(): boolean {
     let value = localStorage.getItem(this.timelineGeneratedKey);
     return (value === 'true');
   }
 
-  getTracks() {
-    if (!this.mockTracks.length) this.seedTracks();
 
+
+  getTracks() {
+    if (!this.mockTracks.length) {
+      this.userService.getTracks().subscribe(
+        (tracks: any[]) => {
+          this.mockTracks = tracks;
+        });
+    }
     if (!this.generated) localStorage.setItem(this.timelineGeneratedKey, 'true');
   }
+
+
 
   clearTracks() {
     this.mockTracks = [];
     localStorage.removeItem(this.timelineGeneratedKey);
   }
+
+
 
   seedTracks() {
     let seedTrack = {
@@ -45,7 +67,9 @@ export class Timeline {
     }
   }
 
+
+
   ngOnInit() {
-    this.getTracks();
+    // this.getTracks();
   }
 }

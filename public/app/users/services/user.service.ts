@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Http, Request, RequestMethod, Headers } from '@angular/http';
+import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 
 import { User } from '../models/User';
 import { UserSession } from './userSession/userSession';
 
+import { Track } from '@timeline/spotify-data';
+
 @Injectable()
 export class UserService {
 
-  // currentUser: User;
+  private _currentUser: User;
+  get currentUser(): User { return this._currentUser; }
 
   private currentUser$_source = new BehaviorSubject<User>(null);
-
   currentUser$: Observable<User> = this.currentUser$_source.asObservable();
+
+
+  // currentUserTracks$: Observable
+
 
   constructor(
     private http: Http,
@@ -54,6 +60,7 @@ export class UserService {
         .request(req)
         .subscribe(res => {
           let user = User.fromJSON(res.json());
+          this._currentUser = user;
           this.currentUser$_source.next(user);
           obs.next(user);
           console.info('Logged in user:', user);
@@ -69,15 +76,43 @@ export class UserService {
    */
   logout() {
     this.userSession.end();
+    this._currentUser = null;
     this.currentUser$_source.next(null);
     this.router.navigate(['/login']);
     console.info('Logged Out.');
   }
 
+
+
   /**
-   * Get user playlist
+   * Get user tracks
    */
-  
+  getTracks(): Observable<Track[]> {
+ 		var access_token = this.userSession.token.access;
+ 		var req: Request = new Request({
+ 			method: RequestMethod.Get,
+ 			url: 'https://api.spotify.com/v1/users/'+this.currentUser.id+'/tracks',
+ 			headers: new Headers({
+ 				'Authorization': 'Bearer ' + access_token
+ 			})
+ 		});
+
+ 		return this.http
+ 			.request(req)
+      .map((res: Response) => {
+        let retArray = [];
+        let items = res.json()['items'];
+        for (var i = 0; i < items.length; i++) {
+          let item = items[i];
+          let track = new Track(item['track']);
+          console.info('item', item);
+          console.info('track', track);
+          track['dateAdded'] = item['added_at'];
+          retArray.push(track);
+        }
+        return retArray;
+      });
+ 	}
 
 
 }
