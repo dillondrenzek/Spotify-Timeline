@@ -5,22 +5,20 @@ var express = require('express'),
 
 
 // 	"/api"
-var api = express();
+var timelineApi = express();
 
-api.use(cookieParser());
+timelineApi.use(cookieParser());
 
-api.get('/user', userApi);
-
-api.get('/timeline', function(req, res) {
+timelineApi.get('/timeline', function(req, res) {
   res.send({
     version: packageJson['version']
   });
 });
 
-api.post('/timeline/destroy', function(req, res) {
+timelineApi.post('/timeline/destroy', function(req, res) {
   res.send({
     version: packageJson['version']
   });
 });
 
-module.exports = api;
+module.exports = timelineApi;

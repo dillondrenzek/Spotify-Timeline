@@ -5,31 +5,22 @@ var express = require('express'),
 	querystring = require('querystring'),
 	cookieParser = require('cookie-parser');
 
-
-// 	"/spotify/users"
-var spotifyUsers = express();
-
-spotifyUsers.use(cookieParser());
-
 var stateKey = 'spotify_auth_state';
+
+
+// 	"/users"
+var users = express();
+users.use(cookieParser());
 
 
 
 // Authorize Spotify Users
-spotifyUsers.get('/authorize', function(req, res) {
+users.get('/authorize', function(req, res) {
 
 	var state = generateState(16);
 	res.cookie(stateKey, state);
 
-	var queryString = querystring.stringify({
-		response_type: 		'code',
-		client_id: 			  _config.spotify.client_id,
-		scope: 				    _config.spotify.scopes.join(' '),
-		redirect_uri:		  _config.spotify.redirect_uri,
-		state:				    state
-	});
-
-	var getAddress = _config.spotify.accounts.baseUrl + '/authorize?' + queryString;
+	var getAddress = _config.spotify.accounts.baseUrl + getQueryString(state);
 
 	res.redirect(getAddress);
 });
@@ -39,7 +30,7 @@ spotifyUsers.get('/authorize', function(req, res) {
 
 
 
-spotifyUsers.get('/authorize/callback', function(req, res) {
+users.get('/authorize/callback', function(req, res) {
 
 	var code = req.query.code || null;
 	var state = req.query.state || null;
@@ -48,6 +39,9 @@ spotifyUsers.get('/authorize/callback', function(req, res) {
 	if (state !== null && state === storedState) {
 
 		res.clearCookie(stateKey);
+
+
+
 		var authOptions = {
 			url: 'https://accounts.spotify.com/api/token',
 			form: {
@@ -96,7 +90,7 @@ spotifyUsers.get('/authorize/callback', function(req, res) {
 
 
 
-module.exports = spotifyUsers;
+module.exports = users;
 
 
 
@@ -120,4 +114,14 @@ var generateState = function(length) {
 		text += possible.charAt(randomCharIndex);
 	}
 	return text;
-}
+};
+
+var getQueryString = function(state) {
+  return querystring.stringify({
+		response_type: 		'code',
+		client_id: 			  _config.spotify.client_id,
+		scope: 				    _config.spotify.scopes.join(' '),
+		redirect_uri:		  _config.spotify.redirect_uri,
+		state:				    state
+	});
+};
