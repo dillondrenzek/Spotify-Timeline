@@ -1,12 +1,13 @@
 export { UsersModule }  from './users.module';
 
-export { Login }        from './routes/pages/login/login.component';
-export { UserProfile }  from './routes/pages/userProfile/userProfile.component';
+export { User }         from './user/User';
 
-export { MiniUser }     from './components/miniUser/miniUser.component';
+// Declarations
+export { MiniUser }             from './miniUser/miniUser.component';
+export { UserProfile }          from './userProfile/userProfile.component';
+export { UserProfileCallback }  from './userProfileCallback/userProfileCallback.component';
 
-export { UserService }  from './services/user.service';
-export { UserSession }  from './services/userSession/userSession';
-export { UserGuard }    from './services/userGuard/user.guard';
-
-export { User } from './models/User';
+// Providers
+export { UserSession }          from './userSession/userSession';
+export { UserService }          from './userService/user.service';
+export { UserGuard }            from './userGuard/user.guard';

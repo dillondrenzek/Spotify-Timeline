@@ -17,12 +17,9 @@ export class Timeline {
 
   constructor( private userService: UserService ){
 
-    this.userService.currentUser$.subscribe(
-      (user: User) => {
-        // this.getTracks();
-      }
-    );
+    this.userService.currentUser$.subscribe((user: User) => {
 
+    });
   }
 
   get generated(): boolean {

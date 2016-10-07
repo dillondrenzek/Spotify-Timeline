@@ -44,7 +44,7 @@
         {{track.artist}}
       </td>
       <td>
-        {{track.dateAdded}}
+        {{track.dateAdded | date: 'MMM dd'}}
       </td>
     </tr>
   </table>
@@ -78,16 +78,18 @@
         Date Added
       </th>
     </tr>
-    <tr class="track" *ngFor="let track of addedTracks; let i = index">
-      <td>
-        {{track.name}}
-      </td>
-      <td>
-        {{track.artist}}
-      </td>
-      <td>
-        {{track.dateAdded}}
-      </td>
-    </tr>
+    <template *ngFor="let track of mockTracks; let i = index">
+      <tr class="track">
+        <td>
+          {{track.name}}
+        </td>
+        <td>
+          {{track.artist}}
+        </td>
+        <td>
+          {{track.dateAdded}}
+        </td>
+      </tr>
+    </template>
   </table>
 </div>
