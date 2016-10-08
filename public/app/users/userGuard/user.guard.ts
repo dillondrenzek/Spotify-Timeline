@@ -14,7 +14,7 @@ export class UserGuard implements CanActivate {
     if (this.userSession.valid) {
       return true;
     } else {
-      this.router.navigate(['login']);
+      this.router.navigate(['']);
       return false;
     }
   }

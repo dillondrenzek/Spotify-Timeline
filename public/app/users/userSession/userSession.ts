@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscriber } from 'rxjs/Rx';
 
-import { User } from '../../models/User';
+import { User } from '../user/User';
 import { UserSessionToken } from './userSession.token';
 
 

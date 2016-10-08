@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 
-import { User } from '../models/User';
-import { UserSession } from './userSession/userSession';
+import { User } from '../user/User';
+import { UserSession } from '../userSession/userSession';
 
 import { Track } from '@timeline/spotify-data';
 

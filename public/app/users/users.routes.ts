@@ -1,18 +1,18 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { Timeline } from './pages/timeline/timeline.component';
+import { UserProfileCallback } from './userProfileCallback/userProfileCallback.component';
 
 import { UserGuard } from '@timeline/users';
 
 const routes: Routes = [
 	{
-    path: '',
-    component: Timeline
+    path: 'me/callback',
+    component: UserProfileCallback
     // canActivate: [
     //   UserGuard
     // ]
   }
 ];
 
-export const coreRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
+export const usersRoutes: ModuleWithProviders = RouterModule.forChild(routes);

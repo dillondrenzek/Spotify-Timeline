@@ -1,7 +1,8 @@
 // Imports
 import { NgModule } 			      from '@angular/core';
 import { CommonModule } 		    from '@angular/common';
-let IMPORTS = [CommonModule];
+import { usersRoutes }          from './users.routes';
+let IMPORTS = [CommonModule, usersRoutes];
 
 // Declarations
 import { MiniUser }             from './miniUser/miniUser.component';

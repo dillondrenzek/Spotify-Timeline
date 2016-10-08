@@ -2,10 +2,10 @@ import { Component, Input, Inject, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription, Observable, Subscriber} from 'rxjs/Rx';
 
-import { UserService }        from '../../../services/user.service';
-import { UserSession }        from '../../../services/userSession/userSession';
-import { UserSessionToken }   from '../../../services/userSession/userSession.token';
-import { User }               from '../../../models/User';
+import { UserService }        from '../userService/user.service';
+import { UserSession }        from '../userSession/userSession';
+import { UserSessionToken }   from '../userSession/userSession.token';
+import { User }               from '../user/User';
 
 @Component({
 	selector: '',
