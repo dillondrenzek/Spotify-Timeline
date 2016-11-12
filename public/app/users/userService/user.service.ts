@@ -6,7 +6,7 @@ import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 import { User } from '../user/User';
 import { UserSession } from '../userSession/userSession';
 
-import { Track } from '@timeline/spotify-data';
+import { Track } from '@timeline/tracks';
 
 @Injectable()
 export class UserService {

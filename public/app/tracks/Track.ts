@@ -1,6 +1,3 @@
-// import { Album } from '../../models/Album';
-// import { Artist } from '../../models/Artist';
-
 export class Track {
 
 	private _artists: any[];
@@ -181,9 +178,5 @@ export class Track {
 	 * The Spotify URI for the track.
 	 */
 	get uri(): string { return this._track['uri'] || null; }
-
-
-
-	// get embed_uri(): string { return 'https://embed.spotify.com/?uri='+this._track['uri']; }
 
 }

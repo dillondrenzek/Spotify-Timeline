@@ -20,6 +20,7 @@
       '@timeline/core':                     'public/app/core/index.js',
       '@timeline/users':                    'public/app/users/index.js',
       '@timeline/spotify-data':             'public/app/spotify-data/index.js',
+      '@timeline/tracks':                   'public/app/tracks/index.js',
 
       '@angular/core':                      'npm:@angular/core/bundles/core.umd.js',
       '@angular/common':                    'npm:@angular/common/bundles/common.umd.js',
