@@ -6,18 +6,8 @@ export class Track {
 
 	constructor(spotifyTrack: any){
 		this._track = spotifyTrack;
-		// this._album = new Album(this._track['album']);
-		// this._artists = this.getArtists(this._track['artists']);
 	}
 
-	// private getArtists(artists: Object[]): Artist[] {
-	// 	let ret: Artist[] = [];
-	// 	for (var i = 0; i < artists.length; i++ ) {
-	// 		let artist = new Artist(artists[i]);
-	// 		ret.push(artist);
-	// 	}
-	// 	return ret;
-	// }
 
 	/**
 	 * `album`

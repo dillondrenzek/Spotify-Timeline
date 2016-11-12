@@ -5,7 +5,7 @@ export { User }         from './user/User';
 // Declarations
 export { MiniUser }             from './miniUser/miniUser.component';
 export { UserProfile }          from './userProfile/userProfile.component';
-export { UserProfileCallback }  from './userProfileCallback/userProfileCallback.component';
+export { UserProfileCallback }  from './userProfile/userProfile.callback';
 
 // Providers
 export { UserSession }          from './userSession/userSession';

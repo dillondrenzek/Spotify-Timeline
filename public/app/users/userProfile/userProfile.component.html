@@ -1,6 +1,4 @@
 <div *ngIf="user">
-	<!-- <h3>Logged in as {{user.display_name || 'null'}}</h3> -->
-
 
 	<div class="user-card">
 		<figure>
@@ -14,13 +12,4 @@
     <a class="btn btn-default" (click)="logout()">Logout</a>
 	</div>
 
-	<!-- <a *ngIf="!playlists" (click)="_spotifyUserService.getPlaylists()">Get Playlists</a>
-	<div *ngIf="playlists" class="user-playlists">
-		<h3>Playlists</h3>
-		<ul>
-			<li *ngFor="let plist of playlists">
-				<playlist-list-item [playlist]="plist"></playlist-list-item>
-			</li>
-		</ul>
-	</div> -->
 </div>

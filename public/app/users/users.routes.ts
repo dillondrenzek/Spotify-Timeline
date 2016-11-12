@@ -1,17 +1,12 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { UserProfileCallback } from './userProfileCallback/userProfileCallback.component';
-
-import { UserGuard } from '@timeline/users';
+import { UserProfileCallback } from './userProfile/userProfile.callback';
 
 const routes: Routes = [
 	{
     path: 'me/callback',
     component: UserProfileCallback
-    // canActivate: [
-    //   UserGuard
-    // ]
   }
 ];
 
