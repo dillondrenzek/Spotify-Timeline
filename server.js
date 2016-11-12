@@ -18,7 +18,7 @@ app.use('/*', function(req, res, next){
 	var method = req.method.toUpperCase();
 	var url = req.originalUrl;
 
-	console.log(method, url);
+	// console.log(method, url);
 	next();
 });
 
