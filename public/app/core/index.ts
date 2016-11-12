@@ -1,6 +1,4 @@
-export { CoreModule }   from './core.module';
+export { App }                  from './appComponent/app.component';
+export { TimelinePage }         from './timelinePage/timeline.page';
 
-export { App }          from './app/app.component';
-export { Timeline }     from './routes/pages/timeline/timeline.component';
-
-export { LocalStorageService } from './services/localStorage.service';
+export { CoreModule }           from './core.module';

@@ -4,11 +4,11 @@ import { User, UserService } from '@timeline/users';
 
 @Component({
   moduleId: module.id,
-  selector: 'timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css']
+  selector: 'timeline-page',
+  templateUrl: './timeline.page.html',
+  styleUrls: ['./timeline.page.css']
 })
-export class Timeline {
+export class TimelinePage {
 
   mockTracks = [];
   addedTracks = [];

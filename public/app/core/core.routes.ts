@@ -1,17 +1,19 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { Timeline } from './pages/timeline/timeline.component';
+import { TimelinePage } from './timelinePage/timeline.page';
 
 import { UserGuard } from '@timeline/users';
 
 const routes: Routes = [
 	{
+    path: 'timeline',
+    component: TimelinePage
+  },
+  {
     path: '',
-    component: Timeline
-    // canActivate: [
-    //   UserGuard
-    // ]
+    redirectTo: 'timeline',
+    pathMatch: 'full'
   }
 ];
 

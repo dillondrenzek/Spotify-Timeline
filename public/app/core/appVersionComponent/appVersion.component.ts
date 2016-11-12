@@ -2,7 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { Http, Request, RequestMethod, Headers } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
-import { MetaService } from '../../services/meta/meta.service';
+import { MetaService } from '../metaService/meta.service';
 
 @Component({
   moduleId: module.id,

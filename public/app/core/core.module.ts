@@ -1,16 +1,17 @@
 import { NgModule }       from '@angular/core';
-import { BrowserModule }   from '@angular/platform-browser';
-import { HttpModule }   from '@angular/http';
 
+// Imports
+import { BrowserModule }  from '@angular/platform-browser';
+import { HttpModule }     from '@angular/http';
 import { UsersModule }    from '@timeline/users';
+import { coreRoutes }     from './core.routes';
 
-import { coreRoutes }     from './routes/core.routes';
+import { App }            from './appComponent/app.component';
+import { TimelinePage }   from './timelinePage/timeline.page';
+import { AppVersion }     from './appVersionComponent/appVersion.component';
 
-import { App }            from './app/app.component';
-import { Timeline }       from './routes/pages/timeline/timeline.component';
-import { AppVersion }     from './components/appVersion/appVersion.component';
-
-import { MetaService }    from './services/meta/meta.service';
+// Providers
+import { MetaService }    from './metaService/meta.service';
 
 @NgModule({
   imports: [
@@ -21,12 +22,11 @@ import { MetaService }    from './services/meta/meta.service';
   ],
   exports: [
     App,
-    Timeline,
-    AppVersion
+    TimelinePage
   ],
   declarations: [
     App,
-    Timeline,
+    TimelinePage,
     AppVersion
   ],
   providers: [
