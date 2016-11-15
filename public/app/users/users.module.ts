@@ -10,7 +10,7 @@ import { UserProfileCallback }  from './userProfile/userProfile.callback';
 import { LoginPage }            from './loginPage/login.page';
 
 // Providers
-import { userSessionProvider }  from './userSession/userSession';
+import { userSessionProvider }  from './userSession/provider';
 import { UserService }          from './userService/user.service';
 import { UserGuard }            from './userGuard/user.guard';
 

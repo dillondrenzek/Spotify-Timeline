@@ -100,8 +100,3 @@ export class UserSession {
     console.info('Initial UserSessionToken', status);
   }
 }
-
-
-let userSession = new UserSession();
-
-export const userSessionProvider = { provide: UserSession, useValue: userSession };

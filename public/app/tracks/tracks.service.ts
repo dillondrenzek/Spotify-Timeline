@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 
-import { Track } from '@timeline/tracks';
+import { Track } from './Track';
 
 @Injectable()
-export class SpotifyApiService {
+export class TracksService {
 
-  constructor(private http: Http) {}
+  constructor( private http: Http ) {  }
 
   /**
    * Get user tracks
@@ -29,8 +29,8 @@ export class SpotifyApiService {
         for (var i = 0; i < items.length; i++) {
           let item = items[i];
           let track = new Track(item['track']);
-          console.info('item', item);
-          console.info('track', track);
+          // console.info('item', item);
+          // console.info('track', track);
           track['dateAdded'] = item['added_at'];
           retArray.push(track);
         }

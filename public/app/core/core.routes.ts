@@ -8,7 +8,8 @@ import { UserGuard } from '@timeline/users';
 const routes: Routes = [
 	{
     path: 'timeline',
-    component: TimelinePage
+    component: TimelinePage,
+    canActivate: [ UserGuard ]
   },
   {
     path: '',

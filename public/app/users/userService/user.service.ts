@@ -8,6 +8,10 @@ import { UserSession } from '../userSession/userSession';
 
 import { Track } from '@timeline/tracks';
 
+
+
+
+
 @Injectable()
 export class UserService {
 
@@ -18,7 +22,22 @@ export class UserService {
   currentUser$: Observable<User> = this.currentUser$_source.asObservable();
 
 
-  // currentUserTracks$: Observable
+  /**
+   * Checks if a user is currently logged in, if not, attempts to retrieve one
+   * from LocalStorage
+   */
+  currentUserExists(): boolean {
+
+    if (this.currentUser) {
+      return true;
+    } else {
+
+    }
+
+
+    return false;
+  }
+
 
 
   constructor(
@@ -34,6 +53,10 @@ export class UserService {
 
   /**
    * Public method for logging in to Spotify API service
+   * @param { UserSessionToken? } - if a token is provided, return user if it is valid; if not,
+   *                                attempt to find one in LocalStorage and return user
+   * @return { Observable<User> } - if a valid token exists (stored or provided), return the
+   *                                freshly logged in `User`
    */
   login(): Observable<User> {
     return Observable.create((obs: Subscriber<User>) => {
@@ -84,35 +107,7 @@ export class UserService {
 
 
 
-  /**
-   * Get user tracks
-   */
-  getTracks(): Observable<Track[]> {
- 		var access_token = this.userSession.token.access;
- 		var req: Request = new Request({
- 			method: RequestMethod.Get,
- 			url: 'https://api.spotify.com/v1/users/'+this.currentUser.id+'/tracks',
- 			headers: new Headers({
- 				'Authorization': 'Bearer ' + access_token
- 			})
- 		});
 
- 		return this.http
- 			.request(req)
-      .map((res: Response) => {
-        let retArray = [];
-        let items = res.json()['items'];
-        for (var i = 0; i < items.length; i++) {
-          let item = items[i];
-          let track = new Track(item['track']);
-          console.info('item', item);
-          console.info('track', track);
-          track['dateAdded'] = item['added_at'];
-          retArray.push(track);
-        }
-        return retArray;
-      });
- 	}
 
 
 }

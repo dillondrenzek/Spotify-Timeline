@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { UserService } from '../userService/user.service';
+
 @Component({
   selector: 'login-page',
   templateUrl: './login.page.html',
@@ -7,5 +9,6 @@ import { Component } from '@angular/core';
   moduleId: module.id
 })
 export class LoginPage {
-  
+
+
 }
