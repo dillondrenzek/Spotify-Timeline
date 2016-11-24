@@ -5,12 +5,9 @@ import { usersRoutes }          from './users.routes';
 
 // Declarations
 import { MiniUser }             from './miniUser/miniUser.component';
-import { UserProfile }          from './userProfile/userProfile.component';
-import { UserProfileCallback }  from './userProfile/userProfile.callback';
 import { LoginPage }            from './loginPage/login.page';
 
 // Providers
-import { userSessionProvider }  from './userSession/provider';
 import { UserService }          from './userService/user.service';
 import { UserGuard }            from './userGuard/user.guard';
 
@@ -22,18 +19,13 @@ import { UserGuard }            from './userGuard/user.guard';
   ],
 	declarations: [
     MiniUser,
-    UserProfile,
-    UserProfileCallback,
     LoginPage
   ],
 	exports: [
     MiniUser,
-    UserProfile,
-    UserProfileCallback,
     LoginPage
   ],
   providers: [
-    userSessionProvider,
     UserService,
     UserGuard
   ]

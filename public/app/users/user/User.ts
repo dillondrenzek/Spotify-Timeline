@@ -43,6 +43,7 @@ export class User {
 	}
 
 	static fromJSON(data: any): User {
+    if (!data) return null;
 		return new User({
 			display_name: 	data['display_name'],
 			id: 			data['id'],

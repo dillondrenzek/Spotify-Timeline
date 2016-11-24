@@ -31,10 +31,10 @@ export class TimelinePage {
 
   getTracks() {
     if (!this.mockTracks.length) {
-      this.userService.getTracks().subscribe(
-        (tracks: any[]) => {
-          this.mockTracks = tracks;
-        });
+      // this.userService.getTracks().subscribe(
+      //   (tracks: any[]) => {
+      //     this.mockTracks = tracks;
+      //   });
     }
     if (!this.generated) localStorage.setItem(this.timelineGeneratedKey, 'true');
   }
