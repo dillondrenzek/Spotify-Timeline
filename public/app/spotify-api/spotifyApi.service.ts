@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
-import { SpotifyUserObject, SpotifyToken, isValidSpotifyToken } from './spotifyTypes/index';
+import { SpotifyUserObject, SpotifyToken, isValidSpotifyToken, SPOTIFY_TOKEN } from './spotifyTypes/index';
 
 
 
@@ -39,6 +39,22 @@ export class SpotifyApiService {
   // >> Spotify User
   // -------------------------------------------------------------------------
 
+
+  attemptCachedLogin(): Observable<SpotifyUserObject> {
+
+    // check local storage for SpotifyToken
+    let cachedToken = this.getCachedToken();
+
+    if ( isValidSpotifyToken(cachedToken) ) {
+      // if a valid token exists, use it to login automatically
+      return this.login(cachedToken);
+
+    } else {
+      // no valid token exists
+      return Observable.of(null);
+    }
+  }
+
   /**
    * Redirects client to Spotify's login URL to gain access to user's account
    */
@@ -49,10 +65,11 @@ export class SpotifyApiService {
   /**
    * Public method for logging in to Spotify API service
    */
-  login(token: SpotifyToken) {
+  login(token: SpotifyToken): Observable<SpotifyUserObject> {
 
     // Set local token reference
     this._spotifyToken = token;
+    this.setCachedToken(token);
 
     // configure HTTP request
     var req = new Request({
@@ -64,23 +81,12 @@ export class SpotifyApiService {
     });
 
     // make HTTP request
-    this.http
+    return this.http
       .request(req)
       .map((res: Response) => {
         let json: SpotifyUserObject = res.json();
         this._spotifyUser = json;
         return json;
-      })
-      .subscribe({
-        next: (user: SpotifyUserObject) => {
-          console.info('User logged in.');
-        },
-        error: (err: any) => {
-          console.error('Error logging user in:', err);
-        },
-        complete: () => {
-          this.router.navigate(['/']);
-        }
       });
   }
 
@@ -110,5 +116,18 @@ export class SpotifyApiService {
 				+ '&scope=' + encodeURIComponent(scopes.join(' '))
 				+ '&response_type=token';
 
+  }
+
+
+  ///////////////////////////////
+  // SpotifyToken LocalStorage //
+  ///////////////////////////////
+
+  setCachedToken(token: SpotifyToken) {
+    localStorage.setItem(SPOTIFY_TOKEN, JSON.stringify(token));
+  }
+
+  getCachedToken(): SpotifyToken {
+    return JSON.parse(localStorage.getItem(SPOTIFY_TOKEN));
   }
 }

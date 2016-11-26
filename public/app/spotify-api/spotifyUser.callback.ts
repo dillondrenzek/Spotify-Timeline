@@ -33,7 +33,14 @@ export class SpotifyUserCallback {
 
   private fragmentChanged(fragment: string) {
     let token = this.parseFragment(fragment);
-    this.spotifyApiService.login(token);
+    this.spotifyApiService.login(token)
+      .subscribe((user: SpotifyUserObject) => {
+        if (user) {
+          this.router.navigate(['/']);
+        } else {
+          console.error('No user.');
+        }
+      });
   }
 
 

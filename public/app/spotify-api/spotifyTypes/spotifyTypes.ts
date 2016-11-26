@@ -15,7 +15,7 @@ export interface SpotifyToken {
   expires_in: number
 }
 
-
+export const SPOTIFY_TOKEN: string = 'spotify_token';
 
 /**
  * Country Code

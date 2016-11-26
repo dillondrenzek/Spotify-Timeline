@@ -9,10 +9,13 @@ import { LoginPage }            from './loginPage/login.page';
 // Providers
 import { UserGuard }            from './userGuard/user.guard';
 
+import { SpotifyApiModule }     from '@timeline/spotify-api';
+
 
 @NgModule({
 	imports: [
     CommonModule,
+    SpotifyApiModule,
     usersRoutes
   ],
 	declarations: [
