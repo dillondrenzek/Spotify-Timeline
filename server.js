@@ -1,9 +1,6 @@
 var express = require('express'),
 	path = require('path'),
   meta = require('./meta'),
-  api = require('./api'),
-  userApi = require('./api/user'),
-  timelineApi = require('./api/timeline'),
 	_config = require('./_config');
 
 //-----------
@@ -14,19 +11,9 @@ var app = express();
 // App Port
 app.set('port', (process.env.PORT || 8081));
 
-app.use('/*', function(req, res, next){
-	var method = req.method.toUpperCase();
-	var url = req.originalUrl;
-
-	// console.log(method, url);
-	next();
-});
 
 
-app.use('/api/timeline', timelineApi);
-app.use('/api/user', userApi);
-app.use('/api', api);
-
+// Get Meta App info
 app.use('/meta', meta);
 
 

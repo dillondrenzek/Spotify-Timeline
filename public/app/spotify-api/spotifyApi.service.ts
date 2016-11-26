@@ -1,62 +1,37 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
-
-import { Track } from '@timeline/tracks';
-
-import {
-  SpotifyUserObject,
-  SpotifyUserToken,
-  isValidSpotifyUserToken,
-  ACCESS_TOKEN_KEY,
-  REFRESH_TOKEN_KEY } from './spotifyTypes/index';
+import { SpotifyUserObject, SpotifyToken, isValidSpotifyToken } from './spotifyTypes/index';
 
 
+
+// Spotify API info
+const CLIENT_ID: string =     '68cbe79b60c240079457182cbca17761';
+const REDIRECT_URI: string =  'http://localhost:8081/me/callback';
 
 
 
 @Injectable()
 export class SpotifyApiService {
 
-  constructor(private http: Http) {}
+  constructor(
+    private http: Http,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   // User Token
-  private _userToken: SpotifyUserToken = null;
-  get userToken(): SpotifyUserToken { return this._userToken; }
+  private _spotifyToken: SpotifyToken = null;
+  get spotifyToken(): SpotifyToken { return this._spotifyToken; }
 
   // User Profile
-  private _userProfile: SpotifyUserObject = null;
-  get userProfile(): SpotifyUserObject { return this._userProfile; }
+  private _spotifyUser: SpotifyUserObject = null;
+  get spotifyUser(): SpotifyUserObject { return this._spotifyUser; }
 
-
-  /**
-   * Get user tracks
-   */
-  getTracksWithUserId(id: string): Observable<Track[]> {
- 		var req: Request = new Request({
- 			method: RequestMethod.Get,
- 			url: 'https://api.spotify.com/v1/users/'+id+'/tracks',
- 			headers: new Headers({
- 				'Authorization': 'Bearer ' + this._userToken.access_token
- 			})
- 		});
-
- 		return this.http
- 			.request(req)
-      .map((res: Response) => {
-        let retArray = [];
-        let items = res.json()['items'];
-        for (var i = 0; i < items.length; i++) {
-          let item = items[i];
-          let track = new Track(item['track']);
-          console.info('item', item);
-          console.info('track', track);
-          track['dateAdded'] = item['added_at'];
-          retArray.push(track);
-        }
-        return retArray;
-      });
- 	}
+  get validUser(): boolean {
+    return !!this.spotifyToken && !!this.spotifyUser;
+  }
 
 
 
@@ -64,108 +39,76 @@ export class SpotifyApiService {
   // >> Spotify User
   // -------------------------------------------------------------------------
 
+  /**
+   * Redirects client to Spotify's login URL to gain access to user's account
+   */
+  redirectToSpotifyLogin() {
+    window.location.href = this.getLoginUrl();
+  }
 
   /**
    * Public method for logging in to Spotify API service
    */
-  login(token?: SpotifyUserToken): Observable<SpotifyUserObject> {
-    if (!token) return Observable.of(this.userProfile);
+  login(token: SpotifyToken) {
 
-    // Set local reference
-    this.setSpotifyUserToken(token);
+    // Set local token reference
+    this._spotifyToken = token;
 
     // configure HTTP request
     var req = new Request({
       method: RequestMethod.Get,
       url: 'https://api.spotify.com/v1/me',
       headers: new Headers({
-        'Authorization': 'Bearer ' + this._userToken.access_token
+        'Authorization': 'Bearer ' + this._spotifyToken.access_token
       })
     });
 
     // make HTTP request
-    return this.http
+    this.http
       .request(req)
       .map((res: Response) => {
         let json: SpotifyUserObject = res.json();
+        this._spotifyUser = json;
         return json;
+      })
+      .subscribe({
+        next: (user: SpotifyUserObject) => {
+          console.info('User logged in.');
+        },
+        error: (err: any) => {
+          console.error('Error logging user in:', err);
+        },
+        complete: () => {
+          this.router.navigate(['/']);
+        }
       });
   }
 
 
 
   ////////////////////////
-  // User Session Token //
+  // Login with Spotify //
   ////////////////////////
 
   /**
-   * Set the current user's session token
+   * Builds and returns the URL used to acquire the spotify API token
    */
-  setSpotifyUserToken(queryToken: SpotifyUserToken) {
-    // console.info('Set user session token:', queryToken);
+  private getLoginUrl(): string {
 
-    // set token
-		this._userToken = queryToken;
-    
-    // set localstorage
-    this.setLocalStorageToken(this._userToken);
-	}
+    let scopes = [
+			'playlist-modify-public',
+			'playlist-modify-private',
+			'streaming',
+			'user-library-read',
+			'user-library-modify',
+			'user-read-birthdate',
+			'user-top-read'
+		];
 
-  /**
-   * Returns the current user's session token
-   */
-  getSpotifyUserToken(): SpotifyUserToken {
-    return (isValidSpotifyUserToken(this._userToken))
-      ? this._userToken
-      : this.initialSpotifyUserToken();
-	}
+    return 'https://accounts.spotify.com/authorize?client_id=' + CLIENT_ID
+				+ '&redirect_uri=' + encodeURIComponent(REDIRECT_URI)
+				+ '&scope=' + encodeURIComponent(scopes.join(' '))
+				+ '&response_type=token';
 
-  /**
-   * Attempt to retrieve persisted token values on startup
-   */
-  initialSpotifyUserToken() {
-    this._userToken = this.getLocalStorageToken();
-    this.logInitialSessionToken(this._userToken);
-    return this._userToken;
   }
-
-
-
-  /**
-   * LOCAL STORAGE
-   */
-  private setLocalStorageToken(token: SpotifyUserToken) {
-    // if token isn't null
-    if (isValidSpotifyUserToken(token)) {
-      // set localStorage
-      localStorage.setItem(ACCESS_TOKEN_KEY, token.access_token);
-      localStorage.setItem(REFRESH_TOKEN_KEY, token.refresh_token);
-    } else {
-      this.clearLocalStorageToken();
-    }
-  }
-
-  private getLocalStorageToken(): SpotifyUserToken {
-    // retrieve from LocalStorage
-    return {
-      access_token: localStorage.getItem( ACCESS_TOKEN_KEY ),
-      refresh_token: localStorage.getItem( REFRESH_TOKEN_KEY )
-    };
-  }
-
-  private clearLocalStorageToken() {
-    // remove localstorage
-    console.info('remove localStorage user session token keys')
-    localStorage.removeItem( ACCESS_TOKEN_KEY );
-    localStorage.removeItem( REFRESH_TOKEN_KEY );
-  }
-
-  /**
-   * Log status
-   */
-  private logInitialSessionToken(token: SpotifyUserToken) {
-    let status = (isValidSpotifyUserToken(this._userToken)) ? 'exists.' : 'does not exist.';
-    console.info('Initial SpotifyUserToken', status);
-  }
-
 }

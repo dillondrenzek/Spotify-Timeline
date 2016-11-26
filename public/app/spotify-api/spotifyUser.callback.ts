@@ -4,9 +4,10 @@ import { Router,
 
 import { SpotifyApiService } from './spotifyApi.service';
 
-import { SpotifyUserToken,
+import { SpotifyToken,
   SpotifyUserObject,
-  isValidSpotifyUserToken } from './spotifyTypes/index';
+  isValidSpotifyToken } from './spotifyTypes/index';
+
 
 
 
@@ -23,30 +24,48 @@ export class SpotifyUserCallback {
     private spotifyApiService: SpotifyApiService
 	) {
 
-    // route query params
-		this.route.queryParams.subscribe(
-        query => this.queryParamsChanged(query));
-}
-
-  private queryParamsChanged(query: Object) {
-    let extractedToken = this.extractSpotifyUserToken(query);
-
-    if (isValidSpotifyUserToken(extractedToken)) {
-
-      // Login with valid token
-      this.spotifyApiService.login(extractedToken)
-        .subscribe((user: SpotifyUserObject) => {
-          this.router.navigate(['/login'], {queryParams: {redirect: true}});
-      });
-    }
+    // Spotify passes access_token back through fragment
+    this.route.fragment.subscribe(
+      (fragment: string) => this.fragmentChanged(fragment));
   }
 
-  private extractSpotifyUserToken(query: Object): SpotifyUserToken {
-    let access_token: string = query['access_token'] || null;
-		let refresh_token: string = query['refresh_token'] || null;
-    return {
-      access_token: access_token,
-      refresh_token: refresh_token
+
+
+  private fragmentChanged(fragment: string) {
+    let token = this.parseFragment(fragment);
+    this.spotifyApiService.login(token);
+  }
+
+
+
+  private parseFragment(fragment: string): SpotifyToken {
+
+    let token: SpotifyToken = {
+      access_token: null,
+      token_type: null,
+      expires_in: null
     };
+
+    let keyValues: string[] = fragment.split('&');
+
+    for (let i = 0; i < keyValues.length; i++) {
+      let keyValue = keyValues[i];
+      let splitString = keyValue.split('=');
+      let key = splitString[0];
+      let value = splitString[1];
+
+      token[key] = value;
+    }
+
+    // Throw error if invalid token is parsed
+    if (!isValidSpotifyToken(token)) this.invalidSpotifyToken(token);
+
+    return token;
+  }
+
+
+
+  private invalidSpotifyToken(token: any) {
+    throw new Error('An invalid Spotify token was parsed from the URL fragment:' + JSON.stringify(token));
   }
 }

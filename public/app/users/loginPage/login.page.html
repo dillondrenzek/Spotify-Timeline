@@ -1,10 +1,9 @@
-
 <div class="panel-position col-xs-6 col-xs-offset-3">
 
   <div class="panel panel-default">
     <div class="panel-body">
       <h1>Spotify Timeline</h1>
-      <a href="/api/user/authorize" class="btn btn-success">Login</a>
+      <a class="btn btn-success" (click)="spotifyApiService.redirectToSpotifyLogin()">Login</a>
     </div>
   </div>
 

@@ -4,11 +4,9 @@ import { CommonModule } 		    from '@angular/common';
 import { usersRoutes }          from './users.routes';
 
 // Declarations
-import { MiniUser }             from './miniUser/miniUser.component';
 import { LoginPage }            from './loginPage/login.page';
 
 // Providers
-import { UserService }          from './userService/user.service';
 import { UserGuard }            from './userGuard/user.guard';
 
 
@@ -18,15 +16,9 @@ import { UserGuard }            from './userGuard/user.guard';
     usersRoutes
   ],
 	declarations: [
-    MiniUser,
-    LoginPage
-  ],
-	exports: [
-    MiniUser,
     LoginPage
   ],
   providers: [
-    UserService,
     UserGuard
   ]
 })

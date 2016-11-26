@@ -2,17 +2,19 @@
  * User Tokens
  */
 
-export function isValidSpotifyUserToken(token: SpotifyUserToken) {
-  return token && (!!token.access_token && !!token.refresh_token);
+export function isValidSpotifyToken(token: SpotifyToken) {
+  return token &&
+    ( !!token.access_token &&
+      !!token.token_type &&
+      !!token.expires_in);
 }
 
-export const ACCESS_TOKEN_KEY: string =     "access_token";
-export const REFRESH_TOKEN_KEY: string =    "refresh_token";
-
-export interface SpotifyUserToken {
+export interface SpotifyToken {
   access_token: string,
-  refresh_token: string
+  token_type: string,
+  expires_in: number
 }
+
 
 
 /**
