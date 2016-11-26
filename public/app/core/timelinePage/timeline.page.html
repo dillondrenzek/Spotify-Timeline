@@ -9,5 +9,6 @@
     <div *ngIf="spotifyApi.validUser">
       Logged in.
     </div>
+    <a *ngIf="spotifyApi.validUser" (click)="spotifyApi.logout()">Logout</a>
   </div>
 </header>

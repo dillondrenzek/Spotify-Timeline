@@ -91,6 +91,20 @@ export class SpotifyApiService {
   }
 
 
+  /**
+   * Logs a user out
+   */
+  logout() {
+    this._spotifyToken = null;
+
+    this._spotifyUser = null;
+
+    this.clearCachedToken();
+
+    this.router.navigate(['login']);
+  }
+
+
 
   ////////////////////////
   // Login with Spotify //
@@ -129,5 +143,9 @@ export class SpotifyApiService {
 
   getCachedToken(): SpotifyToken {
     return JSON.parse(localStorage.getItem(SPOTIFY_TOKEN));
+  }
+
+  clearCachedToken() {
+    localStorage.removeItem(SPOTIFY_TOKEN);
   }
 }
