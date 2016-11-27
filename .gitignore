@@ -1,6 +1,6 @@
 _config.js
 
-typings/
+typings
 
 public/app/**/*.js
 public/**/*.map
