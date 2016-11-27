@@ -6,6 +6,12 @@ public/app/**/*.js
 public/**/*.map
 public/**/*.css
 
+api/**/*.js
+api/**/*.map
+
+server.js
+server.js.map
+
 # deprecated code for reference
 public/legacy
 

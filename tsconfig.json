@@ -16,7 +16,6 @@
   "exclude": [
     "node_modules",
     "typings/main",
-    "typings/main.d.ts",
-    "public/legacy"
+    "typings/main.d.ts"
   ]
 }
