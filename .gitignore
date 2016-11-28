@@ -12,6 +12,8 @@ api/**/*.map
 server.js
 server.js.map
 
+spotify_docs
+
 # deprecated code for reference
 public/legacy
 
