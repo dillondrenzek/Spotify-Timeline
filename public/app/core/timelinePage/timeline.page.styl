@@ -3,17 +3,35 @@
 
 Height = 50px;
 
-.page-header
-    position: relative;
-    margin: 0;
-    padding: 15px 0;
-    > *
-        height: Height;
 
-h1
+
+h1,
+app-version
     margin: 0;
     height: Height;
     line-height: Height;
 
 /deep/ a:hover
     text-decoration: none;
+
+.main
+    margin-top: Height;
+    padding-top: 15px;
+
+h1
+    small
+        font-size: 10px;
+
+.btn-group-vertical
+    width: 100%;
+
+.list-group
+    margin-bottom: 0;
+    .list-group-item.empty
+        color: #aaa;
+        background: #eaeaea;
+        font-weight: 400;
+        text-align: center;
+
+.panel-heading
+    color: #777;

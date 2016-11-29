@@ -6,9 +6,11 @@ import { usersRoutes }          from './users.routes';
 // Declarations
 import { LoginPage }            from './loginPage/login.page';
 import { MiniUser }             from './miniUser/miniUser.component';
+import { SpotifyUserCallback }  from './spotifyUserCallback/spotifyUser.callback';
 
 // Providers
 import { UserGuard }            from './userGuard/user.guard';
+import { UserService }          from './user.service';
 
 import { SpotifyApiModule }     from '@timeline/spotify-api';
 
@@ -21,13 +23,15 @@ import { SpotifyApiModule }     from '@timeline/spotify-api';
   ],
 	declarations: [
     LoginPage,
-    MiniUser
+    MiniUser,
+    SpotifyUserCallback
   ],
   exports: [
     MiniUser
   ],
   providers: [
-    UserGuard
+    UserGuard,
+    UserService
   ]
 })
 export class UsersModule {}

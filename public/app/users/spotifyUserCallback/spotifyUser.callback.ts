@@ -2,12 +2,10 @@ import { Component } from '@angular/core';
 import { Router,
   ActivatedRoute } from '@angular/router';
 
-import { SpotifyApiService } from './spotifyApi.service';
-
-import { SpotifyToken,
+import { SpotifyApiService,
+  SpotifyToken,
   SpotifyUserObject,
-  isValidSpotifyToken } from './spotifyTypes/index';
-
+  isValidSpotifyToken } from '@timeline/spotify-api';
 
 
 

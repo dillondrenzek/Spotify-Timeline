@@ -1,11 +1,48 @@
-<header class="page-header clearfix">
-  <div class="col-xs-8">
-    <h1>
-      <a href="/">Timeline</a>
-      <app-version></app-version>
-    </h1>
-  </div>
-  <div class="col-xs-4">
-    <mini-user></mini-user>
+<header class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+
+
+    <div class="navbar-left">
+
+      <ul class="nav navbar-nav">
+        <li>
+          <h1>
+            <a href="/">Timeline</a>
+            <small><app-version></app-version></small>
+          </h1>
+        </li>
+      </ul>
+
+
+    </div>
+    <div class="navbar-right">
+      <ul class="nav navbar-nav">
+        <li class="dropdown"><mini-user></mini-user></li>
+      </ul>
+    </div>
+
+
+
   </div>
 </header>
+
+<section class="main clearfix">
+
+  <div class="col-xs-8">
+    <ul class="list-group">
+      <li class="list-group-item empty">Your Timeline will appear here.</li>
+    </ul>
+  </div>
+
+
+  <div class="col-xs-4">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="btn-group-vertical" role="group" aria-label="...">
+          <button type="button" class="btn btn-success"
+            (click)="generateTimeline()">Generate Timeline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
