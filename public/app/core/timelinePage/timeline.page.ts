@@ -1,7 +1,8 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, ChangeDetectorRef } from '@angular/core';
 
 import { SpotifyApiService, SpotifyPagingObject, SpotifySavedTrackObject } from '@timeline/spotify-api';
 
+import { TracksService, Track, Tracks, GroupedTracks } from '@timeline/tracks';
 
 @Component({
   moduleId: module.id,
@@ -11,23 +12,24 @@ import { SpotifyApiService, SpotifyPagingObject, SpotifySavedTrackObject } from 
 })
 export class TimelinePage {
 
-  tracks: SpotifySavedTrackObject[] = [];
+  tracks: GroupedTracks = null;
 
-  selectedTrack: SpotifySavedTrackObject = null;
+  selectedTrack: Track = null;
 
   timelineGenerated: boolean = false;
+  tracksGrouped: boolean = false;
 
   constructor(
-    private spotifyApi: SpotifyApiService,
+    private tracksService: TracksService,
     private _el: ElementRef
   ) { }
 
   get selectedTrackUrl(): string {
     if (!this.selectedTrack) return null;
-    return 'https://embed.spotify.com/?uri=spotify:track:' + this.selectedTrack.track['id'];
+    return 'https://embed.spotify.com/?uri=spotify:track:' + this.selectedTrack.id;
   }
 
-  selectTrack(track: SpotifySavedTrackObject) {
+  selectTrack(track: Track) {
     this.selectedTrack = track;
 
     let iframe: HTMLIFrameElement = <HTMLIFrameElement>this._el.nativeElement.querySelector('#spotifyPlayer');
@@ -39,18 +41,31 @@ export class TimelinePage {
 
     this.timelineGenerated = true;
 
-    this.spotifyApi.getUsersSavedTracks().subscribe(
-      (tracksPagingObject: SpotifyPagingObject<SpotifySavedTrackObject>) => {
-        this.tracks = tracksPagingObject.items;
-        this.selectTrack(this.tracks[0]);
+    this.tracksService.getUsersTracks().subscribe(
+      (tracks: Tracks) => {
+        this.tracks = [tracks];
+
+
       }
     );
   }
 
+  groupTracks() {
+    if (!this.tracksGrouped) {
+      this.tracks = this.tracksService.groupTracks(this.tracks[0]);
+      this.tracksGrouped = true;
+    }
+  }
+
   resetTimeline() {
     this.timelineGenerated = false;
-    this.tracks = [];
+    this.tracksGrouped = false;
+    this.tracks = null;
   }
+
+  // groupTracks(tracks) {
+  //
+  // }
 
   ngOnInit() {
     this.generateTimeline();

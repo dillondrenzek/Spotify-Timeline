@@ -26,7 +26,8 @@ h1
     width: 100%;
 
 .list-group
-    margin-bottom: 0;
+    &:not(:last-child)
+        margin-bottom: 20px;
     .list-group-item.empty
         color: #aaa;
         background: #eaeaea;
@@ -41,3 +42,6 @@ h1
         width: 100%;
         &:not(:last-child)
             margin-bottom: 10px;
+
+.player-frame
+    overflow-x: auto;
