@@ -1,4 +1,35 @@
 /**
+ * Web API Responses
+ */
+
+export interface SpotifyPagingObject<T> {
+
+  // href	{string} - A link to the Web API endpoint returning the full result of the request.
+  href: string,
+
+  // items {an array of objects} - The requested data.
+  items: T[],
+
+  // limit {integer} - The maximum number of items in the response (as set in the query or by default).
+  limit: number,
+
+  // next {string} - URL to the next page of items. (null if none)
+  next: string,
+
+  // offset	{integer} -	The offset of the items returned (as set in the query or by default).
+  offset: number,
+
+  // previous {string} - URL to the previous page of items. (null if none)
+  previous: string,
+
+// total {integer} - The total number of items available to return.
+  total: number
+
+}
+
+
+
+/**
  * User Tokens
  */
 

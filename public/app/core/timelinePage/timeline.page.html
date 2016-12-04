@@ -30,7 +30,15 @@
 
   <div class="col-xs-8">
     <ul class="list-group">
-      <li class="list-group-item empty">Your Timeline will appear here.</li>
+      <li class="list-group-item empty" *ngIf="!tracks.length">Your Timeline will appear here.</li>
+      <li class="list-group-item clearfix" [class.active]="(track.track.id === selectedTrack.track.id)"*ngFor="let track of tracks" (click)="selectTrack(track)">
+        <div class="col-xs-9">
+          {{track.track['name']}} - {{track.track['artists'][0]['name']}}
+        </div>
+        <div class="col-xs-3">
+          {{track.added_at | date}}
+        </div>
+      </li>
     </ul>
   </div>
 
@@ -38,11 +46,26 @@
   <div class="col-xs-4">
     <div class="panel panel-default">
       <div class="panel-body">
-        <div class="btn-group-vertical" role="group" aria-label="...">
-          <button type="button" class="btn btn-success"
+        <!-- <div class="btn-group-vertical" role="group" aria-label="..."> -->
+          <button type="button" class="btn btn-success disabled" *ngIf="timelineGenerated"
+            (click)="generateTimeline()">Timeline Generated</button>
+          <button type="button" class="btn btn-success" *ngIf="!timelineGenerated"
             (click)="generateTimeline()">Generate Timeline</button>
-        </div>
+          <button type="button" class="btn btn-default"
+            (click)="resetTimeline()">Reset Timeline</button>
+        <!-- </div> -->
       </div>
     </div>
   </div>
+
+
+  <div class="col-xs-4">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <iframe id="spotifyPlayer" frameborder="0" allowtransparency="true" width="250" height="80"></iframe>
+      </div>
+    </div>
+  </div>
+
+
 </section>

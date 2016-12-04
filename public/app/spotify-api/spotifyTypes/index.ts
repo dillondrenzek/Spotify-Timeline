@@ -3,7 +3,11 @@
  */
 export * from './spotifyTypes';
 
-
+/**
+ * Spotify Track
+ */
+export { SpotifyTrackObject,
+  SpotifySavedTrackObject } from './SpotifyTrackObject';
 
 /**
  * Spotify User

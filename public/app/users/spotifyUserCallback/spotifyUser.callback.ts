@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router,
   ActivatedRoute } from '@angular/router';
 
+import { UserService } from '../user.service';
+
 import { SpotifyApiService,
   SpotifyToken,
   SpotifyUserObject,
@@ -19,7 +21,8 @@ export class SpotifyUserCallback {
 	constructor(
 		private router: Router,
     private route: ActivatedRoute,
-    private spotifyApiService: SpotifyApiService
+    private spotifyApiService: SpotifyApiService,
+    private userService: UserService
 	) {
 
     // Spotify passes access_token back through fragment
@@ -30,10 +33,13 @@ export class SpotifyUserCallback {
 
 
   private fragmentChanged(fragment: string) {
+
     let token = this.parseFragment(fragment);
-    this.spotifyApiService.login(token)
+
+    this.spotifyApiService.getUserObject(token)
       .subscribe((user: SpotifyUserObject) => {
         if (user) {
+          this.userService.setCurrentUser(user);
           this.router.navigate(['/']);
         } else {
           console.error('No user.');
