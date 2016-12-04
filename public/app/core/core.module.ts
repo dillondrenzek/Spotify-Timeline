@@ -3,6 +3,7 @@ import { NgModule }       from '@angular/core';
 // Imports
 import { BrowserModule }  from '@angular/platform-browser';
 import { HttpModule }     from '@angular/http';
+import { FormsModule }    from '@angular/forms';
 import { UsersModule }    from '@timeline/users';
 import { TracksModule }   from '@timeline/tracks';
 import { coreRoutes }     from './core.routes';
@@ -17,6 +18,7 @@ import { MetaService }    from './metaService/meta.service';
 @NgModule({
   imports: [
     BrowserModule,
+    FormsModule,
     HttpModule,
     UsersModule,
     TracksModule,

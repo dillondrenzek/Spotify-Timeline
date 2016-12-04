@@ -52,7 +52,7 @@ export class SpotifyApiService {
     // configure HTTP request
     var req = new Request({
       method: RequestMethod.Get,
-      url: 'https://api.spotify.com/v1/me/tracks',
+      url: 'https://api.spotify.com/v1/me/tracks?offset=0&limit=50',
       headers: new Headers({
         'Authorization': 'Bearer ' + this._spotifyToken.access_token
       })

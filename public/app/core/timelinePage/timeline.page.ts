@@ -19,6 +19,9 @@ export class TimelinePage {
   timelineGenerated: boolean = false;
   tracksGrouped: boolean = false;
 
+  proximityThreshold: number = 7;
+  proximityUnit: string = 'days';
+
   constructor(
     private tracksService: TracksService,
     private _el: ElementRef
@@ -39,21 +42,25 @@ export class TimelinePage {
 
   generateTimeline() {
 
-    this.timelineGenerated = true;
+    this.resetTimeline();
 
     this.tracksService.getUsersTracks().subscribe(
       (tracks: Tracks) => {
+        this.timelineGenerated = true;
         this.tracks = [tracks];
-
-
+        this.groupTracks();
       }
     );
   }
 
   groupTracks() {
     if (!this.tracksGrouped) {
-      this.tracks = this.tracksService.groupTracks(this.tracks[0]);
+      let proximity = {days: 0};
+      proximity[this.proximityUnit] = this.proximityThreshold;
+      this.tracks = this.tracksService.groupTracks(this.tracks[0], proximity);
       this.tracksGrouped = true;
+    } else {
+
     }
   }
 
@@ -61,11 +68,8 @@ export class TimelinePage {
     this.timelineGenerated = false;
     this.tracksGrouped = false;
     this.tracks = null;
+    this.selectedTrack = null;
   }
-
-  // groupTracks(tracks) {
-  //
-  // }
 
   ngOnInit() {
     this.generateTimeline();

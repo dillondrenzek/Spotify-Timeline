@@ -35,22 +35,24 @@ export class TracksService {
     });
   }
 
-  groupTracks(tracks: Tracks): GroupedTracks {
+  groupTracks(tracks: Tracks, proximity: {days: number}): GroupedTracks {
     let groups: GroupedTracks = [];
 
     let tempTracks = [];
-    let currDate: string = null;
-    let itTrackDate: string = null;
+    let currDate: Date = null;
+    let itTrackDate: Date = null;
 
     for (let track of tracks) {
 
       if (!currDate) {
-        currDate = new Date(track.date_added).toDateString();
-        console.info('currDate', currDate);
+        // set a new proximity
+        currDate = new Date(track.date_added);
+        console.info('New source date:', currDate);
       }
 
-      itTrackDate = new Date(track.date_added).toDateString();
-      if (itTrackDate === currDate) {
+      itTrackDate = new Date(track.date_added);
+
+      if (this.dateProximity(currDate, itTrackDate, proximity)) {
         tempTracks.push(track);
       } else {
         groups.push(tempTracks);
@@ -60,5 +62,24 @@ export class TracksService {
     }
 
     return groups;
+  }
+
+  private dateProximity(source: Date, target: Date, proximity: {days: number}): boolean {
+    // let tempTracks = [];
+
+    console.info('source', source);
+    console.info('target', target);
+    console.info('proximity', proximity);
+    console.log('---');
+
+    let srcDate: number = source.getTime();
+    let tarDate: number = target.getTime();
+    console.info('srcDate time', srcDate);
+    console.info('tarDate time', tarDate);
+
+    let proxThreshold: number = proximity.days * 1000 * 60 * 60 * 24;
+    console.info('proximity', proxThreshold);
+
+    return Math.abs(tarDate - srcDate) <= proxThreshold;
   }
 }
