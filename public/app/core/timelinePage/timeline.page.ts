@@ -1,8 +1,11 @@
 import { Component, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Observable } from 'rxjs/Rx';
 
 import { SpotifyApiService, SpotifyPagingObject, SpotifySavedTrackObject } from '@timeline/spotify-api';
 
 import { TracksService, Track, Tracks, GroupedTracks } from '@timeline/tracks';
+import { TimelineService } from '../timelineService/timeline.service';
+import { Timeline, TimelineConfig } from '../timelineService/timelineInterfaces';
 
 @Component({
   moduleId: module.id,
@@ -12,18 +15,20 @@ import { TracksService, Track, Tracks, GroupedTracks } from '@timeline/tracks';
 })
 export class TimelinePage {
 
-  tracks: GroupedTracks = null;
+  // Timeline object is the main focus of the page
+  timeline: Timeline = null;
 
   selectedTrack: Track = null;
 
   timelineGenerated: boolean = false;
   tracksGrouped: boolean = false;
 
+  // Configure Timeline UI
   proximityThreshold: number = 7;
   proximityUnit: string = 'days';
 
   constructor(
-    private tracksService: TracksService,
+    private timelineService: TimelineService,
     private _el: ElementRef
   ) { }
 
@@ -32,43 +37,60 @@ export class TimelinePage {
     return 'https://embed.spotify.com/?uri=spotify:track:' + this.selectedTrack.id;
   }
 
+  get selectedTrackJSON(): Object {
+    if (!this.selectedTrack) return null;
+    return this.selectedTrack.toJSON();
+  }
+
+  generateTimeline() {
+    // Reset currently generated timeline
+    this.resetTimeline();
+
+    // Get config for generator
+    let config: TimelineConfig = this.getTimelineConfig();
+
+    // Generate timeline
+    this.timelineService.generateTimeline(config)
+      .subscribe((timeline: Timeline) => {
+        console.info('Generated timeline:', timeline);
+        this.timeline = timeline;
+      });
+  }
+
+
+  /**
+   * Assemble config for generating timeline
+   */
+  private getTimelineConfig(): TimelineConfig {
+
+    // Config object gets overwritten below
+    let config = {
+      proximity: { days: 7 }
+    };
+
+    // proximity
+    config.proximity[this.proximityUnit] = this.proximityThreshold;
+
+    return config;
+  }
+
+
+
+  resetTimeline() {
+    this.timelineGenerated = false;
+    this.tracksGrouped = false;
+    this.timeline = null;
+    this.selectedTrack = null;
+  }
+
+
+
   selectTrack(track: Track) {
     this.selectedTrack = track;
 
     let iframe: HTMLIFrameElement = <HTMLIFrameElement>this._el.nativeElement.querySelector('#spotifyPlayer');
     console.warn('iframe', iframe);
     iframe.src = this.selectedTrackUrl;
-  }
-
-  generateTimeline() {
-
-    this.resetTimeline();
-
-    this.tracksService.getUsersTracks().subscribe(
-      (tracks: Tracks) => {
-        this.timelineGenerated = true;
-        this.tracks = [tracks];
-        this.groupTracks();
-      }
-    );
-  }
-
-  groupTracks() {
-    if (!this.tracksGrouped) {
-      let proximity = {days: 0};
-      proximity[this.proximityUnit] = this.proximityThreshold;
-      this.tracks = this.tracksService.groupTracks(this.tracks[0], proximity);
-      this.tracksGrouped = true;
-    } else {
-
-    }
-  }
-
-  resetTimeline() {
-    this.timelineGenerated = false;
-    this.tracksGrouped = false;
-    this.tracks = null;
-    this.selectedTrack = null;
   }
 
   ngOnInit() {

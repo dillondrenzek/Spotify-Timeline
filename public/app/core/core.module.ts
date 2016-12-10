@@ -10,6 +10,7 @@ import { coreRoutes }     from './core.routes';
 
 import { App }            from './appComponent/app.component';
 import { TimelinePage }   from './timelinePage/timeline.page';
+import { TimelineService } from './timelineService/timeline.service';
 import { AppVersion }     from './appVersionComponent/appVersion.component';
 
 // Providers
@@ -35,7 +36,8 @@ import { MetaService }    from './metaService/meta.service';
     AppVersion
   ],
   providers: [
-    MetaService
+    MetaService,
+    TimelineService
   ],
 	bootstrap: [ App ]
 })

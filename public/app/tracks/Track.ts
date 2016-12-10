@@ -26,4 +26,13 @@ export class Track {
   get name(): string { return this._name; }
 
   get artists(): string[] { return this._artists; }
+
+  toJSON(): Object {
+    return {
+      id: this.id,
+      date_added: this.date_added,
+      name: this.name,
+      artists: this.artists
+    }
+  }
 }

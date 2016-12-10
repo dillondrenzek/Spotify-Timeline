@@ -1,9 +1,7 @@
 <header class="navbar navbar-default navbar-fixed-top">
   <div class="container">
 
-
     <div class="navbar-left">
-
       <ul class="nav navbar-nav">
         <li>
           <h1>
@@ -12,72 +10,43 @@
           </h1>
         </li>
       </ul>
-
-
     </div>
+
     <div class="navbar-right">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-          <a class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            Actions
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-
-            <li><a (click)="generateTimeline()" *ngIf="!timelineGenerated">Generate Timeline</a></li>
-            <li class="disabled" ><a *ngIf="timelineGenerated">Timeline Generated</a></li>
-
-            <li role="separator" class="divider" *ngIf="timelineGenerated"></li>
-
-            <li><a (click)="groupTracks()" *ngIf="timelineGenerated && !tracksGrouped">Group Tracks</a></li>
-            <li class="disabled"><a *ngIf="timelineGenerated && tracksGrouped">Tracks Grouped</a></li>
-
-            <li role="separator" class="divider" *ngIf="timelineGenerated"></li>
-
-            <li><a *ngIf="timelineGenerated" (click)="resetTimeline()">Reset Timeline</a></li>
-          </ul>
+          <mini-user></mini-user>
         </li>
-        <li class="dropdown"><mini-user></mini-user></li>
       </ul>
     </div>
-
-
 
   </div>
 </header>
 
 
+
+
+
 <section class="main clearfix">
 
-
-
+  <!-- Left Side -->
   <div class="col-xs-8">
 
-    <ul class="list-group" *ngIf="!tracks || !tracks.length">
-      <li class="list-group-item empty">Your Timeline will be generated here.</li>
-    </ul>
-
-
-
-    <ul class="list-group" *ngFor="let group of tracks">
-      <li class="list-group-item clearfix" *ngFor="let track of group" (click)="selectTrack(track)">
-        <div class="col-xs-9">
-          <span class="track-name">{{track.name}}</span>
-          <span class="artist-name">{{(track.artists) ? (' - ' + track.artists[0]) : null}}</span>
-        </div>
-        <div class="col-xs-3 date-label">
-          {{track.date_added | date}}
-        </div>
-      </li>
-    </ul>
   </div>
 
-  <div class="col-xs-4 pull-right">
+  <!-- Right Side -->
+  <div class="col-xs-4">
+
+  </div>
+
+  <!-- Track Preview -->
+  <div class="col-xs-8">
     <div class="panel panel-default">
       <div class="panel-body" [class.hidden]="!selectedTrack">
         <div class="player-frame">
           <iframe id="spotifyPlayer" frameborder="0" allowtransparency="true" width="250" height="80"></iframe>
         </div>
+        <pre>{{selectedTrackJSON | json}}</pre>
       </div>
 
       <div class="panel-body" [class.hidden]="selectedTrack">
@@ -88,16 +57,44 @@
     </div>
   </div>
 
+  <!-- Timeline empty state -->
+  <div class="col-xs-8"  *ngIf="!timeline">
+      <ul class="list-group">
+        <li class="list-group-item empty">Your Timeline will be generated here.</li>
+      </ul>
+  </div>
+
+  <!-- Timeline list -->
+  <div class="col-xs-8"  *ngIf="timeline">
+    <ul class="list-group" *ngFor="let group of timeline.groups">
+      <li class="list-group-item clearfix" *ngFor="let track of group" (click)="selectTrack(track)">
+        <div class="col-xs-9">
+          <span></span>
+          <span class="track-name">{{track.name}}</span>
+          <span class="artist-name">{{(track.artists) ? (' - ' + track.artists[0]) : null}}</span>
+        </div>
+        <div class="col-xs-3 date-label">
+          {{track.date_added | date}}
+        </div>
+      </li>
+    </ul>
+  </div>
+
+
+
+
+
+  <!-- Configure Timeline Generation UI -->
   <div class="col-xs-4 pull-right">
     <div class="panel panel-default">
       <div class="panel-body">
 
         <h3>Proximity</h3>
 
-        <div class="row">
+        <div class="row proximity">
           <div class="form-group col-xs-6">
             <label class="sr-only" for="proximityThreshold">Threshold</label>
-            <input type="text" class="form-control" id="proximityThreshold" [(ngModel)]="proximityThreshold">
+            <input type="number" class="form-control" id="proximityThreshold" [(ngModel)]="proximityThreshold">
           </div>
 
           <div class="form-group col-xs-6">
