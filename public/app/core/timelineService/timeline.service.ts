@@ -10,6 +10,8 @@ export class TimelineService {
 
   constructor( private tracksService: TracksService ) {  }
 
+
+
   generateTimeline(options: TimelineConfig): Observable<Timeline> {
     return this.tracksService.getUsersTracks()
       .map((usersTracks: Track[]) => {
@@ -22,7 +24,10 @@ export class TimelineService {
       });
   }
 
+
+
   private groupTracks(tracks: Tracks, proximity: {days: number}): GroupedTracks {
+    console.groupCollapsed('Group Tracks (' + tracks + ')');
     let groups: GroupedTracks = [];
 
     let tempTracks = [];
@@ -47,7 +52,7 @@ export class TimelineService {
         currDate = null;
       }
     }
-
+    console.groupEnd();
     return groups;
   }
 
@@ -57,6 +62,8 @@ export class TimelineService {
 
   private dateProximity(source: Date, target: Date, proximity: {days: number}): boolean {
     // let tempTracks = [];
+
+    console.groupCollapsed('Calculated proximity');
 
     console.info('source', source);
     console.info('target', target);
@@ -71,6 +78,8 @@ export class TimelineService {
     let proxThreshold: number = proximity.days * 1000 * 60 * 60 * 24;
     console.info('proximity', proxThreshold);
     console.info('calculated', Math.abs(tarDate - srcDate));
+
+    console.groupEnd();
 
     return Math.abs(tarDate - srcDate) <= proxThreshold;
   }

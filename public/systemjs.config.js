@@ -19,6 +19,7 @@
 
       '@timeline/core':                     'public/app/core/index.js',
       '@timeline/users':                    'public/app/users/index.js',
+      '@timeline/shared':                   'public/app/shared/index.js',
       '@timeline/spotify-api':              'public/app/spotify-api/index.js',
       '@timeline/tracks':                   'public/app/tracks/index.js',
 

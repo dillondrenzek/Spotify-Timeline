@@ -29,18 +29,32 @@
 
 <section class="main clearfix">
 
-  <!-- Left Side -->
+
+  <!-- Timeline empty state -->
   <div class="col-xs-8">
+
+    <!-- list -->
+    <list>
+      <ul class="list-group" *ngFor="let group of timeline?.groups">
+        <li class="list-group-item clearfix" *ngFor="let track of group" (click)="selectTrack(track)">
+          <div class="col-xs-9">
+            <span></span>
+            <span class="track-name">{{track.name}}</span>
+            <span class="artist-name">{{(track.artists) ? (' - ' + track.artists[0]) : null}}</span>
+          </div>
+          <div class="col-xs-3 date-label">
+            {{track.date_added | date}}
+          </div>
+        </li>
+      </ul>
+    </list>
 
   </div>
 
-  <!-- Right Side -->
-  <div class="col-xs-4">
 
-  </div>
+  <div class="col-xs-4 pull-right">
 
-  <!-- Track Preview -->
-  <div class="col-xs-8">
+    <!-- Track Preview -->
     <div class="panel panel-default">
       <div class="panel-body" [class.hidden]="!selectedTrack">
         <div class="player-frame">
@@ -55,37 +69,10 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Timeline empty state -->
-  <div class="col-xs-8"  *ngIf="!timeline">
-      <ul class="list-group">
-        <li class="list-group-item empty">Your Timeline will be generated here.</li>
-      </ul>
-  </div>
-
-  <!-- Timeline list -->
-  <div class="col-xs-8"  *ngIf="timeline">
-    <ul class="list-group" *ngFor="let group of timeline.groups">
-      <li class="list-group-item clearfix" *ngFor="let track of group" (click)="selectTrack(track)">
-        <div class="col-xs-9">
-          <span></span>
-          <span class="track-name">{{track.name}}</span>
-          <span class="artist-name">{{(track.artists) ? (' - ' + track.artists[0]) : null}}</span>
-        </div>
-        <div class="col-xs-3 date-label">
-          {{track.date_added | date}}
-        </div>
-      </li>
-    </ul>
-  </div>
 
 
 
-
-
-  <!-- Configure Timeline Generation UI -->
-  <div class="col-xs-4 pull-right">
+    <!-- Configure Timeline Generation UI -->
     <div class="panel panel-default">
       <div class="panel-body">
 
@@ -110,6 +97,4 @@
       </div>
     </div>
   </div>
-
-
 </section>

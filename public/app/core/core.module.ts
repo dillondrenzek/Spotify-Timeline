@@ -4,6 +4,7 @@ import { NgModule }       from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
 import { HttpModule }     from '@angular/http';
 import { FormsModule }    from '@angular/forms';
+import { SharedModule }   from '@timeline/shared';
 import { UsersModule }    from '@timeline/users';
 import { TracksModule }   from '@timeline/tracks';
 import { coreRoutes }     from './core.routes';
@@ -24,7 +25,8 @@ import { MetaService }    from './metaService/meta.service';
     UsersModule,
     TracksModule,
     // SpotifyApiModule,
-    coreRoutes
+    coreRoutes,
+    SharedModule
   ],
   exports: [
     App,
