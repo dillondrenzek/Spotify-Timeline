@@ -9,6 +9,7 @@ import { Album } from 'spotify-api/types';
 import { User } from 'spotify-api/types';
 import { SpotifyToken, Paging, isValidSpotifyToken } from 'spotify-api/types';
 
+import { AuthHttp } from './auth/authHttp';
 
 const SPOTIFY_TOKEN: string = 'SPOTIFY_TOKEN';
 
@@ -23,6 +24,7 @@ export class SpotifyApiService {
 
   constructor(
     private http: Http,
+    private authHttp: AuthHttp,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -72,6 +74,9 @@ export class SpotifyApiService {
   // Get several albums	albums
   getAlbumsById(ids: string[]): Observable<Album[]> {
     if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
+
+    // Max 20 ids
+    if (ids.length > 20) throw new Error('Can only retrieve 20 Album ids at a time. Requested '+ ids.length + '.');
 
     console.info('Get Albums:', [ids]);
 
@@ -233,29 +238,6 @@ export class SpotifyApiService {
   // >> Spotify User
   // -------------------------------------------------------------------------
 
-
-  attemptCachedLogin(): Observable<User> {
-
-    // check local storage for SpotifyToken
-    let cachedToken = this.getCachedToken();
-
-    if ( isValidSpotifyToken(cachedToken) ) {
-      // if a valid token exists, use it to login automatically
-      return this.getUserObject(cachedToken);
-
-    } else {
-      // no valid token exists
-      return Observable.of(null);
-    }
-  }
-
-  /**
-   * Redirects client to Spotify's login URL to gain access to user's account
-   */
-  redirectToSpotifyLogin() {
-    window.location.href = this.getLoginUrl();
-  }
-
   /**
    * Public method for logging in to Spotify API service
    */
@@ -283,6 +265,30 @@ export class SpotifyApiService {
         return json;
       });
   }
+
+  attemptCachedLogin(): Observable<User> {
+
+    // check local storage for SpotifyToken
+    let cachedToken = this.getCachedToken();
+
+    if ( isValidSpotifyToken(cachedToken) ) {
+      // if a valid token exists, use it to login automatically
+      return this.getUserObject(cachedToken);
+
+    } else {
+      // no valid token exists
+      return Observable.of(null);
+    }
+  }
+
+  /**
+   * Redirects client to Spotify's login URL to gain access to user's account
+   */
+  redirectToSpotifyLogin() {
+    window.location.href = this.getLoginUrl();
+  }
+
+
 
 
   /**

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router,
   ActivatedRoute } from '@angular/router';
 
-import { UserService } from '../user.service';
+import { AuthService } from './auth.service';
 
 import { SpotifyApiService } from 'spotify-api/index';
 import * as Spotify from 'spotify-api/types';
@@ -14,13 +14,13 @@ import * as Spotify from 'spotify-api/types';
 	moduleId: module.id,
 	template: `Redirecting...`
 })
-export class SpotifyUserCallback {
+export class AuthCallback {
 
 	constructor(
 		private router: Router,
     private route: ActivatedRoute,
     private spotifyApiService: SpotifyApiService,
-    private userService: UserService
+    private auth: AuthService
 	) {
 
     // Spotify passes access_token back through fragment
@@ -29,24 +29,24 @@ export class SpotifyUserCallback {
   }
 
 
-
+  /**
+   * Handles parsing token info passed back by Spotify via URL Fragment
+   */
   private fragmentChanged(fragment: string) {
 
     let token = this.parseFragment(fragment);
 
-    this.spotifyApiService.getUserObject(token)
-      .subscribe((user: Spotify.User) => {
-        if (user) {
-          this.userService.setCurrentUser(user);
-          this.router.navigate(['/']);
-        } else {
-          console.error('No user.');
-        }
-      });
+    this.auth.setSpotifyToken(token);
+
+    this.router.navigate(['/']);
+
   }
 
 
-
+  /**
+   * Parses a Url fragment expected to be in the shape of:
+   *    {key1}={value1}&{key2}={value2}
+   */
   private parseFragment(fragment: string): Spotify.SpotifyToken {
 
     let token: Spotify.SpotifyToken = {
@@ -60,10 +60,8 @@ export class SpotifyUserCallback {
     for (let i = 0; i < keyValues.length; i++) {
       let keyValue = keyValues[i];
       let splitString = keyValue.split('=');
-      let key = splitString[0];
-      let value = splitString[1];
 
-      token[key] = value;
+      token[splitString[0]] = splitString[1];
     }
 
     // Throw error if invalid token is parsed

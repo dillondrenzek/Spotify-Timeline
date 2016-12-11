@@ -21,40 +21,9 @@ export class AlbumsService {
   }
 
   getAlbumsById(ids: string[]): Observable<Album[]> {
-    // Max 20 ids
-    if (ids.length > 20) throw new Error('Can only retrieve 20 Album ids at a time. Requested '+ ids.length + '.');
-
     return this.spotifyApi.getAlbumsById(ids)
       .map((sao: Spotify.Album[]) => {
         return sao.map(s => convertSpotifyAlbum(s));
       });
   }
 }
-
-
-
-
-// import { Artist } from './Artist';
-// import { convertSpotifyArtist } from './spotify/converters';
-//
-// @Injectable()
-// export class ArtistsService {
-//
-//   constructor(private spotifyApi: SpotifyApiService) {  }
-//
-//   getArtistById(id: string): Observable<Artist> {
-//     return this.spotifyApi.getArtistById(id)
-//       .map((sao: SpotifyArtistObject) => {
-//         return convertSpotifyArtist(sao);
-//       });
-//   }
-//
-//   getArtistsById(ids: string[]): Observable<Artist[]> {
-//     return this.spotifyApi.getArtistsById(ids)
-//       .map((sao: SpotifyArtistObject[]) => {
-//         console.info('sao', sao);
-//         return sao.map(artist => convertSpotifyArtist(artist));
-//       });
-//   }
-//
-// }

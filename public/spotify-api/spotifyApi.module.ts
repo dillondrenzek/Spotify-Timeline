@@ -1,17 +1,25 @@
 import { NgModule }               from '@angular/core';
-import { CommonModule }           from '@angular/common';
 import { HttpModule }             from '@angular/http';
+import { RouterModule }           from '@angular/router';
+
+import { AuthHttp }               from './auth/authHttp';
+import { AuthService }            from './auth/auth.service';
+import { authRoutes }             from './auth/auth.routes';
+import { AuthCallback }           from './auth/auth.callback';
 
 import { SpotifyApiService }      from './spotifyApi.service';
-import { spotifyApiRoutes }       from './spotifyApi.routes';
 
 @NgModule({
   imports: [
-    CommonModule,
     HttpModule,
-    spotifyApiRoutes
+    authRoutes
+  ],
+  declarations: [
+    AuthCallback
   ],
   providers: [
+    AuthHttp,
+    AuthService,
     SpotifyApiService
   ]
 })

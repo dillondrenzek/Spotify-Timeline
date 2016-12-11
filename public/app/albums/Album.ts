@@ -1,11 +1,13 @@
+export interface AlbumInit {
+  artworkUri: string
+}
+
 export class Album {
 
-  private _artworkUri: string = null;
+  constructor( private _init = {
+    artworkUri: null
+  } ) {}
 
-  constructor( obj = {} ) {
-    this._artworkUri = obj['artworkUri'];
-  }
-
-  get artworkUri(): string { return this._artworkUri; }
+  get artworkUri(): string { return this._init.artworkUri; }
 
 }

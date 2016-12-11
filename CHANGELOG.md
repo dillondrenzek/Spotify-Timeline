@@ -1,5 +1,7 @@
 ## Changelog
 
+## v0.5.0 - `spotify-api` is a separate, sibling module to `app` (12-10-16)
+
 ## v0.4.3 - Tracks have Artist Objects (12-10-16)
 
 ## v0.2.1 - List User Playlist names (8-7-16)
