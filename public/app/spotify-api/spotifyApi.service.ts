@@ -7,6 +7,7 @@ import { SpotifyUserObject, SpotifyToken, isValidSpotifyToken, SPOTIFY_TOKEN,
 
 import { SpotifyTrackObject, SpotifySavedTrackObject } from './spotifyTypes/index';
 import { SpotifyArtistObject, SpotifyArtistObjectSimplified } from './spotifyTypes/index';
+import { SpotifyAlbumObject } from './spotifyTypes/index';
 
 
 
@@ -36,6 +37,67 @@ export class SpotifyApiService {
   get validUser(): boolean {
     return !!this.spotifyToken && !!this.spotifyUser;
   }
+
+  // -------------------------------------------------------------------------
+  // >> Spotify Album
+  // -------------------------------------------------------------------------
+  // GET /v1/albums/{id}
+  // Get an album	album
+  getAlbumById(id: string): Observable<SpotifyAlbumObject> {
+    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
+
+    console.info('Get Album:');
+
+    // configure HTTP request
+    var req = new Request({
+      method: RequestMethod.Get,
+      url: 'https://api.spotify.com/v1/albums/' + id,
+      headers: new Headers({
+        'Authorization': 'Bearer ' + this._spotifyToken.access_token
+      })
+    });
+
+    // make HTTP request
+    return this.http
+      .request(req)
+      .map((res: Response) => {
+        let album: SpotifyAlbumObject = res.json();
+        console.info('>> Album Object:', album);
+        return album;
+      });
+  }
+
+  // GET	/v1/albums?ids={ids}
+  // Get several albums	albums
+  getAlbumsById(ids: string[]): Observable<SpotifyAlbumObject[]> {
+    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
+
+    console.info('Get Albums:', [ids]);
+
+    let queryString: string = ids.join(',');
+
+    // configure HTTP request
+    var req = new Request({
+      method: RequestMethod.Get,
+      url: 'https://api.spotify.com/v1/albums?ids=' + queryString,
+      headers: new Headers({
+        'Authorization': 'Bearer ' + this._spotifyToken.access_token
+      })
+    });
+
+    // make HTTP request
+    return this.http
+      .request(req)
+      .map((res: Response) => {
+        let albums: SpotifyAlbumObject[] = res.json()['albums'];
+        console.info('>> Album Objects:', albums);
+        return albums;
+      });
+  }
+
+  // GET	/v1/albums/{id}/tracks
+  // Get an album's tracks	tracks*
+
 
 
   // -------------------------------------------------------------------------

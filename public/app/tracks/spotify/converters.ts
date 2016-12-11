@@ -10,6 +10,7 @@ export function convertSpotifyTrack(spotifyTrack: SpotifySavedTrackObject): Trac
     id:         spotifyTrack.track.id,
     added_at:   spotifyTrack.added_at,
     name:       spotifyTrack.track.name,
-    artists:    spotifyTrack.track.artists
+    artists:    spotifyTrack.track.artists,
+    album:      spotifyTrack.track.album
   });
 }

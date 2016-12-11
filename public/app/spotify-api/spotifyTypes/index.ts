@@ -4,6 +4,11 @@
 export * from './spotifyTypes';
 
 /**
+ * Spotify Album
+ */
+export { SpotifyAlbumObject } from './SpotifyAlbumObject';
+
+/**
  * Spotify Artist
  */
 export { SpotifyArtistObject,

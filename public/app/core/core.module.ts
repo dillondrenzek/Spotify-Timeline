@@ -8,6 +8,7 @@ import { SharedModule }   from '@timeline/shared';
 import { UsersModule }    from '@timeline/users';
 import { TracksModule }   from '@timeline/tracks';
 import { ArtistsModule }  from '@timeline/artists';
+import { AlbumsModule }   from '@timeline/albums';
 import { coreRoutes }     from './core.routes';
 
 import { App }            from './appComponent/app.component';
@@ -26,6 +27,7 @@ import { MetaService }    from './metaService/meta.service';
     UsersModule,
     TracksModule,
     ArtistsModule,
+    AlbumsModule,
     // SpotifyApiModule,
     coreRoutes,
     SharedModule

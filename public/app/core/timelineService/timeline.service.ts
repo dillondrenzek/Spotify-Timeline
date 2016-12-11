@@ -3,6 +3,7 @@ import { Observable, Subject } from 'rxjs/Rx';
 
 import { TracksService, Track, Tracks, GroupedTracks } from '@timeline/tracks';
 import { Artist, ArtistsService } from '@timeline/artists';
+import { Album, AlbumsService } from '@timeline/albums';
 import { Timeline, TimelineConfig } from './timelineInterfaces';
 
 @Injectable()
@@ -11,7 +12,8 @@ export class TimelineService {
 
   constructor(
     private tracksService: TracksService,
-    private artistsService: ArtistsService
+    private artistsService: ArtistsService,
+    private albumsService: AlbumsService
    ) {  }
 
 
@@ -23,6 +25,7 @@ export class TimelineService {
 
     return this.tracksService.getUsersTracks()
       .flatMap((tracks: Tracks) => this.setTrackArtists(tracks))
+      .flatMap((tracks: Tracks) => this.setTrackAlbum(tracks))
       .map((usersTracks: Tracks) => this.groupTracks(usersTracks, options.proximity))
       .map((groups: GroupedTracks) => {
         // return Timeline object
@@ -37,7 +40,7 @@ export class TimelineService {
     // Assemble First artist from each Track
     // TODO: Fetch all artists at some point
     tracks.forEach((track: Track) => {
-      artistIds.push(track.artists[0]);
+      artistIds.push(track.artistIds[0]);
     });
 
     return this.artistsService.getArtistsById(artistIds)
@@ -45,6 +48,28 @@ export class TimelineService {
         return tracks.map((track: Track, index: number) => track.setArtist(artists[index]))
       });
 
+  }
+
+  private setTrackAlbum(tracks: Tracks): Observable<Tracks> {
+
+    let albumIds: string[] = [];
+
+    tracks.forEach((track: Track) => {
+      albumIds.push(track.albumId);
+    });
+
+    console.info('album ids', albumIds);
+
+    // Make requests of 20
+    let numberRequests = Math.ceil(tracks.length / 20);
+    console.info('Must make', numberRequests, 'requests.');
+
+    // albumIds.slice();
+
+    return this.albumsService.getAlbumsById(albumIds.slice(0,20))
+      .map((albums: Album[]) => {
+        return tracks.map((track: Track, index: number) => track.setAlbum(albums[index]))
+      });
   }
 
 
