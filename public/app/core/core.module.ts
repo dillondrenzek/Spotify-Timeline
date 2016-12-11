@@ -7,6 +7,7 @@ import { FormsModule }    from '@angular/forms';
 import { SharedModule }   from '@timeline/shared';
 import { UsersModule }    from '@timeline/users';
 import { TracksModule }   from '@timeline/tracks';
+import { ArtistsModule }  from '@timeline/artists';
 import { coreRoutes }     from './core.routes';
 
 import { App }            from './appComponent/app.component';
@@ -24,6 +25,7 @@ import { MetaService }    from './metaService/meta.service';
     HttpModule,
     UsersModule,
     TracksModule,
+    ArtistsModule,
     // SpotifyApiModule,
     coreRoutes,
     SharedModule

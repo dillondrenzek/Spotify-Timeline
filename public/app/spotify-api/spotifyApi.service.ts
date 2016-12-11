@@ -3,7 +3,10 @@ import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 import { SpotifyUserObject, SpotifyToken, isValidSpotifyToken, SPOTIFY_TOKEN,
-  SpotifyTrackObject, SpotifySavedTrackObject, SpotifyPagingObject } from './spotifyTypes/index';
+   SpotifyPagingObject } from './spotifyTypes/index';
+
+import { SpotifyTrackObject, SpotifySavedTrackObject } from './spotifyTypes/index';
+import { SpotifyArtistObject, SpotifyArtistObjectSimplified } from './spotifyTypes/index';
 
 
 
@@ -33,6 +36,78 @@ export class SpotifyApiService {
   get validUser(): boolean {
     return !!this.spotifyToken && !!this.spotifyUser;
   }
+
+
+  // -------------------------------------------------------------------------
+  // >> Spotify Artist
+  // -------------------------------------------------------------------------
+
+  // GET /v1/artists/{id}
+  // Get an artist	artist
+  getArtistById(id: string): Observable<SpotifyArtistObject> {
+    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
+
+    console.info('Get Artist:');
+
+    // configure HTTP request
+    var req = new Request({
+      method: RequestMethod.Get,
+      url: 'https://api.spotify.com/v1/artists/' + id,
+      headers: new Headers({
+        'Authorization': 'Bearer ' + this._spotifyToken.access_token
+      })
+    });
+
+    // make HTTP request
+    return this.http
+      .request(req)
+      .map((res: Response) => {
+        let artist: SpotifyArtistObject = res.json();
+        console.info('>> Artist Object:', artist);
+        return artist;
+      });
+  }
+
+  // GET /v1/artists?ids={ids}
+  // Get several artists	artists
+  getArtistsById(ids: string[]): Observable<SpotifyArtistObject[]> {
+    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
+
+    console.info('Get Artists:');
+
+    let queryString: string = ids.join(',');
+
+    // configure HTTP request
+    var req = new Request({
+      method: RequestMethod.Get,
+      url: 'https://api.spotify.com/v1/artists?ids=' + queryString,
+      headers: new Headers({
+        'Authorization': 'Bearer ' + this._spotifyToken.access_token
+      })
+    });
+
+    // make HTTP request
+    return this.http
+      .request(req)
+      .map((res: Response) => {
+        let artists: SpotifyArtistObject[] = res.json()['artists'];
+        console.info('>> Artist Objects:', artists);
+        return artists;
+      });
+  }
+
+  // GET	/v1/artists/{id}/albums
+  // Get an artist's albums	albums*
+
+  // GET	/v1/artists/{id}/top-tracks
+  // Get an artist's top tracks	tracks
+
+  // GET	/v1/artists/{id}/related-artists
+  // Get an artist's related artists	artists
+
+
+
+
 
   // -------------------------------------------------------------------------
   // >> Spotify Track

@@ -5,35 +5,31 @@ import { SpotifyApiService,
   SpotifyPagingObject,
   SpotifySavedTrackObject } from '@timeline/spotify-api';
 import { Track, Tracks, GroupedTracks } from './Track';
+import { convertSpotifyTrack } from './spotify/converters';
 
 @Injectable()
 export class TracksService {
 
   constructor(private spotifyApi: SpotifyApiService ) {  }
 
+
+
   getUsersTracks(): Observable<Track[]> {
     return this.spotifyApi.getUsersSavedTracks()
       .map((spo: SpotifyPagingObject<SpotifySavedTrackObject>) => this.convertSpotifyTracks(spo.items));
   }
 
-  convertSpotifyTracks(spotifyTracks: SpotifySavedTrackObject[]): Track[] {
+
+
+
+  private convertSpotifyTracks(spotifyTracks: SpotifySavedTrackObject[]): Track[] {
       let tracks: Track[] = [];
 
       for (let track of spotifyTracks) {
-        tracks.push(this.convertSpotifyTrack(track));
+        tracks.push(convertSpotifyTrack(track));
       }
 
       return tracks;
   }
-
-  convertSpotifyTrack(spotifyTrack: SpotifySavedTrackObject): Track {
-    return new Track({
-      id:         spotifyTrack.track.id,
-      added_at:   spotifyTrack.added_at,
-      name:       spotifyTrack.track.name,
-      artists:    spotifyTrack.track.artists
-    });
-  }
-
 
 }

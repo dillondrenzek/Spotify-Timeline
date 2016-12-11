@@ -40,7 +40,8 @@
           <div class="col-xs-9">
             <span></span>
             <span class="track-name">{{track.name}}</span>
-            <span class="artist-name">{{(track.artists) ? (' - ' + track.artists[0]) : null}}</span>
+            <span class="artist-name">{{track.artist.name}}</span>
+            <span class="badge">{{track.artist.genres[0]}}</span>
           </div>
           <div class="col-xs-3 date-label">
             {{track.date_added | date}}

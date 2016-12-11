@@ -1,3 +1,5 @@
+import { Artist } from '@timeline/artists';
+
 export type GroupedTracks = Tracks[];
 
 export type Tracks = Track[];
@@ -8,6 +10,7 @@ export class Track {
   private _date_added: string = null;
   private _name: string = null;
   private _artists: string[] = null;
+  private _artist: Artist = null;
 
   constructor(obj = {}) {
 
@@ -15,7 +18,7 @@ export class Track {
     this._date_added = obj['added_at'];
     this._name = obj['name'];
     this._artists = obj['artists'].map((a: any) => {
-      return a['name'];
+      return a['id'];
     });
   }
 
@@ -26,6 +29,13 @@ export class Track {
   get name(): string { return this._name; }
 
   get artists(): string[] { return this._artists; }
+
+  get artist(): Artist { return this._artist; }
+
+  setArtist(artist: Artist) {
+    this._artist = artist;
+    return this;
+  }
 
   toJSON(): Object {
     return {

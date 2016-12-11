@@ -4,6 +4,13 @@
 export * from './spotifyTypes';
 
 /**
+ * Spotify Artist
+ */
+export { SpotifyArtistObject,
+  SpotifyArtistObjectSimplified } from './SpotifyArtistObject';
+
+
+/**
  * Spotify Track
  */
 export { SpotifyTrackObject,

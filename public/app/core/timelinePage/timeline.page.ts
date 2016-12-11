@@ -94,7 +94,7 @@ export class TimelinePage {
   }
 
   ngOnInit() {
-    // this.generateTimeline();
+    this.generateTimeline();
   }
 
 }

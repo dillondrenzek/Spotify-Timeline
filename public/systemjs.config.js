@@ -17,6 +17,7 @@
     map: {
       'app':                                'public/app',
 
+      '@timeline/artists':                  'public/app/artists/index.js',
       '@timeline/core':                     'public/app/core/index.js',
       '@timeline/users':                    'public/app/users/index.js',
       '@timeline/shared':                   'public/app/shared/index.js',

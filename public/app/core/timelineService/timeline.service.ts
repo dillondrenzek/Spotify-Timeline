@@ -1,27 +1,50 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs/Rx';
 
 import { TracksService, Track, Tracks, GroupedTracks } from '@timeline/tracks';
+import { Artist, ArtistsService } from '@timeline/artists';
 import { Timeline, TimelineConfig } from './timelineInterfaces';
 
 @Injectable()
 export class TimelineService {
 
 
-  constructor( private tracksService: TracksService ) {  }
+  constructor(
+    private tracksService: TracksService,
+    private artistsService: ArtistsService
+   ) {  }
 
 
 
   generateTimeline(options: TimelineConfig): Observable<Timeline> {
+
+    let timeline$: Subject<Timeline> = new Subject<Timeline>();
+    let timeline_obs = timeline$.asObservable();
+
     return this.tracksService.getUsersTracks()
-      .map((usersTracks: Track[]) => {
-        // process user's tracks
-        return this.groupTracks(usersTracks, options.proximity);
-      })
+      .flatMap((tracks: Tracks) => this.setTrackArtists(tracks))
+      .map((usersTracks: Tracks) => this.groupTracks(usersTracks, options.proximity))
       .map((groups: GroupedTracks) => {
         // return Timeline object
         return { groups: groups };
       });
+  }
+
+  private setTrackArtists(tracks: Tracks): Observable<Tracks> {
+
+    let artistIds: string[] = [];
+
+    // Assemble First artist from each Track
+    // TODO: Fetch all artists at some point
+    tracks.forEach((track: Track) => {
+      artistIds.push(track.artists[0]);
+    });
+
+    return this.artistsService.getArtistsById(artistIds)
+      .map((artists: Artist[]) => {
+        return tracks.map((track: Track, index: number) => track.setArtist(artists[index]))
+      });
+
   }
 
 
