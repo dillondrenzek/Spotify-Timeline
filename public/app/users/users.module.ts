@@ -12,7 +12,7 @@ import { SpotifyUserCallback }  from './spotifyUserCallback/spotifyUser.callback
 import { UserGuard }            from './userGuard/user.guard';
 import { UserService }          from './user.service';
 
-import { SpotifyApiModule }     from '@timeline/spotify-api';
+import { SpotifyApiModule }     from 'spotify-api/index';
 
 
 @NgModule({

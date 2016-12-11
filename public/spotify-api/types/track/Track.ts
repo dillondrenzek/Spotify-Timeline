@@ -1,23 +1,20 @@
-// import {
-//   SpotifyURLObject,
-//   SpotifyFollowersObject,
-//   SpotifyImageArray
-// } from './spotifyTypes';
+import { SimplifiedAlbum } from '../album/index';
+import { SimplifiedArtist } from '../artist/index';
+// import SimplifiedArtist
+// import ExternalIdObject
 
-/**
- * The shape of the track data that comes back from spotify
- */
 
-export interface SpotifyTrackObject {
+export interface Track {
 
   // album
   // a simplified album object
   // The album on which the track appears. The album object includes a link in href to full information about the album.
-  album: Object,
+  album: SimplifiedAlbum,
 
   // artists
-  // an array of simplified artist objects	The artists who performed the track. Each artist object includes a link in href to more detailed information about the artist.
-  artists: Object[],
+  // an array of simplified artist objects
+  // The artists who performed the track. Each artist object includes a link in href to more detailed information about the artist.
+  artists: SimplifiedArtist[],
 
   // available_markets
   // array of strings
@@ -67,7 +64,7 @@ export interface SpotifyTrackObject {
   // linked_from
   // a linked track object
   // Part of the response when Track Relinking is applied, and the requested track has been replaced with different track. The track in the linked_from object contains information about the originally requested track.
-  linked_from: SpotifyTrackObject,
+  linked_from: Track,
 
   // name
   // string
@@ -104,100 +101,3 @@ export interface SpotifyTrackObject {
   uri: string
 
 }
-
-export interface SpotifySavedTrackObject {
-  // added_at - a timestamp	- The date and time the track was saved.
-  added_at: string,
-
-  // track - a track object -	Information about the track.
-  track: SpotifyTrackObject
-}
-
-// export interface SpotifyUserObject {
-//
-//   // "birthdate": "1937-06-01"
-//   birthdate: string,
-//
-//   // "country": "SE",
-//   country: string,
-//
-//   // "display_name": "JM Wizzler",
-//   display_name: string,
-//
-//   // "email": "email@example.com",
-//   email: string,
-//
-//   // "external_urls": {
-//   //   "spotify": "https://open.spotify.com/user/wizzler"
-//   // },
-//   external_urls: SpotifyURLObject,
-//
-//   // "followers" : {
-//   //   "href" : null,
-//   //   "total" : 3829
-//   // },
-//   followers : SpotifyFollowersObject,
-//
-//   // "href": "https://api.spotify.com/v1/users/wizzler",
-//   href: string,
-//
-//
-//   id: string,
-//
-//   // "images": [
-//   //   {
-//   //     "height": null,
-//   //     "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/1970403_10152215092574354_1798272330_n.jpg",
-//   //     "width": null
-//   //   }
-//   // ],
-//   images: SpotifyImageArray,
-//
-//   // "product": "premium",
-//   product: string,
-//
-//   // "type": "user",
-//   type: string,
-//
-//   // "uri": "spotify:user:wizzler"
-//   uri: string
-//
-// }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-// /**
-//  * From Spotify API documentation
-//  *
-//     {
-//       "birthdate": "1937-06-01",
-//       "country": "SE",
-//       "display_name": "JM Wizzler",
-//       "email": "email@example.com",
-//       "external_urls": {
-//         "spotify": "https://open.spotify.com/user/wizzler"
-//       },
-//       "followers" : {
-//         "href" : null,
-//         "total" : 3829
-//       },
-//       "href": "https://api.spotify.com/v1/users/wizzler",
-//       "id": "wizzler",
-//       "images": [
-//         {
-//           "height": null,
-//           "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/1970403_10152215092574354_1798272330_n.jpg",
-//           "width": null
-//         }
-//       ],
-//       "product": "premium",
-//       "type": "user",
-//       "uri": "spotify:user:wizzler"
-//     }
-//  */

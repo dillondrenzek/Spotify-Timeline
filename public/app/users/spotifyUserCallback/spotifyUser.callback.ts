@@ -4,10 +4,8 @@ import { Router,
 
 import { UserService } from '../user.service';
 
-import { SpotifyApiService,
-  SpotifyToken,
-  SpotifyUserObject,
-  isValidSpotifyToken } from '@timeline/spotify-api';
+import { SpotifyApiService } from 'spotify-api/index';
+import * as Spotify from 'spotify-api/types';
 
 
 
@@ -37,7 +35,7 @@ export class SpotifyUserCallback {
     let token = this.parseFragment(fragment);
 
     this.spotifyApiService.getUserObject(token)
-      .subscribe((user: SpotifyUserObject) => {
+      .subscribe((user: Spotify.User) => {
         if (user) {
           this.userService.setCurrentUser(user);
           this.router.navigate(['/']);
@@ -49,9 +47,9 @@ export class SpotifyUserCallback {
 
 
 
-  private parseFragment(fragment: string): SpotifyToken {
+  private parseFragment(fragment: string): Spotify.SpotifyToken {
 
-    let token: SpotifyToken = {
+    let token: Spotify.SpotifyToken = {
       access_token: null,
       token_type: null,
       expires_in: null
@@ -69,7 +67,7 @@ export class SpotifyUserCallback {
     }
 
     // Throw error if invalid token is parsed
-    if (!isValidSpotifyToken(token)) this.invalidSpotifyToken(token);
+    if (!Spotify.isValidSpotifyToken(token)) this.invalidSpotifyToken(token);
 
     return token;
   }

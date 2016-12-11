@@ -1,6 +1,7 @@
 import { Component }            from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SpotifyApiService, SpotifyUserObject }    from '@timeline/spotify-api';
+import { SpotifyApiService}    from 'spotify-api/index';
+import * as Spotify from 'spotify-api/types';
 
 @Component({
   selector: 'login-page',
@@ -21,7 +22,7 @@ export class LoginPage {
 
       this.spotifyApi.attemptCachedLogin()
         .subscribe({
-          next: ( user: SpotifyUserObject) => {
+          next: ( user: Spotify.User) => {
             // if user, redirect to '/' (should pass UserGuard)
             if (user) {
               console.info('Logged in cached user.')

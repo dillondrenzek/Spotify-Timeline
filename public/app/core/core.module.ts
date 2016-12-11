@@ -28,7 +28,6 @@ import { MetaService }    from './metaService/meta.service';
     TracksModule,
     ArtistsModule,
     AlbumsModule,
-    // SpotifyApiModule,
     coreRoutes,
     SharedModule
   ],

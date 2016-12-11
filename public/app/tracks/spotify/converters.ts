@@ -1,16 +1,16 @@
-import { SpotifySavedTrackObject } from '@timeline/spotify-api';
+import * as Spotify from 'spotify-api/types';
 import { Track } from '../Track';
 
 
 /**
  * SpotifyTrackObject to Track
  */
-export function convertSpotifyTrack(spotifyTrack: SpotifySavedTrackObject): Track {
+export function convertSpotifyTrack(spotifyTrack: Spotify.SavedTrack): Track {
   return new Track({
     id:         spotifyTrack.track.id,
-    added_at:   spotifyTrack.added_at,
+    date_added: spotifyTrack.added_at,
     name:       spotifyTrack.track.name,
-    artists:    spotifyTrack.track.artists,
-    album:      spotifyTrack.track.album
+    artistIds:  spotifyTrack.track.artists.map(artist => artist.id),
+    albumId:    spotifyTrack.track.album.id
   });
 }

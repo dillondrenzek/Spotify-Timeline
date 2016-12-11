@@ -1,8 +1,6 @@
 import { Component, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 
-import { SpotifyApiService, SpotifyPagingObject, SpotifySavedTrackObject } from '@timeline/spotify-api';
-
 import { TracksService, Track, Tracks, GroupedTracks } from '@timeline/tracks';
 import { TimelineService } from '../timelineService/timeline.service';
 import { Timeline, TimelineConfig } from '../timelineService/timelineInterfaces';

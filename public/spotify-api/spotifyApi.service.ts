@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
-import { SpotifyUserObject, SpotifyToken, isValidSpotifyToken, SPOTIFY_TOKEN,
-   SpotifyPagingObject } from './spotifyTypes/index';
 
-import { SpotifyTrackObject, SpotifySavedTrackObject } from './spotifyTypes/index';
-import { SpotifyArtistObject, SpotifyArtistObjectSimplified } from './spotifyTypes/index';
-import { SpotifyAlbumObject } from './spotifyTypes/index';
+import { SavedTrack } from 'spotify-api/types';
+import { Artist } from 'spotify-api/types';
+import { Album } from 'spotify-api/types';
+import { User } from 'spotify-api/types';
+import { SpotifyToken, Paging, isValidSpotifyToken } from 'spotify-api/types';
 
 
+const SPOTIFY_TOKEN: string = 'SPOTIFY_TOKEN';
 
 // Spotify API info
 const CLIENT_ID: string =     '68cbe79b60c240079457182cbca17761';
@@ -31,8 +32,8 @@ export class SpotifyApiService {
   get spotifyToken(): SpotifyToken { return this._spotifyToken; }
 
   // User Profile
-  private _spotifyUser: SpotifyUserObject = null;
-  get spotifyUser(): SpotifyUserObject { return this._spotifyUser; }
+  private _spotifyUser: User = null;
+  get spotifyUser(): User { return this._spotifyUser; }
 
   get validUser(): boolean {
     return !!this.spotifyToken && !!this.spotifyUser;
@@ -43,7 +44,7 @@ export class SpotifyApiService {
   // -------------------------------------------------------------------------
   // GET /v1/albums/{id}
   // Get an album	album
-  getAlbumById(id: string): Observable<SpotifyAlbumObject> {
+  getAlbumById(id: string): Observable<Album> {
     if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
 
     console.info('Get Album:');
@@ -61,7 +62,7 @@ export class SpotifyApiService {
     return this.http
       .request(req)
       .map((res: Response) => {
-        let album: SpotifyAlbumObject = res.json();
+        let album: Album = res.json();
         console.info('>> Album Object:', album);
         return album;
       });
@@ -69,7 +70,7 @@ export class SpotifyApiService {
 
   // GET	/v1/albums?ids={ids}
   // Get several albums	albums
-  getAlbumsById(ids: string[]): Observable<SpotifyAlbumObject[]> {
+  getAlbumsById(ids: string[]): Observable<Album[]> {
     if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
 
     console.info('Get Albums:', [ids]);
@@ -89,7 +90,7 @@ export class SpotifyApiService {
     return this.http
       .request(req)
       .map((res: Response) => {
-        let albums: SpotifyAlbumObject[] = res.json()['albums'];
+        let albums: Album[] = res.json()['albums'];
         console.info('>> Album Objects:', albums);
         return albums;
       });
@@ -106,7 +107,7 @@ export class SpotifyApiService {
 
   // GET /v1/artists/{id}
   // Get an artist	artist
-  getArtistById(id: string): Observable<SpotifyArtistObject> {
+  getArtistById(id: string): Observable<Artist> {
     if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
 
     console.info('Get Artist:');
@@ -124,7 +125,7 @@ export class SpotifyApiService {
     return this.http
       .request(req)
       .map((res: Response) => {
-        let artist: SpotifyArtistObject = res.json();
+        let artist: Artist = res.json();
         console.info('>> Artist Object:', artist);
         return artist;
       });
@@ -132,7 +133,7 @@ export class SpotifyApiService {
 
   // GET /v1/artists?ids={ids}
   // Get several artists	artists
-  getArtistsById(ids: string[]): Observable<SpotifyArtistObject[]> {
+  getArtistsById(ids: string[]): Observable<Artist[]> {
     if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
 
     console.info('Get Artists:');
@@ -152,7 +153,7 @@ export class SpotifyApiService {
     return this.http
       .request(req)
       .map((res: Response) => {
-        let artists: SpotifyArtistObject[] = res.json()['artists'];
+        let artists: Artist[] = res.json()['artists'];
         console.info('>> Artist Objects:', artists);
         return artists;
       });
@@ -181,7 +182,7 @@ export class SpotifyApiService {
   // GET
   // /v1/me/tracks
   // Get user's saved tracks	saved tracks	OAuth
-  getUsersSavedTracks(): Observable<SpotifyPagingObject<SpotifySavedTrackObject>> {
+  getUsersSavedTracks(): Observable<Paging<SavedTrack>> {
     if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
 
     console.info('Get Users Saved Tracks:');
@@ -199,8 +200,8 @@ export class SpotifyApiService {
     return this.http
       .request(req)
       .map((res: Response) => {
-        let pagingObject: SpotifyPagingObject<SpotifySavedTrackObject> = res.json();
-        let tracks: SpotifySavedTrackObject[] = pagingObject.items;
+        let pagingObject: Paging<SavedTrack> = res.json();
+        let tracks: SavedTrack[] = pagingObject.items;
         console.info('>> Paging Object:', pagingObject);
         return pagingObject;
       });
@@ -233,7 +234,7 @@ export class SpotifyApiService {
   // -------------------------------------------------------------------------
 
 
-  attemptCachedLogin(): Observable<SpotifyUserObject> {
+  attemptCachedLogin(): Observable<User> {
 
     // check local storage for SpotifyToken
     let cachedToken = this.getCachedToken();
@@ -258,7 +259,7 @@ export class SpotifyApiService {
   /**
    * Public method for logging in to Spotify API service
    */
-  getUserObject(token: SpotifyToken): Observable<SpotifyUserObject> {
+  getUserObject(token: SpotifyToken): Observable<User> {
 
     // Set local token reference
     this._spotifyToken = token;
@@ -277,7 +278,7 @@ export class SpotifyApiService {
     return this.http
       .request(req)
       .map((res: Response) => {
-        let json: SpotifyUserObject = res.json();
+        let json: User = res.json();
         this._spotifyUser = json;
         return json;
       });

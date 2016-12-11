@@ -10,7 +10,8 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-        "@timeline/*":    [ "public/app/*" ]
+        "@timeline/*":    [ "public/app/*" ],
+        "spotify-api/*":  [ "public/spotify-api/*" ]
     }
   },
   "exclude": [

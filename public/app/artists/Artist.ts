@@ -1,27 +1,24 @@
+export interface ArtistInit {
+  id: string,
+  name: string,
+  genres: string[]
+}
+
 export class Artist {
 
-  private _id: string = null;
-  private _name: string = null;
-  private _genres: string[] = null;
+  constructor(private _init: ArtistInit = {
+    id: null,
+    name: null,
+    genres: null
+  }) {}
 
-  constructor(obj = {}) {
+  get id(): string { return this._init.id; }
 
-    this._id = obj['id'];
-    this._name = obj['name'];
-    this._genres = obj['genres'];
-  }
+  get name(): string { return this._init.name; }
 
-  get id(): string { return this._id; }
-
-  get name(): string { return this._name; }
-
-  get genres(): string[] { return this._genres; }
+  get genres(): string[] { return this._init.genres; }
 
   toJSON(): Object {
-    return {
-      id: this.id,
-      name: this.name,
-      genres: this.genres
-    }
+    return this._init;
   }
 }

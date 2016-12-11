@@ -3,6 +3,7 @@ _config.js
 typings
 
 public/app/**/*.js
+public/spotify-api/**/*.js
 public/**/*.map
 public/**/*.css
 

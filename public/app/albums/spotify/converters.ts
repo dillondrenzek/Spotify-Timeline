@@ -1,15 +1,12 @@
-import { SpotifyAlbumObject } from '@timeline/spotify-api';
+import * as Spotify from 'spotify-api/types';
 import { Album } from '../Album';
 
 
 /**
  * SpotifyAlbumObject to Album
  */
-export function convertSpotifyAlbum(spotifyAlbum: SpotifyAlbumObject): Album {
+export function convertSpotifyAlbum(spotifyAlbum: Spotify.Album): Album {
   return new Album({
-    id:         spotifyAlbum.id,
-    name:       spotifyAlbum.name,
-    genres:     spotifyAlbum.genres,
-    images:     spotifyAlbum.images
+    artworkUri:     spotifyAlbum.images[0].url
   });
 }

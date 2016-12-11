@@ -1,26 +1,28 @@
-import { SpotifyImageArray,
-  SpotifyURLObject } from './spotifyTypes';
-import {SpotifyArtistObjectSimplified} from './SpotifyArtistObject';
+import { Images,
+  DatePrecision,
+  ExternalURL,
+  Paging
+} from '../general/index';
 
-export type SpotifyAlbumType = 'album' | 'single' | 'compilation';
+import { SimplifiedArtist } from '../artist/index';
+import { SimplifiedTrack } from '../track/index';
+import { AlbumType } from './AlbumType';
 
-export type SpotifyReleaseDatePrecision = 'year' | 'month' | 'day';
 
 
-
-export interface SpotifyAlbumObject {
+export interface Album {
 
 
   // album_type
   // string
   // The type of the album: one of "album", "single", or "compilation".
-  album_type: SpotifyAlbumType,
+  album_type: AlbumType,
 
 
   // artists
   // array of simplified artist objects
   // The artists of the album. Each artist object includes a link in href to more detailed information about the artist.
-  artists: SpotifyArtistObjectSimplified,
+  artists: SimplifiedArtist[],
 
   // available_markets
   // array of strings
@@ -40,7 +42,7 @@ export interface SpotifyAlbumObject {
   // external_urls
   // an external URL object
   // Known external URLs for this album.
-  external_urls: SpotifyURLObject,
+  external_urls: ExternalURL,
 
   // genres
   // array of strings
@@ -60,7 +62,7 @@ export interface SpotifyAlbumObject {
   // images
   // array of image objects
   // The cover art for the album in various sizes, widest first.
-  images: SpotifyImageArray,
+  images: Images,
 
   // label
   // string
@@ -85,12 +87,12 @@ export interface SpotifyAlbumObject {
   // release_date_precision
   // string
   // The precision with which release_date value is known: "year", "month", or "day".
-  release_date_precision: SpotifyReleaseDatePrecision
+  release_date_precision: DatePrecision
 
   // tracks
   // array of simplified track objects inside a paging object
   // The tracks of the album.
-  tracks: Object[],
+  tracks: Paging<SimplifiedTrack>,
 
   // type
   // string

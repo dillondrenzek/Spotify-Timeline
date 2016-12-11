@@ -1,20 +1,16 @@
-import {
-  SpotifyURLObject,
-  SpotifyFollowersObject,
-  SpotifyImageArray
-} from './spotifyTypes';
+import { ExternalURL, Followers, Images } from '../general/index';
 
-export interface SpotifyArtistObject {
+export interface Artist {
 
   // external_urls
   // an external URL object
   // Known external URLs for this artist.
-  external_urls: SpotifyURLObject,
+  external_urls: ExternalURL,
 
   // followers
   // A followers object
   // Information about the followers of the artist.
-  followers: SpotifyFollowersObject,
+  followers: Followers,
 
   // genres
   // array of strings
@@ -34,7 +30,7 @@ export interface SpotifyArtistObject {
   // images
   // array of image objects
   // Images of the artist in various sizes, widest first.
-  images: SpotifyImageArray,
+  images: Images,
 
   // name
   // string
@@ -55,41 +51,5 @@ export interface SpotifyArtistObject {
   // string
   // The Spotify URI for the artist.
   url: string
-
-}
-
-
-
-export interface SpotifyArtistObjectSimplified {
-  
-  // external_urls
-  // an external URL object
-  // Known external URLs for this artist.
-  external_urls: SpotifyURLObject,
-
-  // href
-  // string
-  // A link to the Web API endpoint providing full details of the artist.
-  href: string,
-
-  // id
-  // string
-  // The Spotify ID for the artist.
-  id: string,
-
-  // name
-  // string
-  // The name of the artist
-  name: string,
-
-  // type
-  // string
-  // The object type: "artist"
-  type: string,
-
-  // uri
-  // string
-  // The Spotify URI for the artist.
-  uri: string,
 
 }

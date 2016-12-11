@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscriber } from 'rxjs/Rx';
 
-import { SpotifyApiService,
-  SpotifyAlbumObject } from '@timeline/spotify-api';
+import { SpotifyApiService } from 'spotify-api/index';
+import * as Spotify from 'spotify-api/types';
 
 import { Album } from './Album';
 import { convertSpotifyAlbum } from './spotify/converters';
@@ -15,7 +15,7 @@ export class AlbumsService {
 
   getAlbumById(id: string): Observable<Album> {
     return this.spotifyApi.getAlbumById(id)
-      .map((sao: SpotifyAlbumObject) => {
+      .map((sao: Spotify.Album) => {
         return convertSpotifyAlbum(sao);
       });
   }
@@ -25,7 +25,7 @@ export class AlbumsService {
     if (ids.length > 20) throw new Error('Can only retrieve 20 Album ids at a time. Requested '+ ids.length + '.');
 
     return this.spotifyApi.getAlbumsById(ids)
-      .map((sao: SpotifyAlbumObject[]) => {
+      .map((sao: Spotify.Album[]) => {
         return sao.map(s => convertSpotifyAlbum(s));
       });
   }

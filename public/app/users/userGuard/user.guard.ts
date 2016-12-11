@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 
-import { SpotifyApiService } from '@timeline/spotify-api';
+import { SpotifyApiService } from 'spotify-api/index';
 
 @Injectable()
 export class UserGuard implements CanActivate {

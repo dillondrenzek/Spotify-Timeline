@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
-import { SpotifyApiService, SpotifyUserObject } from '@timeline/spotify-api';
+import { SpotifyApiService } from 'spotify-api/index';
+import * as Spotify from 'spotify-api/types';
 
 @Component({
   selector: 'mini-user',
@@ -10,7 +11,7 @@ import { SpotifyApiService, SpotifyUserObject } from '@timeline/spotify-api';
 })
 export class MiniUser {
 
-  user: SpotifyUserObject;
+  user: Spotify.User;
 
   constructor( private spotifyApi: SpotifyApiService ) {}
 

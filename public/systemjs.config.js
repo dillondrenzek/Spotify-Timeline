@@ -16,13 +16,19 @@
     // map tells the System loader where to look for things
     map: {
       'app':                                'public/app',
+      'spotify-api':                        'public/spotify-api',
 
+      // Spotify Api
+      'spotify-api/index':                  'public/spotify-api/index.js',
+      'spotify-api/types':                  'public/spotify-api/types/index.js',
+
+      // Timeline App
       '@timeline/artists':                  'public/app/artists/index.js',
       '@timeline/albums':                   'public/app/albums/index.js',
       '@timeline/core':                     'public/app/core/index.js',
       '@timeline/users':                    'public/app/users/index.js',
       '@timeline/shared':                   'public/app/shared/index.js',
-      '@timeline/spotify-api':              'public/app/spotify-api/index.js',
+      '@timeline/shared':                   'public/app/shared/index.js',
       '@timeline/tracks':                   'public/app/tracks/index.js',
 
       '@angular/core':                      'npm:@angular/core/bundles/core.umd.js',
@@ -41,6 +47,7 @@
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
       'app':                            { main: 'boot.js', defaultExtension: 'js' },
+      'spotify-api':                    { defaultExtension: 'js' },
       '@timeline':                      { defaultExtension: 'js' },
       'rxjs':                           { defaultExtension: 'js' },
       'angular2-in-memory-web-api':     { main: 'index.js', defaultExtension: 'js' }
