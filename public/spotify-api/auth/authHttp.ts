@@ -22,7 +22,7 @@ export class AuthHttp {
   get(url: string) {
     return this.requestHelper(url, RequestMethod.Get);
   }
-  post(url: string, body: any) {return this.requestHelper(url, RequestMethod.Get);}
+  post(url: string, body: any) {return this.requestHelper(url, RequestMethod.Post, body);}
   put(url: string) {}
   delete(url: string) {}
 
@@ -37,7 +37,7 @@ export class AuthHttp {
 
 
   /**
-   *
+   * Execute HTTP Requst
    */
   private requestWithToken(opts: RequestOptionsArgs): Observable<Response>{
     let token: SpotifyToken = this.authService.getSpotifyToken();
@@ -46,6 +46,7 @@ export class AuthHttp {
       return;
     }
 
+    // Add Authorization Header
     opts.headers = new Headers({
       'Authorization': 'Bearer '+ token.access_token
     });

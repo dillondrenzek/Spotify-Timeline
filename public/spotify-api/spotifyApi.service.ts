@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Request, RequestMethod, Headers } from '@angular/http';
+import { Response, Request, RequestMethod, Headers } from '@angular/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, Subscriber, BehaviorSubject } from 'rxjs/Rx';
 
@@ -10,12 +10,9 @@ import { User } from 'spotify-api/types';
 import { SpotifyToken, Paging, isValidSpotifyToken } from 'spotify-api/types';
 
 import { AuthHttp } from './auth/authHttp';
+import { AuthService } from './auth/auth.service';
 
 const SPOTIFY_TOKEN: string = 'SPOTIFY_TOKEN';
-
-// Spotify API info
-const CLIENT_ID: string =     '68cbe79b60c240079457182cbca17761';
-const REDIRECT_URI: string =  'http://localhost:8081/me/callback';
 
 
 
@@ -23,46 +20,22 @@ const REDIRECT_URI: string =  'http://localhost:8081/me/callback';
 export class SpotifyApiService {
 
   constructor(
-    private http: Http,
     private authHttp: AuthHttp,
+    private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
 
-  // User Token
-  private _spotifyToken: SpotifyToken = null;
-  get spotifyToken(): SpotifyToken { return this._spotifyToken; }
-
-  // User Profile
-  private _spotifyUser: User = null;
-  get spotifyUser(): User { return this._spotifyUser; }
-
-  get validUser(): boolean {
-    return !!this.spotifyToken && !!this.spotifyUser;
-  }
-
   // -------------------------------------------------------------------------
   // >> Spotify Album
   // -------------------------------------------------------------------------
+
   // GET /v1/albums/{id}
   // Get an album	album
   getAlbumById(id: string): Observable<Album> {
-    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
-
-    console.info('Get Album:');
-
-    // configure HTTP request
-    var req = new Request({
-      method: RequestMethod.Get,
-      url: 'https://api.spotify.com/v1/albums/' + id,
-      headers: new Headers({
-        'Authorization': 'Bearer ' + this._spotifyToken.access_token
-      })
-    });
-
-    // make HTTP request
-    return this.http
-      .request(req)
+    console.info('Get Album:', id);
+    return this.authHttp
+      .get('/v1/albums/' + id)
       .map((res: Response) => {
         let album: Album = res.json();
         console.info('>> Album Object:', album);
@@ -70,30 +43,19 @@ export class SpotifyApiService {
       });
   }
 
+
+
   // GET	/v1/albums?ids={ids}
   // Get several albums	albums
   getAlbumsById(ids: string[]): Observable<Album[]> {
-    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
-
     // Max 20 ids
     if (ids.length > 20) throw new Error('Can only retrieve 20 Album ids at a time. Requested '+ ids.length + '.');
 
     console.info('Get Albums:', [ids]);
 
-    let queryString: string = ids.join(',');
-
-    // configure HTTP request
-    var req = new Request({
-      method: RequestMethod.Get,
-      url: 'https://api.spotify.com/v1/albums?ids=' + queryString,
-      headers: new Headers({
-        'Authorization': 'Bearer ' + this._spotifyToken.access_token
-      })
-    });
-
     // make HTTP request
-    return this.http
-      .request(req)
+    return this.authHttp
+      .get('/albums?id=' + ids.join(','))
       .map((res: Response) => {
         let albums: Album[] = res.json()['albums'];
         console.info('>> Album Objects:', albums);
@@ -103,6 +65,7 @@ export class SpotifyApiService {
 
   // GET	/v1/albums/{id}/tracks
   // Get an album's tracks	tracks*
+  // getTracksForAlbum(): Observable<SimplifiedTracks[]> {}
 
 
 
@@ -113,22 +76,11 @@ export class SpotifyApiService {
   // GET /v1/artists/{id}
   // Get an artist	artist
   getArtistById(id: string): Observable<Artist> {
-    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
-
-    console.info('Get Artist:');
-
-    // configure HTTP request
-    var req = new Request({
-      method: RequestMethod.Get,
-      url: 'https://api.spotify.com/v1/artists/' + id,
-      headers: new Headers({
-        'Authorization': 'Bearer ' + this._spotifyToken.access_token
-      })
-    });
+    console.info('Get Artist:', id);
 
     // make HTTP request
-    return this.http
-      .request(req)
+    return this.authHttp
+      .get('/artists/' + id)
       .map((res: Response) => {
         let artist: Artist = res.json();
         console.info('>> Artist Object:', artist);
@@ -136,27 +88,15 @@ export class SpotifyApiService {
       });
   }
 
+
+
   // GET /v1/artists?ids={ids}
   // Get several artists	artists
   getArtistsById(ids: string[]): Observable<Artist[]> {
-    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
 
-    console.info('Get Artists:');
-
-    let queryString: string = ids.join(',');
-
-    // configure HTTP request
-    var req = new Request({
-      method: RequestMethod.Get,
-      url: 'https://api.spotify.com/v1/artists?ids=' + queryString,
-      headers: new Headers({
-        'Authorization': 'Bearer ' + this._spotifyToken.access_token
-      })
-    });
-
-    // make HTTP request
-    return this.http
-      .request(req)
+    console.info('Get Artists:', [ids]);
+    return this.authHttp
+      .get('/artists?ids=' + ids.join(','))
       .map((res: Response) => {
         let artists: Artist[] = res.json()['artists'];
         console.info('>> Artist Objects:', artists);
@@ -188,22 +128,9 @@ export class SpotifyApiService {
   // /v1/me/tracks
   // Get user's saved tracks	saved tracks	OAuth
   getUsersSavedTracks(): Observable<Paging<SavedTrack>> {
-    if (!this._spotifyToken.access_token) { console.warn('no access_token'); }
-
     console.info('Get Users Saved Tracks:');
-
-    // configure HTTP request
-    var req = new Request({
-      method: RequestMethod.Get,
-      url: 'https://api.spotify.com/v1/me/tracks?offset=0&limit=50',
-      headers: new Headers({
-        'Authorization': 'Bearer ' + this._spotifyToken.access_token
-      })
-    });
-
-    // make HTTP request
-    return this.http
-      .request(req)
+    return this.authHttp
+      .get('/me/tracks?offset=0&limit=50')
       .map((res: Response) => {
         let pagingObject: Paging<SavedTrack> = res.json();
         let tracks: SavedTrack[] = pagingObject.items;
@@ -241,52 +168,36 @@ export class SpotifyApiService {
   /**
    * Public method for logging in to Spotify API service
    */
-  getUserObject(token: SpotifyToken): Observable<User> {
-
-    // Set local token reference
-    this._spotifyToken = token;
-    this.setCachedToken(token);
-
-    // configure HTTP request
-    var req = new Request({
-      method: RequestMethod.Get,
-      url: 'https://api.spotify.com/v1/me',
-      headers: new Headers({
-        'Authorization': 'Bearer ' + this._spotifyToken.access_token
-      })
-    });
+  getUserObject(): Observable<User> {
 
     // make HTTP request
-    return this.http
-      .request(req)
+    return this.authHttp
+      .get('/me')
       .map((res: Response) => {
         let json: User = res.json();
-        this._spotifyUser = json;
+        // this._spotifyUser = json;
         return json;
       });
   }
 
-  attemptCachedLogin(): Observable<User> {
 
-    // check local storage for SpotifyToken
-    let cachedToken = this.getCachedToken();
 
-    if ( isValidSpotifyToken(cachedToken) ) {
-      // if a valid token exists, use it to login automatically
-      return this.getUserObject(cachedToken);
+  // attemptCachedLogin(): Observable<User> {
+  //
+  //   // check local storage for SpotifyToken
+  //   // let cachedToken = this.();
+  //
+  //   if ( isValidSpotifyToken(cachedToken) ) {
+  //     // if a valid token exists, use it to login automatically
+  //     return this.getUserObject(cachedToken);
+  //
+  //   } else {
+  //     // no valid token exists
+  //     return Observable.of(null);
+  //   }
+  // }
 
-    } else {
-      // no valid token exists
-      return Observable.of(null);
-    }
-  }
 
-  /**
-   * Redirects client to Spotify's login URL to gain access to user's account
-   */
-  redirectToSpotifyLogin() {
-    window.location.href = this.getLoginUrl();
-  }
 
 
 
@@ -310,27 +221,7 @@ export class SpotifyApiService {
   // Login with Spotify //
   ////////////////////////
 
-  /**
-   * Builds and returns the URL used to acquire the spotify API token
-   */
-  private getLoginUrl(): string {
 
-    let scopes = [
-			'playlist-modify-public',
-			'playlist-modify-private',
-			'streaming',
-			'user-library-read',
-			'user-library-modify',
-			'user-read-birthdate',
-			'user-top-read'
-		];
-
-    return 'https://accounts.spotify.com/authorize?client_id=' + CLIENT_ID
-				+ '&redirect_uri=' + encodeURIComponent(REDIRECT_URI)
-				+ '&scope=' + encodeURIComponent(scopes.join(' '))
-				+ '&response_type=token';
-
-  }
 
 
   ///////////////////////////////
