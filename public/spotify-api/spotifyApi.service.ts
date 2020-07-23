@@ -141,16 +141,11 @@ export class SpotifyApiService {
 
   // DELETE	/v1/me/tracks?ids={ids}	Remove user's saved tracks	-	OAuth
 
-  // GET
-  // /v1/me/tracks/contains?ids={ids}
-  // Check user's saved tracks	true/false	OAuth
+  // GET /v1/me/tracks/contains?ids={ids} Check user's saved tracks	true/false	OAuth
 
-  // PUT	/v1/me/albums?ids={ids}
-  // Save albums for user	-	OAuth
+  // PUT	/v1/me/albums?ids={ids} Save albums for user	-	OAuth
 
-  // GET
-  // /v1/me/albums
-  // Get user's saved albums	saved albums	OAuth
+  // GET /v1/me/albums  Get user's saved albums	saved albums	OAuth
 
   // DELETE	/v1/me/albums?ids={ids}	Remove user's saved albums	-	OAuth
 
