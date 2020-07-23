@@ -17,8 +17,17 @@
     "url": "https://github.com/dillondrenzek/Spotify-Timeline/issues"
   },
   "homepage": "https://github.com/dillondrenzek/Spotify-Timeline#readme",
+  "main": "dist/index.js",
   "scripts": {
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "tslint": "6.1.2",
+    "typescript": "3.9.7"
   }
 }
