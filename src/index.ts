@@ -1,5 +1,8 @@
 import express from 'express';
 import path from 'path';
+import http from 'http';
+import https from 'https';
+import querystring from 'querystring';
 import loadEnv from './env';
 import api from './api';
 
@@ -23,13 +26,59 @@ app.get('/spotify/login', (req, res) => {
 
 app.get('/spotify/callback', (req, res) => {
   console.log('spotify callback', req.query);
-  res.send('Ok');
+
+  if (req.query?.error) {
+    console.error('Error Spotify callback', req.query.error);
+  }
+
+  // Post data
+  const { code } = req.query;
+  const postData = querystring.stringify({
+    'grant_type': 'authorization_code',
+    'code': code.toString(),
+    'redirect_uri': env.SPOTIFY_API_REDIRECT_URI
+  });
+
+  // Authorization header
+  const creds = `${env.SPOTIFY_API_CLIENT_ID}:${env.SPOTIFY_API_CLIENT_SECRET}`;
+  const authHeader = `Basic ${new Buffer(creds).toString('base64')}`
+
+  const r = https.request('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': Buffer.byteLength(postData),
+      'Authorization': authHeader
+    },
+    protocol: 'https:'
+
+  }, (s) => {
+    console.log(`STATUS: ${s.statusCode}`);
+    console.log(`HEADERS: ${JSON.stringify(s.headers)}`);
+    s.setEncoding('utf8');
+    s.on('data', (chunk) => {
+      console.log(`BODY: ${chunk}`);
+    });
+    s.on('end', () => {
+      console.log('No more data in response.');
+      res.redirect(env.CLIENT_BASE_URL);
+    });
+  });
+
+  r.on('error', (e) => {
+    console.error(`problem with request: ${e.message}`);
+  });
+
+  console.log('request body:', postData);
+
+  // Write data to request body
+  r.write(postData);
+  r.end();
+
 });
 
-// define a route handler for the default home page
 app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../src/app/public/index.html'));
-  // res.send('Hello world!');
 });
 
 // start the Express server
