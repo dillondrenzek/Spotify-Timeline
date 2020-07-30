@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-interface AppEnvironment {
+export interface AppEnvironment {
   APP_PORT: number;
   CLIENT_BASE_URL: string;
   SPOTIFY_API_CLIENT_ID: string;

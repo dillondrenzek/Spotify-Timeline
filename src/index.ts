@@ -3,11 +3,13 @@ import path from 'path';
 import http from 'http';
 import https from 'https';
 import querystring from 'querystring';
+import { SpotifyWebApi } from './spotify-web-api';
 import loadEnv from './env';
 import api from './api';
 
 const env = loadEnv();
 const app = express();
+const spotifyWebApi = new SpotifyWebApi(env);
 const port = env.APP_PORT; // default port to listen
 
 app.use('/api', api);
@@ -33,48 +35,16 @@ app.get('/spotify/callback', (req, res) => {
 
   // Post data
   const { code } = req.query;
-  const postData = querystring.stringify({
-    'grant_type': 'authorization_code',
-    'code': code.toString(),
-    'redirect_uri': env.SPOTIFY_API_REDIRECT_URI
-  });
 
-  // Authorization header
-  const creds = `${env.SPOTIFY_API_CLIENT_ID}:${env.SPOTIFY_API_CLIENT_SECRET}`;
-  const authHeader = `Basic ${new Buffer(creds).toString('base64')}`
-
-  const r = https.request('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData),
-      'Authorization': authHeader
-    },
-    protocol: 'https:'
-
-  }, (s) => {
-    console.log(`STATUS: ${s.statusCode}`);
-    console.log(`HEADERS: ${JSON.stringify(s.headers)}`);
-    s.setEncoding('utf8');
-    s.on('data', (chunk) => {
-      console.log(`BODY: ${chunk}`);
-    });
-    s.on('end', () => {
-      console.log('No more data in response.');
+  spotifyWebApi
+    .getTokens(code.toString())
+    .then((resBody) => {
+      console.log('response', resBody);
       res.redirect(env.CLIENT_BASE_URL);
+    })
+    .catch((err) => {
+      console.error(err);
     });
-  });
-
-  r.on('error', (e) => {
-    console.error(`problem with request: ${e.message}`);
-  });
-
-  console.log('request body:', postData);
-
-  // Write data to request body
-  r.write(postData);
-  r.end();
-
 });
 
 app.get('/', (req, res) => {
