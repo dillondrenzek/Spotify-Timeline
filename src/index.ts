@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import loadEnv from './env';
 import api from './api';
 
@@ -27,7 +28,8 @@ app.get('/spotify/callback', (req, res) => {
 
 // define a route handler for the default home page
 app.get('/', (req, res) => {
-  res.send('Hello world!');
+  res.sendFile(path.resolve(__dirname, '../src/app/public/index.html'));
+  // res.send('Hello world!');
 });
 
 // start the Express server
