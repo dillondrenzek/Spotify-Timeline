@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Login
+          Login to Spotify
         </a>
       </header>
     </div>
