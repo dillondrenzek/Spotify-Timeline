@@ -32,8 +32,6 @@ app.get('/spotify/login', (req, res) => {
 });
 
 app.get('/spotify/callback', (req, res) => {
-  console.log('spotify callback', req.query);
-
   if (req.query?.error) {
     console.error('Error Spotify callback', req.query.error);
   }
@@ -44,7 +42,6 @@ app.get('/spotify/callback', (req, res) => {
   spotifyWebApi
     .getTokens(code.toString())
     .then((resBody) => {
-      console.log('response', resBody);
       res.cookie('auth_token', resBody.access_token);
       res.redirect(env.CLIENT_BASE_URL);
     })
