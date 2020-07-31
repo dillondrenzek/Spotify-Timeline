@@ -12,6 +12,11 @@ const app = express();
 const spotifyWebApi = new SpotifyWebApi(env);
 const port = env.APP_PORT; // default port to listen
 
+app.use((req, res, next) => {
+  console.log(`[${req.method.toUpperCase()}] ${req.path}`);
+  next();
+});
+
 app.use('/api', api);
 
 app.get('/spotify/login', (req, res) => {
@@ -40,6 +45,7 @@ app.get('/spotify/callback', (req, res) => {
     .getTokens(code.toString())
     .then((resBody) => {
       console.log('response', resBody);
+      res.cookie('auth_token', resBody.access_token);
       res.redirect(env.CLIENT_BASE_URL);
     })
     .catch((err) => {

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Cookie from 'js-cookie';
+import { useAuthToken } from './auth/use-auth-token';
 import './App.scss';
 
 function App() {
-  const [authToken, setAuthToken] = useState('');
+  const [authToken] = useAuthToken();
 
-  useEffect(() => {
-    setAuthToken(Cookie.get('auth_token') || '');
-  }, []);
+  console.log('auth_token', authToken);
 
   return (
     <div className="App">
