@@ -15,7 +15,7 @@
     }
   },
   "include": [
-    "src/**/*"
+    "src/server/**/*"
   ],
   "exclude": [
     "src/app/**/*"
