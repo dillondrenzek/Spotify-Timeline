@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthToken } from './auth/use-auth-token';
+import { useAuthToken } from './hooks/use-auth-token';
+import { Nav } from './nav/Nav';
 import './App.scss';
 
 interface Artist {
@@ -57,152 +58,65 @@ interface CurrentUserSavedSongs {
   total: number;
 }
 
-interface CurrentUserProfile {
-  country: string;
-  display_name: string;
-  email: string;
-  external_urls: {
-    spotify: string;
-  };
-  followers: {
-    href: string;
-    total: number;
-  };
-  href: string;
-  id: string;
-  images: {
-    height: null; // number?
-    url: string;
-    width: null; // number?
-  }[];
-  product: 'premium';
-  type: 'user';
-  uri: string;
 
-  // "country": "SE",
-  // "display_name": "JM Wizzler",
-  // "email": "email@example.com",
-  // "external_urls": { "spotify": "https://open.spotify.com/user/wizzler" },
-  // "followers": { "href": null, "total": 3829 },
-  // "href": "https://api.spotify.com/v1/users/wizzler",
-  // "id": "wizzler",
-  // "images": [
-  //   { "height": null, "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/1970403_10152215092574354_1798272330_n.jpg", "width": null }
-  // ],
-  // "product": "premium",
-  // "type": "user",
-  // "uri": "spotify:user:wizzler"
-}
 
 const useCurrentUserSavedTracks = () => {
+  const { authToken, clearAuthToken } = useAuthToken();
   const [savedTracks, setSavedTracks] = useState<SavedSongs[]>([]);
 
   useEffect(() => {
-    fetch('/api/me/tracks')
-      .then((res) => {
-        res.json().then((result: CurrentUserSavedSongs) => {
-          setSavedTracks(result.items);
-        }).catch((err) => {
-          console.error('Error parsing JSON:', err);
+    if (authToken) {
+      fetch('/api/me/tracks')
+        .then((res) => {
+          res.json().then((result: CurrentUserSavedSongs) => {
+            setSavedTracks(result.items);
+          }).catch((err) => {
+            console.error('Error parsing JSON:', err);
+          });
+        })
+        .catch((err) => {
+          console.error('Error fetching /api/me:', err);
+          clearAuthToken();
         });
-      })
-      .catch((err) => {
-        console.error('Error fetching /api/me:', err);
-        // setIsLoaded(true);
-      });
-  }, []);
+    }
+  }, [authToken]);
 
   return {
     savedTracks
   };
 };
 
-const useCurrentUser = () => {
-  const [currentUser, setCurrentUser] = useState<CurrentUserProfile | null>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/me')
-      .then((res) => {
-        res.json().then((result) => {
-          console.log('me:', result);
-          setCurrentUser(result);
-          setIsLoaded(true);
-        }).catch((err) => {
-          console.error('Error parsing JSON:', err);
-          setIsLoaded(true);
-        });
-      })
-      .catch((err) => {
-        console.error('Error fetching /api/me:', err);
-        setIsLoaded(true);
-      });
-  }, []);
-
-  return {
-    currentUser,
-    isLoaded
-  }
-};
 
 function App() {
-  const [ authToken ] = useAuthToken();
-  const { currentUser } = useCurrentUser();
   const { savedTracks } = useCurrentUserSavedTracks();
 
   return (
     <div className="App">
-      {authToken ? (
-        <div>
-          {currentUser ? ( 
-            <>
-              <div>{currentUser?.display_name}</div>
-              <div>{currentUser?.email}</div>
-              <img src={currentUser?.images[0]?.url} height={60}/>
-            </>
-          ) : null}
-          <a 
-            className="App-link"
-            href="/spotify/logout"
-            rel="noopener noreferrer"
-          >
-            Logout
-          </a>
-          {savedTracks?.length ? (
-            <>
-              <h2>Saved Tracks</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Artist</th>
-                    <th>Date Added</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {savedTracks.map((st, i) => (
-                    <tr key={i}>
-                      <td>{st.track.name}</td>
-                      <td>{st.track.artists[0].name}</td>
-                      <td>{st.added_at}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </>
-          ) : null}
-        </div>
-      ) : (
-        <header className="App-header">
-          <a
-            className="App-link"
-            href="/spotify/login"
-            rel="noopener noreferrer"
-          >
-            Login to Spotify
-          </a>
-        </header>
-      )}
+      <Nav />
+      {savedTracks?.length ? (
+        <>
+          <h2>Saved Tracks</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Artist</th>
+                <th>Date Added</th>
+              </tr>
+            </thead>
+            <tbody>
+              {savedTracks.map((st, i) => (
+                <tr key={i}>
+                  <td>{st.track.name}</td>
+                  <td>{st.track.artists[0].name}</td>
+                  <td>{st.added_at}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
     </div>
   );
 }

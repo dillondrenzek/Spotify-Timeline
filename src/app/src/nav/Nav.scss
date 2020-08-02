@@ -1,0 +1,22 @@
+.Nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  height: 56px;
+
+  > *:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  > * {
+    flex: 0 1 auto;
+  }
+  > *:not(:first-child) {
+    margin-left: 15px;
+  }
+}
