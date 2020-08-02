@@ -176,6 +176,7 @@ function App() {
                   <tr>
                     <th>Name</th>
                     <th>Artist</th>
+                    <th>Date Added</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -183,8 +184,7 @@ function App() {
                     <tr key={i}>
                       <td>{st.track.name}</td>
                       <td>{st.track.artists[0].name}</td>
-                      {/* <td>{JSON.stringify(st.track.artist)}</td> */}
-                      {/* <td>{JSON.stringify(track)}</td> */}
+                      <td>{st.added_at}</td>
                     </tr>
                   ))}
                 </tbody>
