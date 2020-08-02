@@ -24,7 +24,8 @@ app.use('/api', api(spotifyWebApi));
 app.get('/spotify/login', (req, res) => {
   const scope = [
     'user-read-private',
-    'user-read-email'
+    'user-read-email',
+    'user-library-read'
   ].join(' ');
   const params = new URLSearchParams([
     ['client_id', env.SPOTIFY_API_CLIENT_ID],

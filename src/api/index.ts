@@ -1,23 +1,33 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import { SpotifyWebApi } from '../spotify-web-api';
+
+function getAccessToken(req: express.Request)  {
+  return req.cookies.access_token;
+}
 
 export default function(spotifyWebApi: SpotifyWebApi) {
   const api = express();
 
-  api.get('/me', async (req, res) => {
-    // console.log('req', req);
-    const accessToken = req.headers.cookie?.split('=')[1] || '';
-    console.log('accessToken', accessToken);
+  api.use(cookieParser());
+
+  api.get('/me/tracks', async (req, res) => {
     try {
-      const user = await spotifyWebApi.getMe(accessToken);
+      const user = await spotifyWebApi.getUsersSavedTracks(getAccessToken(req));
       res.json(user);
     } catch (e) {
-      console.error(e);
-      // res.setHeader('cookie', '');
-      // res.removeHeader('cookie');
-      // res.removeHeader('set-cookie');
-      res.status(500);
-      res.json(e);
+      res.status(e.error.status);
+      res.json(e.error);
+    }
+  });
+
+  api.get('/me', async (req, res) => {
+    try {
+      const user = await spotifyWebApi.getMe(getAccessToken(req));
+      res.json(user);
+    } catch (e) {
+      res.status(e.error.status);
+      res.json(e.error);
     }
   });
 

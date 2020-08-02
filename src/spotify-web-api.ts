@@ -157,4 +157,50 @@ export class SpotifyWebApi {
     });
   }
 
+  /**
+   * Get Current User's Saved Tracks
+   * @param accessToken
+   */
+  getUsersSavedTracks(accessToken: string): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      const authorizationHeader = `Bearer ${accessToken}`;
+
+      const req = https.request(
+        'https://api.spotify.com/v1/me/tracks',
+        {
+          method: 'GET',
+          headers: {
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            // 'Content-Length': Buffer.byteLength(postData),
+            'Authorization': authorizationHeader
+          },
+          protocol: 'https:'
+        },
+        (res) => {
+          let rawBody = '';
+          res.setEncoding('utf8');
+          res.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+            rawBody += chunk;
+          });
+          res.on('end', () => {
+            console.log('END');
+            const body = JSON.parse(rawBody);
+            if (body?.error) {
+              reject(body);
+            }
+            resolve(body);
+          });
+        }
+      );
+
+      req.on('error', (e) => {
+        console.error(`problem with request: ${e.message}`);
+        reject(e.message);
+      });
+
+      req.end();
+    });
+  }
+
 }
