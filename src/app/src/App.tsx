@@ -95,7 +95,7 @@ function App() {
     <div className="App">
       <Nav />
       {savedTracks?.length ? (
-        <>
+        <div className='saved-tracks'>
           <h2>Saved Tracks</h2>
           <table>
             <thead>
@@ -115,7 +115,7 @@ function App() {
               ))}
             </tbody>
           </table>
-        </>
+        </div>
       ) : null}
     </div>
   );

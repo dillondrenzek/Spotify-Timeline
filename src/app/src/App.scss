@@ -1,5 +1,8 @@
 .App {
   text-align: left;
+  > * {
+    box-sizing: border-box;
+  }
 }
 
 .App-logo {
@@ -35,4 +38,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.saved-tracks {
+  padding: 0 40px;
 }
