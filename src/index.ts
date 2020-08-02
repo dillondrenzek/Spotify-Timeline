@@ -36,6 +36,11 @@ app.get('/spotify/login', (req, res) => {
   res.redirect(url);
 });
 
+app.get('/spotify/logout', (req, res) => {
+  res.clearCookie('access_token');
+  res.redirect('/');
+});
+
 app.get('/spotify/callback', (req, res) => {
   if (req.query?.error) {
     console.error('Error Spotify callback', req.query.error);
