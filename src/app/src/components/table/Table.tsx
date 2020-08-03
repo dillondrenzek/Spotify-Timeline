@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import './Table.scss';
 
 export interface ColDef<T = any> {
   columnLabel?: string;
@@ -7,16 +8,18 @@ export interface ColDef<T = any> {
 }
 
 export interface TableProps<T = any> {
+  className?: string;
   colDefs: ColDef<T>[];
   rowData: T[];
 }
 
 export const Table: FC<TableProps> = ({
+  className = '',
   colDefs,
   rowData
 }: TableProps) => {
   return (
-    <table>
+    <table className={`table ${className}`}>
       <thead>
         <tr>
           {colDefs.map((col, i) =>(
