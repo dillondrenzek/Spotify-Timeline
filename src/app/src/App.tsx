@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuthToken } from './hooks/use-auth-token';
 import { Nav } from './nav/Nav';
 import './App.scss';
+import { Table } from './table/Table';
 
 interface Artist {
   // external_urls: { spotify: "https://open.spotify.com/artist/4pb4rqWSoGUgxm63xmJ8xc" }
@@ -97,24 +98,23 @@ function App() {
       {savedTracks?.length ? (
         <div className='saved-tracks'>
           <h2>Saved Tracks</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Artist</th>
-                <th>Date Added</th>
-              </tr>
-            </thead>
-            <tbody>
-              {savedTracks.map((st, i) => (
-                <tr key={i}>
-                  <td>{st.track.name}</td>
-                  <td>{st.track.artists[0].name}</td>
-                  <td>{st.added_at}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Table
+            colDefs={[
+              {
+                columnLabel: 'Name',
+                valueGetter: (row) => row['track'] ? row['track']['name'] : ''
+              },
+              {
+                columnLabel: 'Artist',
+                valueGetter: (row) => row['track'] ? row['track']['artists'][0]['name'] : ''
+              },
+              {
+                columnLabel: 'Date Added',
+                valueGetter: (row) => row['added_at']
+              },
+            ]}
+            rowData={savedTracks}
+          />
         </div>
       ) : null}
     </div>

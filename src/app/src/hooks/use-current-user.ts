@@ -50,7 +50,7 @@ export const useCurrentUser = () => {
       fetch('/api/me')
         .then((res) => {
           res.json().then((result) => {
-            console.log('me:', result);
+            // console.log('me:', result);
             setCurrentUser(result);
             setIsLoaded(true);
           }).catch((err) => {
