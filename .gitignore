@@ -1,28 +1,8 @@
-_config.js
-
-typings
-
-public/app/**/*.js
-public/spotify-api/**/*.js
-public/**/*.map
-public/**/*.css
-
-api/**/*.js
-api/**/*.map
-
-server.js
-server.js.map
-
-spotify_docs
-
-# deprecated code for reference
-public/legacy
-
 *.log
 npm-debug.log*
 
 # Build output directory
-built
+dist
 
 # Dependency directory
 node_modules
