@@ -44,7 +44,8 @@ interface SavedSongs {
 }
 
 interface CurrentUserSavedSongs {
-  href: "https://api.spotify.com/v1/me/tracks?offset=0&limit=20"
+  // href: "https://api.spotify.com/v1/me/tracks?offset=0&limit=20"
+  href: string;
   // items: [{ added_at: "2020-07-20T23:19:07Z", track: { album: { album_type: "single", … }, … } }, …]
   items: SavedSongs[];
   // limit: 20
