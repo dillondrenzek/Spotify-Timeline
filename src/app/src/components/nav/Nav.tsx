@@ -4,7 +4,7 @@ import './Nav.scss';
 
 const SiteTitle = () => {
   return (
-    <h1>Spotify Timeline</h1>
+    <h1 className='site-title'>Spotify Timeline</h1>
   );
 }
 
