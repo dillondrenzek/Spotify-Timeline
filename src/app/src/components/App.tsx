@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthToken } from './hooks/use-auth-token';
+import { useAuthToken } from '../hooks/use-auth-token';
 import { Nav } from './nav/Nav';
 import './App.scss';
 import { Table } from './table/Table';

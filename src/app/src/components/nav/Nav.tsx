@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCurrentUser } from '../hooks/use-current-user';
+import { useCurrentUser } from '../../hooks/use-current-user';
 import './Nav.scss';
 
 const SiteTitle = () => {
