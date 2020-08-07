@@ -1,55 +1,12 @@
 import https from 'https';
 import querystring from 'querystring';
+import { Https } from './lib/https';
 import { AppEnvironment } from './env';
-
-interface TokenResponse {
-  access_token: string;
-  token_type: 'Bearer';
-  expires_in: number;
-  refresh_token: string;
-  scope: string;
-}
-
-interface CurrentUserProfile {
-  "country": string;
-  "display_name": string;
-  "email": string;
-  "external_urls": {
-    "spotify": string;
-  };
-  "followers": {
-    "href": string;
-    "total": number;
-  };
-  "href": string;
-  "id": string;
-  "images": {
-    "height": null; // number?
-    "url": string;
-    "width": null; // number?
-  }[];
-  "product": 'premium';
-  "type": 'user';
-  "uri": string;
-
-  // "country": "SE",
-  // "display_name": "JM Wizzler",
-  // "email": "email@example.com",
-  // "external_urls": { "spotify": "https://open.spotify.com/user/wizzler" },
-  // "followers": { "href": null, "total": 3829 },
-  // "href": "https://api.spotify.com/v1/users/wizzler",
-  // "id": "wizzler",
-  // "images": [
-  //   { "height": null, "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/1970403_10152215092574354_1798272330_n.jpg", "width": null }
-  // ],
-  // "product": "premium",
-  // "type": "user",
-  // "uri": "spotify:user:wizzler"
-}
 
 export class SpotifyWebApi {
 
   private authorizationHeader: string;
+  private httpsClient = new Https();
 
   constructor(private env: AppEnvironment) {
     const {
@@ -161,12 +118,30 @@ export class SpotifyWebApi {
    * Get Current User's Saved Tracks
    * @param accessToken
    */
-  getUsersSavedTracks(accessToken: string): Promise<any[]> {
+  async getUsersSavedTracks(accessToken: string): Promise<SavedTrack[]> {
+    try {
+      const response = await this.httpsClient.request(
+        'https://api.spotify.com/v1/me/tracks',
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        }
+      );
+      return response;
+    } catch (err) {
+      console.error('Error:', err);
+      return [];
+    }
+  }
+
+  getAudioFeaturesForTracks(trackId: string, accessToken: string): Promise<AudioFeatures[]> {
     return new Promise((resolve, reject) => {
       const authorizationHeader = `Bearer ${accessToken}`;
 
       const req = https.request(
-        'https://api.spotify.com/v1/me/tracks',
+        `https://api.spotify.com/v1/audio-features/${trackId}`,
         {
           method: 'GET',
           headers: {
@@ -174,7 +149,7 @@ export class SpotifyWebApi {
             // 'Content-Length': Buffer.byteLength(postData),
             'Authorization': authorizationHeader
           },
-          protocol: 'https:'
+          protocol: 'https:',
         },
         (res) => {
           let rawBody = '';
