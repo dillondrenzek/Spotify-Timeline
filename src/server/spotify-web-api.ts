@@ -57,7 +57,7 @@ export class SpotifyWebApi {
       SPOTIFY_API_CLIENT_SECRET
     } = this.env;
     const creds = `${SPOTIFY_API_CLIENT_ID}:${SPOTIFY_API_CLIENT_SECRET}`;
-    this.authorizationHeader = `Basic ${new Buffer(creds).toString('base64')}`;
+    this.authorizationHeader = `Basic ${Buffer.from(creds).toString('base64')}`;
   }
 
 
