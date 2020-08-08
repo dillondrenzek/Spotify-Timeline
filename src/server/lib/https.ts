@@ -42,11 +42,12 @@ export class Https {
             rawBody += chunk;
           });
           res.on('end', () => {
-            const parsedBody = JSON.parse(rawBody);
-            if (parsedBody?.error) {
-              reject(parsedBody);
+            try {
+              const parsedBody: T = JSON.parse(rawBody);
+              resolve(parsedBody);
+            } catch (err) {
+              reject(err);
             }
-            resolve(parsedBody);
           });
         }
       );

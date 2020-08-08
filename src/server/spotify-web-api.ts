@@ -17,10 +17,8 @@ export class SpotifyWebApi {
     this.authorizationHeader = `Basic ${Buffer.from(creds).toString('base64')}`;
   }
 
-
-  getTokens(code: string): Promise<TokenResponse> {
-    return new Promise((resolve, reject) => {
-
+  async getTokens(code: string): Promise<TokenResponse> {
+    try {
       // Post data
       const postData = querystring.stringify({
         'grant_type': 'authorization_code',
@@ -28,90 +26,43 @@ export class SpotifyWebApi {
         'redirect_uri': this.env.SPOTIFY_API_REDIRECT_URI
       });
 
-      const req = https.request(
-        'https://accounts.spotify.com/api/token',
+      const response = await this.httpsClient.request<TokenResponse>(
+        `https://accounts.spotify.com/api/token/?${postData}`,
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(postData),
             'Authorization': this.authorizationHeader
           },
-          protocol: 'https:'
-        },
-        (res) => {
-          let rawBody = '';
-          res.setEncoding('utf8');
-          res.on('data', (chunk) => {
-            console.log(`BODY: ${chunk}`);
-            rawBody += chunk;
-          });
-          res.on('end', () => {
-            console.log('END');
-            const body = JSON.parse(rawBody);
-            if (body?.error) {
-              reject(body);
-            }
-            resolve(body);
-          });
+          // body: postData
         }
       );
-
-      req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
-        reject(e.message);
-      });
-
-      req.write(postData);
-      req.end();
-    });
+      return response;
+    } catch (err) {
+      console.error('Error getTokens:', err);
+      return null;
+    }
   }
 
   /**
    * Get Current User's Profile
    * @param accessToken
    */
-  getMe(accessToken: string): Promise<CurrentUserProfile> {
-    return new Promise((resolve, reject) => {
-      const authorizationHeader = `Bearer ${accessToken}`;
-      // const authorizationHeader = `Bearer ${new Buffer(accessToken).toString('base64')}`;
-
-      const req = https.request(
+  async getMe(accessToken: string): Promise<CurrentUserProfile> {
+    try {
+      const response = await this.httpsClient.request<CurrentUserProfile>(
         'https://api.spotify.com/v1/me',
         {
           method: 'GET',
           headers: {
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-            // 'Content-Length': Buffer.byteLength(postData),
-            'Authorization': authorizationHeader
-          },
-          protocol: 'https:'
-        },
-        (res) => {
-          let rawBody = '';
-          res.setEncoding('utf8');
-          res.on('data', (chunk) => {
-            console.log(`BODY: ${chunk}`);
-            rawBody += chunk;
-          });
-          res.on('end', () => {
-            console.log('END');
-            const body = JSON.parse(rawBody);
-            if (body?.error) {
-              reject(body);
-            }
-            resolve(body);
-          });
+            'Authorization': `Bearer ${accessToken}`
+          }
         }
       );
-
-      req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
-        reject(e.message);
-      });
-
-      req.end();
-    });
+      return response;
+    } catch (err) {
+      console.error('Error getMe:', err);
+      return null;
+    }
   }
 
   /**
@@ -131,51 +82,28 @@ export class SpotifyWebApi {
       );
       return response;
     } catch (err) {
-      console.error('Error:', err);
-      return [];
+      console.error('Error getUsersSavedTracks:', err);
+      return null;
     }
   }
 
-  getAudioFeaturesForTracks(trackId: string, accessToken: string): Promise<AudioFeatures[]> {
-    return new Promise((resolve, reject) => {
-      const authorizationHeader = `Bearer ${accessToken}`;
-
-      const req = https.request(
+  async getAudioFeaturesForTracks(trackId: string, accessToken: string): Promise<AudioFeatures[]> {
+    try {
+      const response = this.httpsClient.request<AudioFeatures[]>(
         `https://api.spotify.com/v1/audio-features/${trackId}`,
         {
           method: 'GET',
           headers: {
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-            // 'Content-Length': Buffer.byteLength(postData),
-            'Authorization': authorizationHeader
-          },
-          protocol: 'https:',
-        },
-        (res) => {
-          let rawBody = '';
-          res.setEncoding('utf8');
-          res.on('data', (chunk) => {
-            console.log(`BODY: ${chunk}`);
-            rawBody += chunk;
-          });
-          res.on('end', () => {
-            console.log('END');
-            const body = JSON.parse(rawBody);
-            if (body?.error) {
-              reject(body);
-            }
-            resolve(body);
-          });
+            'Authorization': `Bearer ${accessToken}`
+          }
         }
       );
+      return response;
+    } catch (err) {
+      console.error('Error getAudioFeaturesForTracks', err);
+      return null;
+    }
 
-      req.on('error', (e) => {
-        console.error(`problem with request: ${e.message}`);
-        reject(e.message);
-      });
-
-      req.end();
-    });
   }
 
 }
