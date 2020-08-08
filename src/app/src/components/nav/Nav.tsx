@@ -31,6 +31,14 @@ export const Nav = () => {
           </div>
         ) : null}
 
+        
+        <a className="App-link"
+          href="https://accounts.spotify.com/en/status"
+          rel="noopener noreferrer"
+        >
+          Account
+        </a>
+
         {currentUser ? (
           <a
             className="App-link"
