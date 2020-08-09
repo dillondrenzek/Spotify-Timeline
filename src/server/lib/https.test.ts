@@ -5,7 +5,7 @@ import { Https } from './https';
 
 describe('Https', () => {
   let subject: Https;
-  let httpsRequest = jest.fn();
+  const httpsRequest = jest.fn();
 
   jest.mock('https', () => {
     return {

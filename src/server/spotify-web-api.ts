@@ -1,4 +1,5 @@
 import https from 'https';
+import axios from 'axios';
 import querystring from 'querystring';
 import { Https } from './lib/https';
 import { AppEnvironment } from './env';
@@ -17,6 +18,10 @@ export class SpotifyWebApi {
     this.authorizationHeader = `Basic ${Buffer.from(creds).toString('base64')}`;
   }
 
+  /**
+   * Get access and refresh tokens
+   * @param code authorization code from Spotify authorization
+   */
   async getTokens(code: string): Promise<TokenResponse> {
     try {
       // Post data
@@ -26,17 +31,24 @@ export class SpotifyWebApi {
         'redirect_uri': this.env.SPOTIFY_API_REDIRECT_URI
       });
 
-      const response = await this.httpsClient.request<TokenResponse>(
-        `https://accounts.spotify.com/api/token/?${postData}`,
+      const response = axios.post(
+        'https://accounts.spotify.com/api/token',
+        postData,
         {
-          method: 'POST',
           headers: {
             'Authorization': this.authorizationHeader
-          },
-          // body: postData
+          }
         }
-      );
+      )
+      .then((data) => {
+        console.log('data:', data);
+
+        return null;
+      });
+
+
       return response;
+
     } catch (err) {
       console.error('Error getTokens:', err);
       return null;
@@ -48,6 +60,11 @@ export class SpotifyWebApi {
    * @param accessToken
    */
   async getMe(accessToken: string): Promise<CurrentUserProfile> {
+    // try {
+    //   return
+    // } catch (err) {
+
+    // }
     try {
       const response = await this.httpsClient.request<CurrentUserProfile>(
         'https://api.spotify.com/v1/me',
