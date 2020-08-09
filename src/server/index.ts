@@ -1,9 +1,6 @@
 import express from 'express';
 import path from 'path';
-import http from 'http';
-import https from 'https';
-import querystring from 'querystring';
-import { SpotifyWebApi } from './spotify-web-api';
+import { SpotifyWebApi } from './spotify/spotify-web-api';
 import loadEnv from './env';
 import api from './api';
 

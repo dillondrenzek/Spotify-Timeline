@@ -13,11 +13,5 @@
         "node_modules/*"
       ]
     }
-  },
-  "include": [
-    "src/server/**/*"
-  ],
-  "exclude": [
-    "src/app/**/*"
-  ]
+  }
 }
