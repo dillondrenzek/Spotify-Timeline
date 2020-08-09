@@ -1,13 +1,10 @@
-import https from 'https';
 import axios from 'axios';
 import querystring from 'querystring';
-import { Https } from './lib/https';
-import { AppEnvironment } from './env';
+import { AppEnvironment } from '../env';
 
 export class SpotifyWebApi {
 
   private authorizationHeader: string;
-  private httpsClient = new Https();
 
   constructor(private env: AppEnvironment) {
     const {
@@ -31,7 +28,7 @@ export class SpotifyWebApi {
         'redirect_uri': this.env.SPOTIFY_API_REDIRECT_URI
       });
 
-      const response = axios.post(
+      const { data } = await axios.post(
         'https://accounts.spotify.com/api/token',
         postData,
         {
@@ -39,15 +36,15 @@ export class SpotifyWebApi {
             'Authorization': this.authorizationHeader
           }
         }
-      )
-      .then((data) => {
-        console.log('data:', data);
-
-        return null;
-      });
-
-
-      return response;
+      );
+      
+      return {
+        access_token: data['access_token'],
+        expires_in: data['expires_in'],
+        refresh_token: data['refresh_token'],
+        scope: data['scope'],
+        token_type: data['token_type']
+      } as TokenResponse;
 
     } catch (err) {
       console.error('Error getTokens:', err);
@@ -60,22 +57,30 @@ export class SpotifyWebApi {
    * @param accessToken
    */
   async getMe(accessToken: string): Promise<CurrentUserProfile> {
-    // try {
-    //   return
-    // } catch (err) {
-
-    // }
     try {
-      const response = await this.httpsClient.request<CurrentUserProfile>(
+      const { data } = await axios.get(
         'https://api.spotify.com/v1/me',
         {
-          method: 'GET',
           headers: {
             'Authorization': `Bearer ${accessToken}`
           }
         }
       );
-      return response;
+
+      return {
+        country: data['country'],
+        display_name: data['display_name'],
+        email: data['email'],
+        external_urls: data['external_urls'],
+        followers: data['followers'], 
+        href: data['href'],
+        id: data['id'],
+        images: data['images'],
+        product: data['product'],
+        type: data['type'],
+        uri: data['uri'],
+      } as CurrentUserProfile;
+
     } catch (err) {
       console.error('Error getMe:', err);
       return null;
@@ -88,16 +93,21 @@ export class SpotifyWebApi {
    */
   async getUsersSavedTracks(accessToken: string): Promise<SavedTrack[]> {
     try {
-      const response = await this.httpsClient.request(
+      const { data } = await axios.get(
         'https://api.spotify.com/v1/me/tracks',
         {
-          method: 'GET',
           headers: {
             'Authorization': `Bearer ${accessToken}`
           }
         }
       );
-      return response;
+
+      return Array.isArray(data) ? (
+        data.map((savedTrack) => ({
+          added_at: savedTrack['added_at'],
+          track: savedTrack['track']
+        }) as SavedTrack)
+      ) : [];
     } catch (err) {
       console.error('Error getUsersSavedTracks:', err);
       return null;
@@ -106,16 +116,18 @@ export class SpotifyWebApi {
 
   async getAudioFeaturesForTracks(trackId: string, accessToken: string): Promise<AudioFeatures[]> {
     try {
-      const response = this.httpsClient.request<AudioFeatures[]>(
+      const { data } = await axios.get(
         `https://api.spotify.com/v1/audio-features/${trackId}`,
         {
-          method: 'GET',
           headers: {
             'Authorization': `Bearer ${accessToken}`
           }
         }
       );
-      return response;
+
+      console.log('audio features:', data);
+
+      return [];
     } catch (err) {
       console.error('Error getAudioFeaturesForTracks', err);
       return null;

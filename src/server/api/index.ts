@@ -1,6 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import { SpotifyWebApi } from '../spotify-web-api';
+import { SpotifyWebApi } from '../spotify/spotify-web-api';
 
 function getAccessToken(req: express.Request)  {
   return req.cookies.access_token;
