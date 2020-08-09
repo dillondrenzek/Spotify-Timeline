@@ -13,7 +13,7 @@ interface HttpsOptions {
 
 export class Https {
 
-  async request<T = any>(url: string, options: HttpsOptions): Promise<T> {
+  request<T = any>(url: string, options: HttpsOptions): Promise<T> {
     return new Promise((resolve, reject) => {
 
       const {
@@ -64,25 +64,4 @@ export class Https {
       req.end();
     });
   }
-
-//   const req = https.request(
-//     'https://api.spotify.com/v1/me/tracks',
-//     {
-//       method: 'GET',
-//       headers: {
-//         // 'Content-Type': 'application/x-www-form-urlencoded',
-//         // 'Content-Length': Buffer.byteLength(postData),
-//         'Authorization': authorizationHeader
-//       },
-//       protocol: 'https:'
-//     },
-//     (res) => {
-
-//     }
-//   );
-
-
-
-// req.end();
-//     });
 }
