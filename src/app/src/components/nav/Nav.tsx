@@ -1,7 +1,8 @@
-import React from "react";
-import { useCurrentUser } from "../../hooks/use-current-user";
-import { SpotifyLoginButton } from "./spotify-login-button/spotify-login-button";
-import "./Nav.scss";
+import React from 'react';
+import { useCurrentUser } from '../../hooks/use-current-user';
+import { NavLink } from './nav-link/nav-link';
+import { SpotifyLoginButton } from './spotify-login-button/spotify-login-button';
+import './Nav.scss';
 
 const SiteTitle = () => {
   return <h1 className="site-title">Spotify Timeline</h1>;
@@ -30,13 +31,7 @@ export const Nav = () => {
         <SpotifyLoginButton currentUser={currentUser} />
       </div>
       <div className="nav-item">
-        <a
-          className="App-link"
-          href="https://accounts.spotify.com/en/status"
-          rel="noopener noreferrer"
-        >
-          Account
-        </a>
+        <NavLink href="https://accounts.spotify.com/en/status">Account</NavLink>
       </div>
     </nav>
   );

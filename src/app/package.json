@@ -30,13 +30,23 @@
     "extends": [
       "react-app"
     ],
-    "rules": {
+    "overrides": {
       "no-console": 2,
       "quotes": [
         "error",
         "single"
+      ],
+      "jsx-quotes": [
+        "error",
+        "single",
+        {
+          "allowTemplateLiterals": true
+        }
       ]
     }
+  },
+  "prettier": {
+    "singleQuote": true
   },
   "proxy": "http://localhost:8080",
   "browserslist": {

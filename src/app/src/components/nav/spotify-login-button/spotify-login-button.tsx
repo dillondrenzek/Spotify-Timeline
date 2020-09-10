@@ -1,5 +1,6 @@
-import React from "react";
-import { CurrentUserProfile } from "../../../hooks/use-current-user";
+import React from 'react';
+import { CurrentUserProfile } from '../../../hooks/use-current-user';
+import { NavLink } from '../nav-link/nav-link';
 
 export interface SpotifyLoginButtonProps {
   currentUser?: CurrentUserProfile;
@@ -9,12 +10,8 @@ export const SpotifyLoginButton = ({
   currentUser,
 }: SpotifyLoginButtonProps) => {
   return currentUser ? (
-    <a className="App-link" href="/spotify/logout" rel="noopener noreferrer">
-      Logout
-    </a>
+    <NavLink href="/spotify/logout">Logout</NavLink>
   ) : (
-    <a className="App-link" href="/spotify/login" rel="noopener noreferrer">
-      Login
-    </a>
+    <NavLink href="/spotify/login">Login</NavLink>
   );
 };
