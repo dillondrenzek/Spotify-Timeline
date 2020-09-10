@@ -23,7 +23,20 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "react-app"
+    ],
+    "rules": {
+      "no-console": 2,
+      "quotes": [
+        "error",
+        "single"
+      ]
+    }
   },
   "proxy": "http://localhost:8080",
   "browserslist": {

@@ -1,26 +1,22 @@
-import React from 'react';
-import { useCurrentUser } from '../../hooks/use-current-user';
-import './Nav.scss';
+import React from "react";
+import { useCurrentUser } from "../../hooks/use-current-user";
+import { SpotifyLoginButton } from "./spotify-login-button/spotify-login-button";
+import "./Nav.scss";
 
 const SiteTitle = () => {
-  return (
-    <h1 className='site-title'>Spotify Timeline</h1>
-  );
-}
+  return <h1 className="site-title">Spotify Timeline</h1>;
+};
 
 export const Nav = () => {
   const { currentUser } = useCurrentUser();
 
   return (
-    <nav className='Nav'>
-      <div className='nav-item'>
+    <nav className="Nav">
+      <div className="nav-item">
         <SiteTitle />
-      </div>
-
-      <div className='nav-item'>
 
         {currentUser ? (
-          <div className='user'>
+          <div className="user">
             {currentUser.images?.length ? (
               <img src={currentUser.images[0].url} height={48} />
             ) : null}
@@ -31,33 +27,17 @@ export const Nav = () => {
           </div>
         ) : null}
 
-        
-        <a className="App-link"
+        <SpotifyLoginButton currentUser={currentUser} />
+      </div>
+      <div className="nav-item">
+        <a
+          className="App-link"
           href="https://accounts.spotify.com/en/status"
           rel="noopener noreferrer"
         >
           Account
         </a>
-
-        {currentUser ? (
-          <a
-            className="App-link"
-            href="/spotify/logout"
-            rel="noopener noreferrer"
-          >
-            Logout
-          </a>
-        ) : (
-          <a
-            className="App-link"
-            href="/spotify/login"
-            rel="noopener noreferrer"
-          >
-            Login
-          </a>
-        )}
-      
       </div>
     </nav>
   );
-}
+};

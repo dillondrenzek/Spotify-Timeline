@@ -1,7 +1,9 @@
 import React from "react";
 
-export interface NavLinkProps {}
+export interface NavLinkProps {
+  type?: "primary" | "secondary";
+}
 
-export const NavLink = (props: NavLinkProps) => {
-  console.log("here");
+export const NavLink = ({}: NavLinkProps) => {
+  return <div>asdf</div>;
 };
