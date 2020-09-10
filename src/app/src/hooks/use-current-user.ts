@@ -38,25 +38,28 @@ export interface CurrentUserProfile {
   // "uri": "spotify:user:wizzler"
 }
 
-
-
 export const useCurrentUser = () => {
   const { authToken, clearAuthToken } = useAuthToken();
-  const [currentUser, setCurrentUser] = useState<CurrentUserProfile | null>(null);
+  const [currentUser, setCurrentUser] = useState<CurrentUserProfile | null>(
+    null
+  );
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     if (authToken) {
       fetch('/api/me')
         .then((res) => {
-          res.json().then((result) => {
-            // console.log('me:', result);
-            setCurrentUser(result);
-            setIsLoaded(true);
-          }).catch((err) => {
-            console.error('Error parsing JSON:', err);
-            setIsLoaded(true);
-          });
+          res
+            .json()
+            .then((result) => {
+              // console.log('me:', result);
+              setCurrentUser(result);
+              setIsLoaded(true);
+            })
+            .catch((err) => {
+              console.error('Error parsing JSON:', err);
+              setIsLoaded(true);
+            });
         })
         .catch((err) => {
           console.error('Error fetching /api/me:', err);
@@ -64,10 +67,10 @@ export const useCurrentUser = () => {
           clearAuthToken();
         });
     }
-  }, [authToken]);
-  
+  }, [authToken, clearAuthToken]);
+
   return {
     currentUser,
-    isLoaded
-  }
+    isLoaded,
+  };
 };

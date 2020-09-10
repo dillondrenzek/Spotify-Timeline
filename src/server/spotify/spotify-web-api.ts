@@ -37,13 +37,13 @@ export class SpotifyWebApi {
           }
         }
       );
-      
+
       return {
-        access_token: data['access_token'],
-        expires_in: data['expires_in'],
-        refresh_token: data['refresh_token'],
-        scope: data['scope'],
-        token_type: data['token_type']
+        access_token: data.access_token,
+        expires_in: data.expires_in,
+        refresh_token: data.refresh_token,
+        scope: data.scope,
+        token_type: data.token_type
       } as TokenResponse;
 
     } catch (err) {
@@ -68,17 +68,17 @@ export class SpotifyWebApi {
       );
 
       return {
-        country: data['country'],
-        display_name: data['display_name'],
-        email: data['email'],
-        external_urls: data['external_urls'],
-        followers: data['followers'], 
-        href: data['href'],
-        id: data['id'],
-        images: data['images'],
-        product: data['product'],
-        type: data['type'],
-        uri: data['uri'],
+        country: data.country,
+        display_name: data.display_name,
+        email: data.email,
+        external_urls: data.external_urls,
+        followers: data.followers,
+        href: data.href,
+        id: data.id,
+        images: data.images,
+        product: data.product,
+        type: data.type,
+        uri: data.uri,
       } as CurrentUserProfile;
 
     } catch (err) {
@@ -104,8 +104,8 @@ export class SpotifyWebApi {
 
       return Array.isArray(data) ? (
         data.map((savedTrack) => ({
-          added_at: savedTrack['added_at'],
-          track: savedTrack['track']
+          added_at: savedTrack.added_at,
+          track: savedTrack.track
         }) as SavedTrack)
       ) : [];
     } catch (err) {

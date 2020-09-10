@@ -19,7 +19,11 @@ export const Nav = () => {
         {currentUser ? (
           <div className="user">
             {currentUser.images?.length ? (
-              <img src={currentUser.images[0].url} height={48} />
+              <img
+                alt="User's profile"
+                src={currentUser.images[0].url}
+                height={48}
+              />
             ) : null}
             <div>
               <div>{currentUser?.display_name}</div>

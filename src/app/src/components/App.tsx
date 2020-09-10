@@ -60,8 +60,6 @@ interface CurrentUserSavedSongs {
   total: number;
 }
 
-
-
 const useCurrentUserSavedTracks = () => {
   const { authToken, clearAuthToken } = useAuthToken();
   const [savedTracks, setSavedTracks] = useState<SavedSongs[]>([]);
@@ -70,25 +68,26 @@ const useCurrentUserSavedTracks = () => {
     if (authToken) {
       fetch('/api/me/tracks')
         .then((res) => {
-          res.json().then((result: CurrentUserSavedSongs) => {
-            setSavedTracks(result.items);
-          }).catch((err) => {
-            console.error('Error parsing JSON:', err);
-          });
+          res
+            .json()
+            .then((result: CurrentUserSavedSongs) => {
+              setSavedTracks(result.items);
+            })
+            .catch((err) => {
+              console.error('Error parsing JSON:', err);
+            });
         })
         .catch((err) => {
           console.error('Error fetching /api/me:', err);
           clearAuthToken();
         });
     }
-  }, [authToken]);
+  }, [authToken, clearAuthToken]);
 
   return {
-    savedTracks
+    savedTracks,
   };
 };
-
-
 
 function App() {
   const { savedTracks } = useCurrentUserSavedTracks();
@@ -97,21 +96,23 @@ function App() {
     <div className="App">
       <Nav />
       {savedTracks?.length ? (
-        <div className='saved-tracks'>
+        <div className="saved-tracks">
           <h2>Saved Tracks</h2>
           <Table
             colDefs={[
               {
                 columnLabel: 'Name',
-                valueGetter: (row) => row['track'] ? row['track']['name'] : ''
+                valueGetter: (row) =>
+                  row['track'] ? row['track']['name'] : '',
               },
               {
                 columnLabel: 'Artist',
-                valueGetter: (row) => row['track'] ? row['track']['artists'][0]['name'] : ''
+                valueGetter: (row) =>
+                  row['track'] ? row['track']['artists'][0]['name'] : '',
               },
               {
                 columnLabel: 'Date Added',
-                valueGetter: (row) => row['added_at']
+                valueGetter: (row) => row['added_at'],
               },
             ]}
             rowData={savedTracks}

@@ -42,6 +42,13 @@
         {
           "allowTemplateLiterals": true
         }
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": false,
+          "comments": 80
+        }
       ]
     }
   },
