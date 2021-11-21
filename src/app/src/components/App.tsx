@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Box } from '@mui/material';
 import { useAuthToken } from '../hooks/use-auth-token';
 import { Nav } from './nav/Nav';
 import './App.scss';
@@ -65,12 +66,13 @@ const useCurrentUserSavedTracks = () => {
   const [savedTracks, setSavedTracks] = useState<SavedSongs[]>([]);
 
   useEffect(() => {
-    if (authToken) {
+    if (authToken && !savedTracks?.length) {
       fetch('/api/me/tracks')
         .then((res) => {
           res
             .json()
             .then((result: CurrentUserSavedSongs) => {
+              console.log('result:', result);
               setSavedTracks(result.items);
             })
             .catch((err) => {
@@ -82,7 +84,7 @@ const useCurrentUserSavedTracks = () => {
           clearAuthToken();
         });
     }
-  }, [authToken, clearAuthToken]);
+  }, [authToken, clearAuthToken, savedTracks]);
 
   return {
     savedTracks,
@@ -93,7 +95,7 @@ function App() {
   const { savedTracks } = useCurrentUserSavedTracks();
 
   return (
-    <div className="App">
+    <Box>
       <Nav />
       {savedTracks?.length ? (
         <div className="saved-tracks">
@@ -119,7 +121,7 @@ function App() {
           />
         </div>
       ) : null}
-    </div>
+    </Box>
   );
 }
 

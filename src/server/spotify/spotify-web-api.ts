@@ -102,12 +102,7 @@ export class SpotifyWebApi {
         }
       );
 
-      return Array.isArray(data) ? (
-        data.map((savedTrack) => ({
-          added_at: savedTrack.added_at,
-          track: savedTrack.track
-        }) as SavedTrack)
-      ) : [];
+      return data;
     } catch (err) {
       console.error('Error getUsersSavedTracks:', err);
       return null;
