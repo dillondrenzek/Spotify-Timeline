@@ -1,42 +1,45 @@
 import React from 'react';
+import { AppBar, Box, Toolbar, Typography, Link, Stack } from '@mui/material';
 import { useCurrentUser } from '../../hooks/use-current-user';
-import { NavLink } from './nav-link/nav-link';
-import { SpotifyLoginButton } from './spotify-login-button/spotify-login-button';
 import './Nav.scss';
 
-const SiteTitle = () => {
-  return <h1 className="site-title">Spotify Timeline</h1>;
-};
-
-export const Nav = () => {
+export function Nav() {
   const { currentUser } = useCurrentUser();
 
   return (
-    <nav className="Nav">
-      <div className="nav-item">
-        <SiteTitle />
-
+    <AppBar color='default'>
+      <Toolbar sx={{ justifyContent: 'space-between'}}>
+        <Typography 
+          variant='h6'
+          noWrap
+          component='div'
+        >Spotify Timeline</Typography>
         {currentUser ? (
-          <div className="user">
-            {currentUser.images?.length ? (
-              <img
-                alt="User's profile"
-                src={currentUser.images[0].url}
-                height={48}
-              />
-            ) : null}
-            <div>
-              <div>{currentUser?.display_name}</div>
-              <div>{currentUser?.email}</div>
-            </div>
-          </div>
-        ) : null}
-
-        <SpotifyLoginButton currentUser={currentUser} />
-      </div>
-      <div className="nav-item">
-        <NavLink href="https://accounts.spotify.com/en/status">Account</NavLink>
-      </div>
-    </nav>
+          <Stack direction='row' spacing={1} alignItems='center'>
+            <Stack direction='row' spacing={1} alignItems='center'>
+              {currentUser.images?.length ? (
+                <img
+                  alt="User's profile"
+                  src={currentUser.images[0].url}
+                  height={48}
+                />
+              ) : null}
+              <Stack direction='column' spacing={0}>
+                <Typography>{currentUser?.display_name}</Typography>
+                <Typography>{currentUser?.email}</Typography>
+              </Stack>
+            </Stack>
+            <Box>
+              <Link color='inherit' href="https://accounts.spotify.com/en/status">Account</Link>
+            </Box>
+            <Box>
+              <Link color='inherit' href="/spotify/logout">Logout</Link>
+            </Box>
+          </Stack>
+        ) : (
+          <Link color='inherit' href="/spotify/login">Login</Link>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };

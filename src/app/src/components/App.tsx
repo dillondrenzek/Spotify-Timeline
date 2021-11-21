@@ -97,30 +97,32 @@ function App() {
   return (
     <Box>
       <Nav />
-      {savedTracks?.length ? (
-        <div className="saved-tracks">
-          <h2>Saved Tracks</h2>
-          <Table
-            colDefs={[
-              {
-                columnLabel: 'Name',
-                valueGetter: (row) =>
-                  row['track'] ? row['track']['name'] : '',
-              },
-              {
-                columnLabel: 'Artist',
-                valueGetter: (row) =>
-                  row['track'] ? row['track']['artists'][0]['name'] : '',
-              },
-              {
-                columnLabel: 'Date Added',
-                valueGetter: (row) => row['added_at'],
-              },
-            ]}
-            rowData={savedTracks}
-          />
-        </div>
-      ) : null}
+      <Box sx={{ mt: 8 }}>
+        {savedTracks?.length ? (
+          <div className="saved-tracks">
+            <h2>Saved Tracks</h2>
+            <Table
+              colDefs={[
+                {
+                  columnLabel: 'Name',
+                  valueGetter: (row) =>
+                    row['track'] ? row['track']['name'] : '',
+                },
+                {
+                  columnLabel: 'Artist',
+                  valueGetter: (row) =>
+                    row['track'] ? row['track']['artists'][0]['name'] : '',
+                },
+                {
+                  columnLabel: 'Date Added',
+                  valueGetter: (row) => row['added_at'],
+                },
+              ]}
+              rowData={savedTracks}
+            />
+          </div>
+        ) : null}
+      </Box>
     </Box>
   );
 }
