@@ -46,13 +46,13 @@ export const useCurrentUser = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (authToken) {
+    if (authToken && !currentUser) {
       fetch('/api/me')
         .then((res) => {
           res
             .json()
             .then((result) => {
-              // console.log('me:', result);
+              console.log('me:', result);
               setCurrentUser(result);
               setIsLoaded(true);
             })
@@ -67,7 +67,7 @@ export const useCurrentUser = () => {
           clearAuthToken();
         });
     }
-  }, [authToken, clearAuthToken]);
+  }, [authToken, clearAuthToken, currentUser]);
 
   return {
     currentUser,

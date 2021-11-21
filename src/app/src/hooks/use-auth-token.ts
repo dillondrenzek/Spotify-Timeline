@@ -8,13 +8,13 @@ export const useAuthToken = (initialValue: string = '', storeValue = true) => {
 
   // load token from localstorage
   useEffect(() => {
-    if (!initialValue) {
+    if (!initialValue && !authToken) {
       const storedAuthToken = Cookie.get(AUTH_TOKEN_COOKIE_NAME);
       if (storedAuthToken) {
         setAuthToken(storedAuthToken);
       }
     }
-  }, [initialValue]);
+  }, [initialValue, authToken]);
 
   const clearAuthToken = () => {
     Cookie.remove(AUTH_TOKEN_COOKIE_NAME);
