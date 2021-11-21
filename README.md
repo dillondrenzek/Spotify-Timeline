@@ -3,4 +3,21 @@ A web app that takes your Spotify account and creates a timeline of all your son
 
 ------
 
+## How to Start
+
+### Server
+```cd src/server```
+```yarn install```
+```yarn start```
+
+### Client
+```cd src/app```
+```yarn install```
+```yarn start```
+
+
+------
+
+## Important Links
+
 [Wiki](https://github.com/dillondrenzek/Spotify-Timeline/wiki)
