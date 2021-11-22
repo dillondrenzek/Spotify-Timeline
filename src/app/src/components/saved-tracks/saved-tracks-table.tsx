@@ -1,12 +1,11 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Table, TableBody, TableCell, TableHead, TableRow} from '@mui/material';
 import { useUserSavedTracks } from './use-user-saved-tracks';
-import './Table.scss';
 
 export interface ColDef<T = any> {
-  columnLabel?: string;
-  formatGetter?: (value: any, rowNode: T) => any;
+  columnLabel: string;
   valueGetter: (rowNode: T) => any;
+  formatGetter?: (value: any, rowNode: T) => any;
 }
 
 const colDefs: ColDef<SpotifyApi.SavedSongs>[] = [
@@ -26,11 +25,7 @@ const colDefs: ColDef<SpotifyApi.SavedSongs>[] = [
   },
 ];
 
-export interface TableProps<T = any> {
-}
-
-export function SavedTracksTable(props: TableProps) {
-  const {} = props;
+export function SavedTracksTable() {
   const { savedTracks } = useUserSavedTracks();
 
   return (
