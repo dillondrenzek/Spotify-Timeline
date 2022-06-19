@@ -1,4 +1,3 @@
-
 interface AudioFeatures {
   // duration_ms	int	The duration of the track in milliseconds.
   // key	int	The estimated overall key of the track.Integers map to pitches using standard Pitch Class notation.E.g. 0 = C, 1 = C♯/D♭, 2 = D, and so on. If no key was detected, the value is -1.
@@ -21,26 +20,26 @@ interface AudioFeatures {
 }
 
 interface CurrentUserProfile {
-  "country": string;
-  "display_name": string;
-  "email": string;
-  "external_urls": {
-    "spotify": string;
+  country: string;
+  display_name: string;
+  email: string;
+  external_urls: {
+    spotify: string;
   };
-  "followers": {
-    "href": string;
-    "total": number;
+  followers: {
+    href: string;
+    total: number;
   };
-  "href": string;
-  "id": string;
-  "images": {
-    "height": null; // number?
-    "url": string;
-    "width": null; // number?
+  href: string;
+  id: string;
+  images: {
+    height: null; // number?
+    url: string;
+    width: null; // number?
   }[];
-  "product": 'premium';
-  "type": 'user';
-  "uri": string;
+  product: 'premium';
+  type: 'user';
+  uri: string;
 
   // "country": "SE",
   // "display_name": "JM Wizzler",
@@ -57,6 +56,29 @@ interface CurrentUserProfile {
   // "uri": "spotify:user:wizzler"
 }
 
+interface CurrentUserPlaylist {
+  // collaborative: false
+  collaborative: boolean;
+  // description: ""
+  description: string;
+  // external_urls: {spotify: "https://open.spotify.com/playlist/5AhTQlpEpW7eSYc37v8zs2"}
+  // href: "https://api.spotify.com/v1/playlists/5AhTQlpEpW7eSYc37v8zs2"
+  // id: "5AhTQlpEpW7eSYc37v8zs2"
+  id: string;
+  // images: [{height: 640, url: "https://i.scdn.co/image/ab67616d0000b2736ee651e65c3766d80e7fcab7", width: 640}]
+  // name: "Hi & Slo"
+  name: string;
+  // owner: {display_name: "Dillon Drenzek", external_urls: {spotify: "https://open.spotify.com/user/121028591"},…}
+  // primary_color: null
+  // public: true
+  // snapshot_id: "NCxiN2JlNmJmMzUyYjhlNDI2ZWUxNTE4YjI5NGJmNDY1YTI0N2E4NzU1"
+  // tracks: {href: "https://api.spotify.com/v1/playlists/5AhTQlpEpW7eSYc37v8zs2/tracks", total: 3}
+  // type: "playlist";
+  type: 'playlist';
+  // uri: "spotify:playlist:5AhTQlpEpW7eSYc37v8zs2"
+  uri: string;
+}
+
 interface SavedTrack {
   /**
    * The date and time the track was saved.
@@ -69,16 +91,11 @@ interface SavedTrack {
   track: Track;
 }
 
-interface SimplifiedAlbum {
+interface SimplifiedAlbum {}
 
-}
-
-interface SimplifiedArtist {
-
-}
+interface SimplifiedArtist {}
 
 interface Track {
-
   album: SimplifiedAlbum;
 
   artists: SimplifiedArtist[];
@@ -90,7 +107,7 @@ interface Track {
 
   external_urls: {
     spotify: string;
-  }
+  };
 
   //   "href": "https://api.spotify.com/v1/tracks/11dFghVXANMlKmJXsNCbNl",
   href: string;
@@ -98,25 +115,24 @@ interface Track {
   //   "id": "11dFghVXANMlKmJXsNCbNl",
   id: string;
 
-  images: { height: number, url: string, width: number }[];
+  images: { height: number; url: string; width: number }[];
 
   name: string;
 
-
-//   "disc_number": 1,
-//   "duration_ms": 207959,
-//   "explicit": false,
-//   "external_ids": {
-//     "isrc": "USUM71703861"
-//   },
-//   "is_local": false,
-//   "name": "Cut To The Feeling",
-//   "popularity": 63,
-//   "preview_url": "https://p.scdn.co/mp3-preview/3eb16018c2a700240e9dfb8817b6f2d041f15eb1?cid=774b29d4f13844c495f206cafdad9c86",
-//   "track_number": 1,
-//   "type": "track",
-//   "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl"
-// }
+  //   "disc_number": 1,
+  //   "duration_ms": 207959,
+  //   "explicit": false,
+  //   "external_ids": {
+  //     "isrc": "USUM71703861"
+  //   },
+  //   "is_local": false,
+  //   "name": "Cut To The Feeling",
+  //   "popularity": 63,
+  //   "preview_url": "https://p.scdn.co/mp3-preview/3eb16018c2a700240e9dfb8817b6f2d041f15eb1?cid=774b29d4f13844c495f206cafdad9c86",
+  //   "track_number": 1,
+  //   "type": "track",
+  //   "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl"
+  // }
 }
 
 interface TokenResponse {
@@ -127,3 +143,27 @@ interface TokenResponse {
   scope: string;
 }
 
+interface Paginated<T> {
+  // "href": "https://api.spotify.com/v1/me/shows?offset=0&limit=20\n",
+  href: string;
+
+  // "items": [
+  //   {}
+  // ],
+  items: T;
+
+  // "limit": 20,
+  limit: number;
+
+  // "next": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+  next: string;
+
+  // "offset": 0,
+  offset: number;
+
+  // "previous": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+  previous: string;
+
+  // "total": 4
+  total: number;
+}

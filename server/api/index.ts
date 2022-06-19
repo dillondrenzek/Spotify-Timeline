@@ -2,14 +2,26 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 
-function getAccessToken(req: express.Request)  {
+function getAccessToken(req: express.Request) {
   return req.cookies.access_token;
 }
 
-export default function(spotifyWebApi: SpotifyWebApi) {
+export default function (spotifyWebApi: SpotifyWebApi) {
   const api = express();
 
   api.use(cookieParser());
+
+  api.get('/me/playlists', async (req, res) => {
+    try {
+      const playlists = await spotifyWebApi.getUsersPlaylists(
+        getAccessToken(req)
+      );
+      res.json(playlists.items);
+    } catch (e) {
+      res.status(e.error.status);
+      res.json(e.error);
+    }
+  });
 
   api.get('/me/tracks', async (req, res) => {
     try {
@@ -36,4 +48,4 @@ export default function(spotifyWebApi: SpotifyWebApi) {
   });
 
   return api;
-};
+}
