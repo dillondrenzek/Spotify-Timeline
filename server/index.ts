@@ -22,13 +22,13 @@ app.get('/spotify/login', (req, res) => {
   const scope = [
     'user-read-private',
     'user-read-email',
-    'user-library-read'
+    'user-library-read',
   ].join(' ');
   const params = new URLSearchParams([
     ['client_id', env.SPOTIFY_API_CLIENT_ID],
     ['response_type', 'code'],
     ['redirect_uri', env.SPOTIFY_API_REDIRECT_URI],
-    ['scope', scope]
+    ['scope', scope],
   ]).toString();
   const url = `https://accounts.spotify.com/authorize?${params}`;
   res.redirect(url);
@@ -59,7 +59,7 @@ app.get('/spotify/callback', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../src/app/public/index.html'));
+  res.sendFile(path.resolve(__dirname, '../app/public/index.html'));
 });
 
 // start the Express server
