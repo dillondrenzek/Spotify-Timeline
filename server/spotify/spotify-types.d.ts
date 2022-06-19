@@ -150,7 +150,7 @@ interface Paginated<T> {
   // "items": [
   //   {}
   // ],
-  items: T;
+  items: T[];
 
   // "limit": 20,
   limit: number;

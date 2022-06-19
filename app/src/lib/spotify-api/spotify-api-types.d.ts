@@ -115,3 +115,28 @@ declare namespace SpotifyApi {
     uri: string;
   }
 }
+
+interface Paginated<T> {
+  // "href": "https://api.spotify.com/v1/me/shows?offset=0&limit=20\n",
+  href: string;
+
+  // "items": [
+  //   {}
+  // ],
+  items: T[];
+
+  // "limit": 20,
+  limit: number;
+
+  // "next": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+  next: string;
+
+  // "offset": 0,
+  offset: number;
+
+  // "previous": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+  previous: string;
+
+  // "total": 4
+  total: number;
+}
