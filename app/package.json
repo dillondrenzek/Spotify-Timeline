@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.6.0",
-    "@emotion/styled": "^11.6.0",
-    "@mui/icons-material": "^5.1.1",
-    "@mui/material": "^5.1.1",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.4",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -14,11 +14,11 @@
     "@types/js-cookie": "2.2.6",
     "http-proxy-middleware": "1.0.5",
     "js-cookie": "2.2.1",
-    "node-sass": "4.14.1",
     "react": "^17.0.2",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
-    "typescript": "3.9.7"
+    "react-scripts": "^5.0.1",
+    "sass": "^1.52.3",
+    "typescript": "^4.7.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -33,28 +33,7 @@
     ],
     "extends": [
       "react-app"
-    ],
-    "overrides": {
-      "no-console": 2,
-      "quotes": [
-        "error",
-        "single"
-      ],
-      "jsx-quotes": [
-        "error",
-        "single",
-        {
-          "allowTemplateLiterals": true
-        }
-      ],
-      "max-len": [
-        "error",
-        {
-          "code": false,
-          "comments": 80
-        }
-      ]
-    }
+    ]
   },
   "prettier": {
     "singleQuote": true
