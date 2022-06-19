@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import { AppBar, Box, Toolbar, Typography, Link, Stack } from '@mui/material';
 import { useCurrentUser } from '../hooks/use-current-user';
-import './Nav.scss';
 
 function NavProfileDisplay(
   props: PropsWithChildren<{
