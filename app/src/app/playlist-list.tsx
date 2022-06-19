@@ -1,15 +1,5 @@
 import React, { useCallback } from 'react';
-import {
-  Box,
-  Typography,
-  CssBaseline,
-  List,
-  ListItem,
-  ListItemText,
-  Stack,
-  ListItemButton,
-} from '@mui/material';
-import { useUserPlaylists } from '../hooks/use-user-playlists';
+import { List, ListItem, ListItemText, ListItemButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function PlaylistListItem(props: { playlist: SpotifyApi.CurrentUserPlaylist }) {
@@ -19,7 +9,7 @@ function PlaylistListItem(props: { playlist: SpotifyApi.CurrentUserPlaylist }) {
 
   const handleClick = useCallback(() => {
     navigate(`/playlists/${playlist.id}`);
-  }, [playlist.id]);
+  }, [playlist.id, navigate]);
 
   return (
     <ListItem key={playlist.id}>
