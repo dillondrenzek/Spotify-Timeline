@@ -26,7 +26,7 @@ function App() {
           <Typography variant="h4">Playlists</Typography>
           <List>
             {userPlaylists.map((playlist) => (
-              <ListItem>
+              <ListItem key={playlist.id}>
                 <ListItemButton>
                   <ListItemText primary={playlist.name} />
                 </ListItemButton>
