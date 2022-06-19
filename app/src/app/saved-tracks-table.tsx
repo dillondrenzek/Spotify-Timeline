@@ -1,6 +1,12 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableRow} from '@mui/material';
-import { useUserSavedTracks } from './use-user-saved-tracks';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import { useUserSavedTracks } from '../hooks/use-user-saved-tracks';
 
 export interface ColDef<T = any> {
   columnLabel: string;
@@ -38,15 +44,14 @@ export function SavedTracksTable() {
         </TableRow>
       </TableHead>
       <TableBody>
-        {savedTracks.map(
-          (row, i) => (
-            <TableRow key={i}>
-              {colDefs.map((col, j) => (
-                <TableCell key={j}>{col.valueGetter(row)}</TableCell>
-              ))}
-            </TableRow>
-          ))} 
+        {savedTracks.map((row, i) => (
+          <TableRow key={i}>
+            {colDefs.map((col, j) => (
+              <TableCell key={j}>{col.valueGetter(row)}</TableCell>
+            ))}
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );
-};
+}

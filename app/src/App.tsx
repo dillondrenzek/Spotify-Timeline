@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
-import { Nav } from './components/nav/Nav';
+import { Nav } from './app/Nav';
 import './App.scss';
-import { SavedTracksTable } from './components/saved-tracks/saved-tracks-table';
+import { SavedTracksTable } from './app/saved-tracks-table';
 
 function App() {
   return (

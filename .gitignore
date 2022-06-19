@@ -1,8 +1,2 @@
-*.log
-npm-debug.log*
-
-# Build output directory
-dist
-
-# Dependency directory
-node_modules
+# Editor Settings
+.vscode
