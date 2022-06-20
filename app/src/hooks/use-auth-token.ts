@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Cookie from 'js-cookie';
 
 const AUTH_TOKEN_COOKIE_NAME = 'access_token';
@@ -16,10 +16,10 @@ export const useAuthToken = (initialValue: string = '', storeValue = true) => {
     }
   }, [initialValue, authToken]);
 
-  const clearAuthToken = () => {
+  const clearAuthToken = useCallback(() => {
     Cookie.remove(AUTH_TOKEN_COOKIE_NAME);
     setAuthToken('');
-  };
+  }, []);
 
   return {
     authToken,

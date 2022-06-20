@@ -19,7 +19,7 @@ export function useTracksForPlaylist(playlistId: string) {
         console.error('Error fetching /api/playlists/:id/tracks :', err);
         clearAuthToken();
       });
-  }, [authToken, clearAuthToken, tracks, playlistId]);
+  }, [authToken, clearAuthToken, playlistId]);
 
   return {
     tracks,
