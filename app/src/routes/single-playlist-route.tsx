@@ -8,8 +8,8 @@ import { BaseRoute } from './base-route';
 
 export function SinglePlaylistRoute() {
   const { playlists } = useUserPlaylists();
-  const params = useParams();
 
+  const params = useParams();
   const playlistId = params['id'] ?? null;
 
   const currentPlaylist = useMemo(() => {
@@ -31,7 +31,7 @@ export function SinglePlaylistRoute() {
         <Box sx={{ flex: '5' }}>
           <Typography variant="h4">{currentPlaylist?.name}</Typography>
           {tracks.map((t) => (
-            <Box>
+            <Box key={t.track.id}>
               <Typography variant="body1">{t.track.name}</Typography>
             </Box>
           ))}
