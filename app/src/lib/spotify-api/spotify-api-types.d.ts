@@ -22,7 +22,9 @@ declare namespace SpotifyApi {
     // external_ids: { isrc: "USQX91901212" }
     // external_urls: { spotify: "https://open.spotify.com/track/1oUbYmF4SYYHorKY1wKo0K" }
     // href: "https://api.spotify.com/v1/tracks/1oUbYmF4SYYHorKY1wKo0K"
+    href: string;
     // id: "1oUbYmF4SYYHorKY1wKo0K"
+    id: string;
     // is_local: false
     // name: "Dream Dream Dream"
     name: string;
@@ -30,7 +32,9 @@ declare namespace SpotifyApi {
     // preview_url: "https://p.scdn.co/mp3-preview/17f06d6b5e363d08478234a6913c03fc34d4e2b7?cid=19fe4b9ac3ad450fa1ef5a7f5934f0be"
     // track_number: 1
     // type: "track"
+    type: 'track';
     // uri: "spotify:track:1oUbYmF4SYYHorKY1wKo0K"
+    uri: string;
   }
 
   interface SavedSongs {
@@ -114,29 +118,29 @@ declare namespace SpotifyApi {
     // uri: "spotify:playlist:5AhTQlpEpW7eSYc37v8zs2"
     uri: string;
   }
-}
 
-interface Paginated<T> {
-  // "href": "https://api.spotify.com/v1/me/shows?offset=0&limit=20\n",
-  href: string;
+  interface Paginated<T> {
+    // "href": "https://api.spotify.com/v1/me/shows?offset=0&limit=20\n",
+    href: string;
 
-  // "items": [
-  //   {}
-  // ],
-  items: T[];
+    // "items": [
+    //   {}
+    // ],
+    items: T[];
 
-  // "limit": 20,
-  limit: number;
+    // "limit": 20,
+    limit: number;
 
-  // "next": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
-  next: string;
+    // "next": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+    next: string;
 
-  // "offset": 0,
-  offset: number;
+    // "offset": 0,
+    offset: number;
 
-  // "previous": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
-  previous: string;
+    // "previous": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+    previous: string;
 
-  // "total": 4
-  total: number;
+    // "total": 4
+    total: number;
+  }
 }

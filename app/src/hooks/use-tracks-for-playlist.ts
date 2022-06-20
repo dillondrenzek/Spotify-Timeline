@@ -3,32 +3,25 @@ import { useAuthToken } from './use-auth-token';
 
 export function useTracksForPlaylist(playlistId: string) {
   const { authToken, clearAuthToken } = useAuthToken();
-  const [playlists, setPlaylists] = useState<SpotifyApi.CurrentUserPlaylist[]>(
-    []
-  );
+  const [tracks, setTracks] = useState<SpotifyApi.SavedSongs[]>([]);
 
   useEffect(() => {
-    if (authToken && !playlists?.length) {
-      fetch('/api/playlists/' + playlistId + '/tracks')
-        .then((res) => {
-          res
-            .json()
-            .then((result: SpotifyApi.CurrentUserPlaylist[]) => {
-              console.log('result:', result);
-              setPlaylists(result);
-            })
-            .catch((err) => {
-              console.error('Error parsing JSON:', err);
-            });
-        })
-        .catch((err) => {
-          console.error('Error fetching /api/me:', err);
-          clearAuthToken();
-        });
+    if (!authToken) {
+      return;
     }
-  }, [authToken, clearAuthToken, playlists, playlistId]);
+
+    fetch('/api/playlists/' + playlistId + '/tracks')
+      .then((res) => res.json())
+      .then((result: SpotifyApi.Paginated<SpotifyApi.SavedSongs>) => {
+        setTracks(result.items);
+      })
+      .catch((err) => {
+        console.error('Error fetching /api/playlists/:id/tracks :', err);
+        clearAuthToken();
+      });
+  }, [authToken, clearAuthToken, tracks, playlistId]);
 
   return {
-    playlists,
+    tracks,
   };
 }
