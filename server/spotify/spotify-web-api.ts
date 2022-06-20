@@ -145,7 +145,7 @@ export class SpotifyWebApi {
 
       return data;
     } catch (err) {
-      console.error('Error getPlaylistItems', err.toJSON());
+      console.error('Error getPlaylistItems', err);
       return null;
     }
   }
