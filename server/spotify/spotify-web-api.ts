@@ -41,7 +41,7 @@ export class SpotifyWebApi {
         refresh_token: data.refresh_token,
         scope: data.scope,
         token_type: data.token_type,
-      } as TokenResponse;
+      } as Types.TokenResponse;
     } catch (err) {
       console.error('Error getTokens:', err);
       return null;
@@ -72,7 +72,7 @@ export class SpotifyWebApi {
         product: data.product,
         type: data.type,
         uri: data.uri,
-      } as CurrentUserProfile;
+      } as Types.CurrentUserProfile;
     } catch (err) {
       console.error('Error getMe:', err);
       return null;
