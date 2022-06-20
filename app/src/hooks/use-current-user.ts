@@ -14,7 +14,7 @@ export const useCurrentUser = () => {
         .then((result: SpotifyApi.CurrentUserProfile) => setCurrentUser(result))
         .catch((err) => {
           console.error('Error fetching /api/me:', err);
-          clearAuthToken();
+          // clearAuthToken();
         })
         .finally(() => setIsLoaded(true));
     }

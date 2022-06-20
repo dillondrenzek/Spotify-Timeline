@@ -23,6 +23,10 @@ app.get('/spotify/login', (req, res) => {
     'user-read-private',
     'user-read-email',
     'user-library-read',
+    'playlist-read-private',
+    'user-modify-playback-state',
+    'user-read-playback-state',
+    'user-read-currently-playing',
   ].join(' ');
   const params = new URLSearchParams([
     ['client_id', env.SPOTIFY_API_CLIENT_ID],

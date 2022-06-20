@@ -23,7 +23,7 @@ export function useUserPlaylists() {
         })
         .catch((err) => {
           console.error('Error fetching /api/me:', err);
-          clearAuthToken();
+          // clearAuthToken();
         });
     }
   }, [authToken, clearAuthToken, playlists]);

@@ -14,6 +14,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.use(cookieParser());
 
+  api.use(express.json());
+
   api.use(rateLimit());
 
   if (DEBUG_MODE) {
@@ -34,7 +36,20 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       res.json(tracks);
     } catch (e) {
       res.status(e.error?.status ?? 500);
-      res.json(e.error);
+      res.json(e);
+    }
+  });
+
+  api.put('/me/player/play', async (req, res) => {
+    try {
+      const { body } = req;
+
+      console.log('     ', body);
+      await spotifyWebApi.startPlayback(body.context_uri, getAccessToken(req));
+      res.send('Ok');
+    } catch (e) {
+      res.status(e.error?.status ?? 500);
+      res.json(e);
     }
   });
 
@@ -46,7 +61,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       res.json(playlists.items);
     } catch (e) {
       res.status(e.error?.status ?? 500);
-      res.json(e.error);
+      res.json(e);
     }
   });
 
@@ -56,7 +71,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       res.json(user);
     } catch (e) {
       res.status(e.error?.status ?? 500);
-      res.json(e.error);
+      res.json(e);
     }
   });
 
@@ -66,7 +81,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       res.json(user);
     } catch (e) {
       res.status(e.error?.status ?? 500);
-      res.json(e.error);
+      res.json(e);
     }
   });
 

@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import { PlaylistList } from '../app/playlist-list';
 import { useUserPlaylists } from '../hooks/use-user-playlists';
 import { useTracksForPlaylist } from '../hooks/use-tracks-for-playlist';
 import { BaseRoute } from './base-route';
+import { TracksTable } from '../app/tracks-table';
 
 export function SinglePlaylistRoute() {
   const { playlists } = useUserPlaylists();
@@ -23,20 +24,18 @@ export function SinglePlaylistRoute() {
 
   return (
     <BaseRoute>
-      <Stack direction="row" sx={{ mt: 8 }}>
-        <Box sx={{ flex: '1' }}>
-          <Typography variant="h4">Playlists</Typography>
-          <PlaylistList playlists={playlists} />
-        </Box>
-        <Box sx={{ flex: '5' }}>
-          <Typography variant="h4">{currentPlaylist?.name}</Typography>
-          {tracks.map((t) => (
-            <Box key={t.track.id}>
-              <Typography variant="body1">{t.track.name}</Typography>
-            </Box>
-          ))}
-        </Box>
-      </Stack>
+      <Box sx={{ pt: 8, height: '100vh' }}>
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <Typography variant="h4">Playlists</Typography>
+            <PlaylistList playlists={playlists} />
+          </Grid>
+          <Grid item xs={9}>
+            <Typography variant="h4">{currentPlaylist?.name}</Typography>
+            <TracksTable tracks={tracks} />
+          </Grid>
+        </Grid>
+      </Box>
     </BaseRoute>
   );
 }
