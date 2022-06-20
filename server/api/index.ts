@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
 
+const DEBUG_MODE = true;
+
 function getAccessToken(req: express.Request) {
   return req.cookies.access_token;
 }
@@ -14,9 +16,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.use(rateLimit());
 
-  api.get('/test', async (req, res) => {
-    res.send('Ok');
-  });
+  if (DEBUG_MODE) {
+    api.get('/test', async (req, res) => {
+      res.send('Ok');
+    });
+  }
 
   api.get('/playlists/:id/tracks', async (req, res) => {
     const { params } = req;
