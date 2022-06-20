@@ -80,7 +80,6 @@ export class SpotifyWebApi {
 
   /**
    * Get Current User's Saved Tracks
-   * @param accessToken
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
    */
@@ -101,6 +100,7 @@ export class SpotifyWebApi {
 
   /**
    * Get Current User's Playlists
+   *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-a-list-of-current-users-playlists)
    */
   async getUsersPlaylists(
@@ -125,13 +125,18 @@ export class SpotifyWebApi {
     }
   }
 
-  async getAudioFeaturesForTracks(
-    trackId: string,
+  /**
+   * Get Playlist Items
+   *
+   * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-playlists-tracks)
+   */
+  async getPlaylistItems(
+    playlistId: string,
     accessToken: string
-  ): Promise<AudioFeatures[]> {
+  ): Promise<Paginated<unknown>> {
     try {
       const { data } = await axios.get(
-        `https://api.spotify.com/v1/audio-features/${trackId}`,
+        `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -139,11 +144,9 @@ export class SpotifyWebApi {
         }
       );
 
-      console.log('audio features:', data);
-
-      return [];
+      return data;
     } catch (err) {
-      console.error('Error getAudioFeaturesForTracks', err);
+      console.error('Error getUsersPlaylists', err.toJSON());
       return null;
     }
   }
