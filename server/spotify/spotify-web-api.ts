@@ -1,6 +1,7 @@
 import axios from 'axios';
 import querystring from 'querystring';
 import { AppEnvironment } from '../env';
+import * as Types from './types';
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -15,7 +16,7 @@ export class SpotifyWebApi {
    * Get access and refresh tokens
    * @param code authorization code from Spotify authorization
    */
-  async getTokens(code: string): Promise<TokenResponse> {
+  async getTokens(code: string): Promise<Types.TokenResponse> {
     try {
       // Post data
       const postData = querystring.stringify({
@@ -51,7 +52,7 @@ export class SpotifyWebApi {
    * Get Current User's Profile
    * @param accessToken
    */
-  async getMe(accessToken: string): Promise<CurrentUserProfile> {
+  async getMe(accessToken: string): Promise<Types.CurrentUserProfile> {
     try {
       const { data } = await axios.get('https://api.spotify.com/v1/me', {
         headers: {
@@ -83,7 +84,7 @@ export class SpotifyWebApi {
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
    */
-  async getUsersSavedTracks(accessToken: string): Promise<SavedTrack[]> {
+  async getUsersSavedTracks(accessToken: string): Promise<Types.SavedTrack[]> {
     try {
       const { data } = await axios.get('https://api.spotify.com/v1/me/tracks', {
         headers: {
@@ -105,7 +106,7 @@ export class SpotifyWebApi {
    */
   async getUsersPlaylists(
     accessToken: string
-  ): Promise<Paginated<CurrentUserPlaylist[]>> {
+  ): Promise<Types.Paginated<Types.CurrentUserPlaylist[]>> {
     try {
       const { data } = await axios.get(
         'https://api.spotify.com/v1/me/playlists',
@@ -115,8 +116,6 @@ export class SpotifyWebApi {
           },
         }
       );
-
-      console.log('user playlists:', data);
 
       return data;
     } catch (err) {
@@ -133,7 +132,7 @@ export class SpotifyWebApi {
   async getPlaylistItems(
     playlistId: string,
     accessToken: string
-  ): Promise<Paginated<unknown>> {
+  ): Promise<Types.Paginated<Types.Track>> {
     try {
       const { data } = await axios.get(
         `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
@@ -146,7 +145,7 @@ export class SpotifyWebApi {
 
       return data;
     } catch (err) {
-      console.error('Error getUsersPlaylists', err.toJSON());
+      console.error('Error getPlaylistItems', err.toJSON());
       return null;
     }
   }
