@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo } from 'react';
+import React, { PropsWithChildren } from 'react';
 import { CssBaseline } from '@mui/material';
 import { Nav } from '../app/Nav';
 
