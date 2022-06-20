@@ -29,12 +29,14 @@
     "@types/axios": "0.14.0",
     "@types/cookie-parser": "1.4.2",
     "@types/jest": "26.0.9",
+    "@types/luxon": "^2.3.2",
     "axios": "0.21.1",
     "cookie-parser": "1.4.5",
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "http": "0.0.1-security",
     "https": "1.0.0",
+    "luxon": "^2.4.0",
     "querystring": "0.2.0"
   },
   "devDependencies": {
