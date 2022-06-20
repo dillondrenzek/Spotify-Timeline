@@ -1,6 +1,8 @@
 import express from 'express';
 import { DateTime } from 'luxon';
 
+const DEBUG_MODE = false;
+
 interface RateLimitMapValue {
   timestamp: string;
   count: number;
@@ -24,7 +26,9 @@ export function rateLimit(): express.RequestHandler {
     const cacheKey = req.path;
     const currentCacheValue = limitedPaths[cacheKey];
 
-    console.log('Rate Limit entry:', JSON.stringify(currentCacheValue));
+    if (DEBUG_MODE) {
+      console.log('Rate Limit entry:', JSON.stringify(currentCacheValue));
+    }
 
     // No cache hit
     if (!currentCacheValue) {
@@ -36,7 +40,9 @@ export function rateLimit(): express.RequestHandler {
     const cachedDate = DateTime.fromISO(currentCacheValue.timestamp);
     const endCachePeriod = cachedDate.plus({ minute: 1 });
 
-    console.log(endCachePeriod.diffNow().milliseconds);
+    if (DEBUG_MODE) {
+      console.log(endCachePeriod.diffNow().milliseconds);
+    }
 
     // If after the cache period
     if (endCachePeriod.diffNow().milliseconds < 0) {
