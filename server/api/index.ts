@@ -44,8 +44,12 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     try {
       const { body } = req;
 
-      console.log('     ', body);
-      await spotifyWebApi.startPlayback(body.context_uri, getAccessToken(req));
+      console.log(' body ', body);
+      await spotifyWebApi.startPlayback(
+        body.uri,
+        body.contextUri,
+        getAccessToken(req)
+      );
       res.send('Ok');
     } catch (e) {
       res.status(e.error?.status ?? 500);

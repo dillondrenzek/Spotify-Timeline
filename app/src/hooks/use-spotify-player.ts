@@ -5,15 +5,20 @@ export function useSpotifyPlayer() {
   const { authToken } = useAuthToken();
 
   const play = useCallback(
-    (spotifyUri: string) => {
-      if (!authToken || !spotifyUri) {
+    (uri: string, contextUri: string) => {
+      if (!authToken) {
         return;
       }
+
+      const body = {
+        ...(uri && { uri: uri }),
+        ...(contextUri && { contextUri: contextUri }),
+      };
 
       fetch('/api/me/player/play', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ context_uri: spotifyUri }),
+        body: JSON.stringify(body),
       })
         .then((res) => res.json())
         .catch((err) => {

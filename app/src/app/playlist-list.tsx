@@ -27,7 +27,7 @@ export function PlaylistList(props: {
 
   return (
     <List>
-      {playlists.map((playlist) => (
+      {playlists?.map((playlist) => (
         <PlaylistListItem key={playlist.id} playlist={playlist} />
       ))}
     </List>

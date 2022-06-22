@@ -132,15 +132,25 @@ export class SpotifyWebApi {
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/start-a-users-playback)
    */
-  async startPlayback(spotifyUri: string, accessToken: string): Promise<void> {
+  async startPlayback(
+    spotifyUri: string,
+    contextUri: string,
+    accessToken: string
+  ): Promise<void> {
     const { data } = await axios.put(
       `https://api.spotify.com/v1/me/player/play`,
+      JSON.stringify({
+        ...(contextUri && { context_uri: contextUri }),
+        ...(spotifyUri && { uris: [spotifyUri] }),
+        // offset: {
+        //   position: 0,
+        // },
+        // position_ms: 0,
+      }),
       {
-        context_uri: spotifyUri,
-        position_ms: 0,
-      },
-      {
+        method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
       }

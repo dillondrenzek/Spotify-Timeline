@@ -32,8 +32,8 @@ const colDefs: ColDef<SpotifyApi.SavedSongs>[] = [
   },
 ];
 
-function TrackRow(props: { track: SpotifyApi.SavedSongs }) {
-  const { track } = props;
+function TrackRow(props: { track: SpotifyApi.SavedSongs; contextUri: string }) {
+  const { track, contextUri } = props;
   const uri = track?.track?.uri;
 
   const { play } = useSpotifyPlayer();
@@ -42,9 +42,9 @@ function TrackRow(props: { track: SpotifyApi.SavedSongs }) {
     if (!uri) {
       return;
     }
-    play(uri);
-    console.log('play', uri);
-  }, [play, uri]);
+    play(uri, contextUri);
+    console.log('play', uri, contextUri);
+  }, [play, uri, contextUri]);
 
   return (
     <TableRow>
@@ -60,10 +60,11 @@ function TrackRow(props: { track: SpotifyApi.SavedSongs }) {
 
 interface TracksTableProps {
   tracks: SpotifyApi.SavedSongs[];
+  contextUri?: string;
 }
 
 export function TracksTable(props: TracksTableProps) {
-  const { tracks } = props;
+  const { tracks, contextUri } = props;
 
   return (
     <Table>
@@ -77,7 +78,7 @@ export function TracksTable(props: TracksTableProps) {
       </TableHead>
       <TableBody>
         {tracks.map((track, i) => (
-          <TrackRow track={track} key={i} />
+          <TrackRow track={track} contextUri={contextUri} key={i} />
         ))}
       </TableBody>
     </Table>
