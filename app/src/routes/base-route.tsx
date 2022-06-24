@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, Stack } from '@mui/material';
 import { Nav } from '../app/Nav';
 
 export function BaseRoute(props: PropsWithChildren<Record<string, unknown>>) {
@@ -9,7 +9,9 @@ export function BaseRoute(props: PropsWithChildren<Record<string, unknown>>) {
     <>
       <CssBaseline />
       <Nav />
-      {children}
+      <Stack direction="column" sx={{ mt: 8 }}>
+        {children}
+      </Stack>
     </>
   );
 }

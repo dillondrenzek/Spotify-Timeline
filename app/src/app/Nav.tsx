@@ -47,6 +47,7 @@ export function Nav() {
             Spotify Timeline
           </Typography>
           <NavLink href="/">Home</NavLink>
+          <NavLink href="/timeline">Timeline</NavLink>
         </Stack>
         {currentUser ? (
           <Stack direction="row" spacing={1} alignItems="center">
