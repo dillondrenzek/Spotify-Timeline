@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { List, ListItem, ListItemText, ListItemButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+function useSiteNavigation() {}
+
 function PlaylistListItem(props: { playlist: SpotifyApi.CurrentUserPlaylist }) {
   const { playlist } = props;
 
