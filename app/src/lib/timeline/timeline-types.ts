@@ -2,10 +2,10 @@ interface SpotifyUri {
   /**
    * The SpotifyURI returned by the spotify uri
    */
-  spotifyUri?: string;
+  spotifyUri: string;
 }
 
-export interface Track {
+export interface Track extends SpotifyUri {
   /**
    * Title of the track
    */
@@ -14,22 +14,11 @@ export interface Track {
    * Artists on the track
    */
   artists: Artist[];
-  /**
-   * Album
-   */
-  album: Album;
 }
 
 export interface Artist {
   /**
    * Name of the artist
-   */
-  name: string;
-}
-
-export interface Album {
-  /**
-   * Name of the album
    */
   name: string;
 }
@@ -43,7 +32,7 @@ export interface Playlist extends SpotifyUri {
   tracks: Track[];
 }
 
-export interface SuggestedPlaylist {
+export interface SuggestedPlaylist extends SpotifyUri {
   title: string;
   tracks: Track[];
 }
