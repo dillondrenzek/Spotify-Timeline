@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -11,23 +11,23 @@ import {
   ListItemButton,
   Divider,
 } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { BaseRoute } from './base-route';
 import { useTimeline } from '../hooks/use-timeline';
 import * as Types from '../lib/timeline/timeline-types';
-
-function track(title: string): Types.Track {
-  return {
-    album: null,
-    artists: [],
-    title,
-  };
-}
-const fakeSavedSongs: Types.Track[] = Array.from(Array(42)).map((value) =>
-  track('test')
-);
+import { useUserSavedTracks } from '../hooks/use-user-saved-tracks';
+import { SpotifyConverter } from '../lib/timeline/spotify-converter';
+import { PlayButton } from '../app/play-button';
 
 export function TimelineRoute() {
-  const { playlists } = useTimeline(fakeSavedSongs);
+  const { savedTracks } = useUserSavedTracks();
+  const transformed = useMemo<Types.Track[]>(() => {
+    if (!savedTracks) {
+      return [];
+    }
+    return savedTracks.map(SpotifyConverter.toTrack);
+  }, [savedTracks]);
+  const { playlists } = useTimeline(transformed);
 
   return (
     <BaseRoute>
@@ -59,7 +59,24 @@ export function TimelineRoute() {
                 {!!playlist.tracks?.length ? (
                   playlist.tracks.map((track, i) => (
                     <ListItemButton key={i.toString()}>
-                      {track?.title || 'Untitled'}
+                      <PlayButton
+                        uri={track?.spotifyUri}
+                        contextUri={playlist?.spotifyUri}
+                      />
+                      <Stack direction="column">
+                        <Typography>{track?.title || 'Untitled'}</Typography>
+                        <Box>
+                          {track?.artists.map((artist, i) => (
+                            <Typography
+                              variant="caption"
+                              key={i}
+                              sx={{ color: grey[400], mr: 1 }}
+                            >
+                              {artist.name}
+                            </Typography>
+                          ))}
+                        </Box>
+                      </Stack>
                     </ListItemButton>
                   ))
                 ) : (
