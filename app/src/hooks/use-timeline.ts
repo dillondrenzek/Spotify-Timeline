@@ -2,8 +2,9 @@ import * as Types from '../lib/timeline';
 
 function suggestedPlaylist(): Types.SuggestedPlaylist {
   return {
-    title: '',
+    title: null,
     tracks: [],
+    spotifyUri: null,
   };
 }
 
