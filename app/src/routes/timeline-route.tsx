@@ -1,5 +1,16 @@
 import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Stack,
+  Container,
+  List,
+  ListItemText,
+  ListItem,
+  Paper,
+  ListItemButton,
+  Divider,
+} from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimeline } from '../hooks/use-timeline';
 import * as Types from '../lib/timeline/timeline-types';
@@ -20,21 +31,47 @@ export function TimelineRoute() {
 
   return (
     <BaseRoute>
-      <Typography variant="h4">Timeline</Typography>
-      {playlists.map((playlist) => (
-        <Stack direction="column" spacing={2} sx={{ mb: 10 }}>
-          <Typography>{playlist.title}</Typography>
-          <Stack direction="column" spacing={1}>
-            {!!playlist.tracks?.length ? (
-              playlist.tracks.map((track) => (
-                <Box>{track?.title || 'Untitled'}</Box>
-              ))
-            ) : (
-              <Box>No tracks for this playlist</Box>
-            )}
-          </Stack>
-        </Stack>
-      ))}
+      <Container fixed>
+        <Box my={3}>
+          <Typography variant="h4">Timeline</Typography>
+        </Box>
+        {playlists.map((playlist, j) => (
+          <Paper elevation={3} key={j.toString()}>
+            <Stack direction="column" spacing={2} sx={{ mb: 6 }}>
+              <List>
+                <ListItem>
+                  <ListItemText>
+                    <Stack
+                      direction="row"
+                      sx={{
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography variant="h6">{playlist.title}</Typography>
+                      <Typography variant="caption">
+                        {playlist.tracks.length} tracks
+                      </Typography>
+                    </Stack>
+                  </ListItemText>
+                </ListItem>
+                <Divider />
+                {!!playlist.tracks?.length ? (
+                  playlist.tracks.map((track, i) => (
+                    <ListItemButton key={i.toString()}>
+                      {track?.title || 'Untitled'}
+                    </ListItemButton>
+                  ))
+                ) : (
+                  <ListItem>
+                    <ListItemText>No tracks for this playlist</ListItemText>
+                  </ListItem>
+                )}
+              </List>
+            </Stack>
+          </Paper>
+        ))}
+      </Container>
     </BaseRoute>
   );
 }
