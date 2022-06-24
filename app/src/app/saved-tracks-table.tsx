@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@mui/material';
 import { useUserSavedTracks } from '../hooks/use-user-saved-tracks';
-import { useSpotifyPlayer } from '../hooks/use-spotify-player';
+import { usePlayButton } from '../hooks/use-play-button';
 
 export interface ColDef<T = any> {
   columnLabel: string;
@@ -60,22 +60,13 @@ function SavedTrackRow(props: {
   contextUri?: string;
 }): JSX.Element {
   const { track, contextUri } = props;
-  const { play } = useSpotifyPlayer();
 
-  const uri = track.track.uri;
-
-  const handleClickPlay = useCallback(() => {
-    if (!uri) {
-      return;
-    }
-    play(uri, contextUri);
-    console.log('play', uri, contextUri);
-  }, [play, uri, contextUri]);
+  const clickPlay = usePlayButton(track.track.uri, contextUri);
 
   return (
     <TableRow>
       <TableCell>
-        <Button onClick={handleClickPlay}>Play</Button>
+        <Button onClick={clickPlay}>Play</Button>
       </TableCell>
       {colDefs.map((col, j) => (
         <TableCell key={j}>{col.valueGetter(track)}</TableCell>
