@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useUserSavedTracks } from '../hooks/use-user-saved-tracks';
 import { usePlayButton } from '../hooks/use-play-button';
+import { PlayButton } from './play-button';
 
 export interface ColDef<T = any> {
   columnLabel: string;
@@ -61,12 +62,10 @@ function SavedTrackRow(props: {
 }): JSX.Element {
   const { track, contextUri } = props;
 
-  const clickPlay = usePlayButton(track.track.uri, contextUri);
-
   return (
     <TableRow>
       <TableCell>
-        <Button onClick={clickPlay}>Play</Button>
+        <PlayButton uri={track?.track.uri} contextUri={contextUri} />
       </TableCell>
       {colDefs.map((col, j) => (
         <TableCell key={j}>{col.valueGetter(track)}</TableCell>
