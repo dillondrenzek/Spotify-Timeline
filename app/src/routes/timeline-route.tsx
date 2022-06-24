@@ -59,10 +59,7 @@ export function TimelineRoute() {
                 {!!playlist.tracks?.length ? (
                   playlist.tracks.map((track, i) => (
                     <ListItemButton key={i.toString()}>
-                      <PlayButton
-                        uri={track?.spotifyUri}
-                        contextUri={playlist?.spotifyUri}
-                      />
+                      <PlayButton uri={track?.spotifyUri} />
                       <Stack direction="column">
                         <Typography>{track?.title || 'Untitled'}</Typography>
                         <Box>
