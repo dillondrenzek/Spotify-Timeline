@@ -50,10 +50,10 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         body.contextUri,
         getAccessToken(req)
       );
-      res.send('Ok');
-    } catch (e) {
-      res.status(e.error?.status ?? 500);
-      res.json(e);
+      res.status(200).send({ success: true, data: body });
+    } catch (err) {
+      res.status(err.status ?? 500);
+      res.json(err);
     }
   });
 

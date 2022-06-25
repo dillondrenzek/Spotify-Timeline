@@ -2,6 +2,11 @@ import axios from 'axios';
 import querystring from 'querystring';
 import { AppEnvironment } from '../env';
 import * as Types from './types';
+import { handleApiError } from './errors';
+
+function api(address: string) {
+  return `https://api.spotify.com/v1${address}`;
+}
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -137,25 +142,27 @@ export class SpotifyWebApi {
     contextUri: string,
     accessToken: string
   ): Promise<void> {
-    const { data } = await axios.put(
-      `https://api.spotify.com/v1/me/player/play`,
-      JSON.stringify({
-        ...(contextUri && { context_uri: contextUri }),
-        ...(spotifyUri && { uris: [spotifyUri] }),
-        // offset: {
-        //   position: 0,
-        // },
-        // position_ms: 0,
-      }),
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    return data;
+    try {
+      const { data } = await axios.put(
+        `https://api.spotify.com/v1/me/player/play`,
+        JSON.stringify({
+          ...(contextUri && { context_uri: contextUri }),
+          ...(spotifyUri && { uris: [spotifyUri] }),
+          // offset: {
+          //   position: 0,
+          // },
+          // position_ms: 0,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      handleApiError(error);
+    }
   }
 }
