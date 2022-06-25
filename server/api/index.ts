@@ -33,7 +33,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         playlistId,
         getAccessToken(req)
       );
-      res.json(tracks);
+      res.status(200).json(tracks);
     } catch (e) {
       res.status(e.error?.status ?? 500);
       res.json(e);
@@ -50,7 +50,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         body.contextUri,
         getAccessToken(req)
       );
-      res.status(200).send({ success: true, data: body });
+      res.status(200).json(body);
     } catch (err) {
       res.status(err.status ?? 500);
       res.json(err);
@@ -62,7 +62,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       const playlists = await spotifyWebApi.getUsersPlaylists(
         getAccessToken(req)
       );
-      res.json(playlists.items);
+      res.status(200).json(playlists.items);
     } catch (e) {
       res.status(e.error?.status ?? 500);
       res.json(e);
@@ -72,7 +72,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   api.get('/me/tracks', async (req, res) => {
     try {
       const user = await spotifyWebApi.getUsersSavedTracks(getAccessToken(req));
-      res.json(user);
+      res.status(200).json(user);
     } catch (e) {
       res.status(e.error?.status ?? 500);
       res.json(e);
@@ -82,7 +82,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   api.get('/me', async (req, res) => {
     try {
       const user = await spotifyWebApi.getMe(getAccessToken(req));
-      res.json(user);
+      res.status(200).json(user);
     } catch (e) {
       res.status(e.error?.status ?? 500);
       res.json(e);
