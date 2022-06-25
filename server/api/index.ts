@@ -24,6 +24,10 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     });
   }
 
+  api.get('/timeline', async (req, res) => {
+    res.status(200).json({ success: true });
+  });
+
   api.get('/playlists/:id/tracks', async (req, res) => {
     const { params } = req;
     const playlistId = params.id;
