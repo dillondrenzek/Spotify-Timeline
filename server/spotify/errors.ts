@@ -39,21 +39,6 @@ export enum SpotifyErrorCode {
   ServiceUnavailable = 503,
 }
 
-interface AppError {
-  code: 'ERROR';
-}
-
-function toAppError(input: AxiosError): AppError {
-  const { config, message, name, code, stack } = input;
-
-  console.log(config, message, name, code, stack);
-  console.log(input.response);
-
-  return {
-    code: 'ERROR',
-  };
-}
-
 interface SpotifyErrorData {
   error:
     | { status: 401; message: 'The access token expired' }
