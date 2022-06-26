@@ -21,7 +21,6 @@ export function useUserSavedTracks() {
         })
         .catch((err) => {
           console.error('Error fetching /api/me:', err);
-          clearAuthToken();
         });
     }
   }, [authToken, clearAuthToken, savedTracks]);
