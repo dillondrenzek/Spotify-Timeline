@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
 import { generateTimeline } from '../timeline/generate-timeline';
+import { isApiError } from '../spotify/errors';
 
 const DEBUG_MODE = true;
 
@@ -10,13 +11,21 @@ function getAccessToken(req: express.Request) {
   return req.cookies.access_token;
 }
 
+function errorResponse(err: unknown, res: express.Response) {
+  if (isApiError(err)) {
+    const status = err.status >= 200 ? err.status : 500;
+    res.status(status).json(err);
+  } else {
+    res.status(500).json(err);
+  }
+}
+
 export default function (spotifyWebApi: SpotifyWebApi) {
   const api = express();
 
+  // middleware
   api.use(cookieParser());
-
   api.use(express.json());
-
   api.use(rateLimit());
 
   if (DEBUG_MODE) {
@@ -31,14 +40,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         getAccessToken(req)
       );
 
-      console.log('saved Tracks', savedTracks.length);
-
-      const result = generateTimeline(savedTracks);
+      const result = generateTimeline(savedTracks.items);
 
       res.status(200).json(result ?? { success: true });
     } catch (err) {
-      res.status(err?.status ?? 500);
-      res.json(err);
+      errorResponse(err, res);
     }
   });
 
@@ -52,9 +58,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         getAccessToken(req)
       );
       res.status(200).json(tracks);
-    } catch (e) {
-      res.status(e.error?.status ?? 500);
-      res.json(e);
+    } catch (err) {
+      errorResponse(err, res);
     }
   });
 
@@ -69,8 +74,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       );
       res.status(200).json(body);
     } catch (err) {
-      res.status(err.status ?? 500);
-      res.json(err);
+      errorResponse(err, res);
     }
   });
 
@@ -80,9 +84,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         getAccessToken(req)
       );
       res.status(200).json(playlists.items);
-    } catch (e) {
-      res.status(e.error?.status ?? 500);
-      res.json(e);
+    } catch (err) {
+      errorResponse(err, res);
     }
   });
 
@@ -90,9 +93,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     try {
       const user = await spotifyWebApi.getUsersSavedTracks(getAccessToken(req));
       res.status(200).json(user);
-    } catch (e) {
-      res.status(e.error?.status ?? 500);
-      res.json(e);
+    } catch (err) {
+      errorResponse(err, res);
     }
   });
 
@@ -100,9 +102,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     try {
       const user = await spotifyWebApi.getMe(getAccessToken(req));
       res.status(200).json(user);
-    } catch (e) {
-      res.status(e.error?.status ?? 500);
-      res.json(e);
+    } catch (err) {
+      errorResponse(err, res);
     }
   });
 

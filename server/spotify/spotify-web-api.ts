@@ -76,7 +76,9 @@ export class SpotifyWebApi {
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
    */
-  async getUsersSavedTracks(accessToken: string): Promise<Types.SavedTrack[]> {
+  async getUsersSavedTracks(
+    accessToken: string
+  ): Promise<Types.Paginated<Types.SavedTrack>> {
     try {
       const url = SpotifyWebApi.url('/me/tracks');
       const { data } = await axios.get(url, {
@@ -84,9 +86,6 @@ export class SpotifyWebApi {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      // Validate response
-      console.log('saved tracks data:', JSON.stringify(data));
 
       return data;
     } catch (error) {
@@ -101,7 +100,7 @@ export class SpotifyWebApi {
    */
   async getUsersPlaylists(
     accessToken: string
-  ): Promise<Types.Paginated<Types.CurrentUserPlaylist[]>> {
+  ): Promise<Types.Paginated<Types.CurrentUserPlaylist>> {
     const url = SpotifyWebApi.url('/me/playlists');
     const { data } = await axios.get(url, {
       headers: {
