@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
+import { generateTimeline } from '../timeline/generate-timeline';
 
 const DEBUG_MODE = true;
 
@@ -25,7 +26,18 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   }
 
   api.get('/timeline', async (req, res) => {
-    res.status(200).json({ success: true });
+    try {
+      const savedTracks = await spotifyWebApi.getUsersSavedTracks(
+        getAccessToken(req)
+      );
+
+      const result = generateTimeline(savedTracks);
+
+      res.status(200).json(result ?? { success: true });
+    } catch (err) {
+      res.status(err?.status ?? 500);
+      res.json(err);
+    }
   });
 
   api.get('/playlists/:id/tracks', async (req, res) => {

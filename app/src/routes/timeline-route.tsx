@@ -20,14 +20,14 @@ import { SpotifyConverter } from '../lib/timeline/spotify-converter';
 import { PlayButton } from '../app/play-button';
 
 export function TimelineRoute() {
-  const { savedTracks } = useUserSavedTracks();
-  const transformed = useMemo<Types.Track[]>(() => {
-    if (!savedTracks) {
-      return [];
-    }
-    return savedTracks.map(SpotifyConverter.toTrack);
-  }, [savedTracks]);
-  const { playlists } = useTimeline(transformed);
+  // const { savedTracks } = useUserSavedTracks();
+  // const transformed = useMemo<Types.Track[]>(() => {
+  //   if (!savedTracks) {
+  //     return [];
+  //   }
+  //   return savedTracks.map(SpotifyConverter.toTrack);
+  // }, [savedTracks]);
+  const { playlists } = useTimeline();
 
   return (
     <BaseRoute>
@@ -35,6 +35,9 @@ export function TimelineRoute() {
         <Box my={3}>
           <Typography variant="h4">Timeline</Typography>
         </Box>
+        {!playlists?.length && (
+          <Typography variant="h6">No timeline was generated</Typography>
+        )}
         {playlists.map((playlist, j) => (
           <Paper elevation={3} key={j.toString()}>
             <Stack direction="column" spacing={2} sx={{ mb: 6 }}>

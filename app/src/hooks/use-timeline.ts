@@ -1,29 +1,59 @@
 import * as Types from '../lib/timeline';
+import { useState, useEffect } from 'react';
+import { useAuthToken } from './use-auth-token';
 
-function suggestedPlaylist(): Types.SuggestedPlaylist {
+interface TimelineResult {
+  suggestedPlaylists: Types.SuggestedPlaylist[];
+}
+
+function isValidResult(value: unknown): value is TimelineResult {
+  if (typeof value !== 'object') {
+    return false;
+  }
+
+  return 'suggestedPlaylists' in value;
+}
+
+function convert(result: TimelineResult): Types.Timeline {
   return {
-    title: null,
-    tracks: [],
-    spotifyUri: null,
+    playlists: result.suggestedPlaylists,
   };
 }
 
-export function useTimeline(savedSongs: Types.Track[]): Types.Timeline {
-  const playlists: Types.SuggestedPlaylist[] = [];
+async function parseResponse(res: Response): Promise<Types.Timeline | null> {
+  try {
+    const json = await res.json();
 
-  const groupSize = 5;
-  let numberOfPlaylists = Math.ceil(savedSongs.length / groupSize); // groups of five
-  for (let i = 0; i < numberOfPlaylists; i++) {
-    const newPlaylist = suggestedPlaylist();
-    const startIndex = i * groupSize;
-    const endIndex = (i + 1) * groupSize;
-    newPlaylist.title = 'Playlist ' + i.toString();
-    newPlaylist.tracks = [...savedSongs.slice(startIndex, endIndex)];
+    if (!isValidResult(json)) {
+      throw new Error(
+        'Received unexpected values from API:\n' + JSON.stringify(json)
+      );
+    }
 
-    playlists.push(newPlaylist);
+    return convert(json);
+  } catch (err) {
+    throw new Error('Unable to parse timeline JSON');
   }
+}
 
-  return {
-    playlists,
-  };
+export function useTimeline(): Types.Timeline {
+  const { authToken, clearAuthToken } = useAuthToken();
+  const [timeline, setTimeline] = useState<Types.Timeline>({
+    playlists: [],
+  });
+
+  useEffect(() => {
+    if (!authToken) {
+      return;
+    }
+
+    fetch('/api/timeline')
+      .then(parseResponse)
+      .then(setTimeline)
+      .catch((err) => {
+        console.error('Error fetching /api/timeline:\n', err);
+      });
+  }, [authToken, clearAuthToken]);
+
+  return timeline;
 }
