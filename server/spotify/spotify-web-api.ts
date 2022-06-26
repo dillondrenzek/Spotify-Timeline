@@ -2,6 +2,7 @@ import axios from 'axios';
 import querystring from 'querystring';
 import { AppEnvironment } from '../env';
 import * as Types from './types';
+import { handleAxiosError } from './errors';
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -17,30 +18,34 @@ export class SpotifyWebApi {
    * @param code authorization code from Spotify authorization
    */
   async getTokens(code: string): Promise<Types.TokenResponse> {
-    // Post data
-    const postData = querystring.stringify({
-      grant_type: 'authorization_code',
-      code: code.toString(),
-      redirect_uri: this.env.SPOTIFY_API_REDIRECT_URI,
-    });
+    try {
+      // Post data
+      const postData = querystring.stringify({
+        grant_type: 'authorization_code',
+        code: code.toString(),
+        redirect_uri: this.env.SPOTIFY_API_REDIRECT_URI,
+      });
 
-    const { data } = await axios.post(
-      'https://accounts.spotify.com/api/token',
-      postData,
-      {
-        headers: {
-          Authorization: this.authorizationHeader,
-        },
-      }
-    );
+      const { data } = await axios.post(
+        'https://accounts.spotify.com/api/token',
+        postData,
+        {
+          headers: {
+            Authorization: this.authorizationHeader,
+          },
+        }
+      );
 
-    return {
-      access_token: data.access_token,
-      expires_in: data.expires_in,
-      refresh_token: data.refresh_token,
-      scope: data.scope,
-      token_type: data.token_type,
-    } as Types.TokenResponse;
+      return {
+        access_token: data.access_token,
+        expires_in: data.expires_in,
+        refresh_token: data.refresh_token,
+        scope: data.scope,
+        token_type: data.token_type,
+      } as Types.TokenResponse;
+    } catch (error) {
+      handleAxiosError(error);
+    }
   }
 
   /**
@@ -48,25 +53,30 @@ export class SpotifyWebApi {
    * @param accessToken
    */
   async getMe(accessToken: string): Promise<Types.CurrentUserProfile> {
-    const { data } = await axios.get('https://api.spotify.com/v1/me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    try {
+      const url = SpotifyWebApi.url('/me');
+      const { data } = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-    return {
-      country: data.country,
-      display_name: data.display_name,
-      email: data.email,
-      external_urls: data.external_urls,
-      followers: data.followers,
-      href: data.href,
-      id: data.id,
-      images: data.images,
-      product: data.product,
-      type: data.type,
-      uri: data.uri,
-    } as Types.CurrentUserProfile;
+      return {
+        country: data.country,
+        display_name: data.display_name,
+        email: data.email,
+        external_urls: data.external_urls,
+        followers: data.followers,
+        href: data.href,
+        id: data.id,
+        images: data.images,
+        product: data.product,
+        type: data.type,
+        uri: data.uri,
+      } as Types.CurrentUserProfile;
+    } catch (error) {
+      handleAxiosError(error);
+    }
   }
 
   /**
@@ -74,14 +84,21 @@ export class SpotifyWebApi {
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
    */
-  async getUsersSavedTracks(accessToken: string): Promise<Types.SavedTrack[]> {
-    const { data } = await axios.get('https://api.spotify.com/v1/me/tracks', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  async getUsersSavedTracks(
+    accessToken: string
+  ): Promise<Types.Paginated<Types.SavedTrack>> {
+    try {
+      const url = SpotifyWebApi.url('/me/tracks');
+      const { data } = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      handleAxiosError(error);
+    }
   }
 
   /**
@@ -91,17 +108,19 @@ export class SpotifyWebApi {
    */
   async getUsersPlaylists(
     accessToken: string
-  ): Promise<Types.Paginated<Types.CurrentUserPlaylist[]>> {
-    const { data } = await axios.get(
-      'https://api.spotify.com/v1/me/playlists',
-      {
+  ): Promise<Types.Paginated<Types.CurrentUserPlaylist>> {
+    try {
+      const url = SpotifyWebApi.url('/me/playlists');
+      const { data } = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
-    );
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      handleAxiosError(error);
+    }
   }
 
   /**
@@ -113,16 +132,18 @@ export class SpotifyWebApi {
     playlistId: string,
     accessToken: string
   ): Promise<Types.Paginated<Types.Track>> {
-    const { data } = await axios.get(
-      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-      {
+    try {
+      const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
+      const { data } = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }
-    );
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      handleAxiosError(error);
+    }
   }
 
   /**
@@ -137,25 +158,32 @@ export class SpotifyWebApi {
     contextUri: string,
     accessToken: string
   ): Promise<void> {
-    const { data } = await axios.put(
-      `https://api.spotify.com/v1/me/player/play`,
-      JSON.stringify({
-        ...(contextUri && { context_uri: contextUri }),
-        ...(spotifyUri && { uris: [spotifyUri] }),
-        // offset: {
-        //   position: 0,
-        // },
-        // position_ms: 0,
-      }),
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    try {
+      const url = SpotifyWebApi.url(`/me/player/play`);
+      const { data } = await axios.put(
+        url,
+        JSON.stringify({
+          ...(contextUri && { context_uri: contextUri }),
+          ...(spotifyUri && { uris: [spotifyUri] }),
+          // offset: {
+          //   position: 0,
+          // },
+          // position_ms: 0,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      handleAxiosError(error);
+    }
+  }
 
-    return data;
+  public static url(path: string): string {
+    return `https://api.spotify.com/v1${path}`;
   }
 }

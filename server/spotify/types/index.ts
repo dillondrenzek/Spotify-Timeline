@@ -185,6 +185,7 @@ export interface Track {
   //   "track_number": 1,
   //   "type": "track",
   //   "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl"
+  uri: string;
   // }
 }
 

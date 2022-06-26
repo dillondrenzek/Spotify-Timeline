@@ -1,13 +1,12 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
 } from '@mui/material';
-import { useSpotifyPlayer } from '../hooks/use-spotify-player';
+import { PlayButton } from './play-button';
 
 export interface ColDef<T = any> {
   columnLabel: string;
@@ -36,20 +35,10 @@ function TrackRow(props: { track: SpotifyApi.SavedSongs; contextUri: string }) {
   const { track, contextUri } = props;
   const uri = track?.track?.uri;
 
-  const { play } = useSpotifyPlayer();
-
-  const handleClickPlay = useCallback(() => {
-    if (!uri) {
-      return;
-    }
-    play(uri, contextUri);
-    console.log('play', uri, contextUri);
-  }, [play, uri, contextUri]);
-
   return (
     <TableRow>
       <TableCell>
-        <Button onClick={handleClickPlay}>Play</Button>
+        <PlayButton uri={uri} contextUri={contextUri} />
       </TableCell>
       {colDefs.map((col, j) => (
         <TableCell key={j}>{col.valueGetter(track)}</TableCell>
