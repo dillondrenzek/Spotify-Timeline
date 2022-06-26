@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   Box,
   Typography,
@@ -14,19 +14,9 @@ import {
 import { grey } from '@mui/material/colors';
 import { BaseRoute } from './base-route';
 import { useTimeline } from '../hooks/use-timeline';
-import * as Types from '../lib/timeline/timeline-types';
-import { useUserSavedTracks } from '../hooks/use-user-saved-tracks';
-import { SpotifyConverter } from '../lib/timeline/spotify-converter';
 import { PlayButton } from '../app/play-button';
 
 export function TimelineRoute() {
-  // const { savedTracks } = useUserSavedTracks();
-  // const transformed = useMemo<Types.Track[]>(() => {
-  //   if (!savedTracks) {
-  //     return [];
-  //   }
-  //   return savedTracks.map(SpotifyConverter.toTrack);
-  // }, [savedTracks]);
   const { playlists } = useTimeline();
 
   return (
