@@ -108,14 +108,20 @@ export function isApiError(value: unknown): value is ApiError {
   return 'status' in value;
 }
 
-export function handleApiError(input: unknown): ApiError {
+/**
+ * Handles errors thrown from an Axios API call
+ *
+ * @throws Throws a standard `ApiError` when handling a known axios error
+ * @throws Re-throws a non-Axios error
+ */
+export function handleAxiosError(err: unknown) {
   // Only handle axios errors
-  if (!axios.isAxiosError(input)) {
-    throw input;
+  if (!axios.isAxiosError(err)) {
+    throw err;
   }
 
   // Convert to common API error
-  const apiError = toApiError(input);
+  const apiError = toApiError(err);
 
   // Log
   console.error('[ERROR] Api Error:\n', apiError);
