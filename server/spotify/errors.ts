@@ -64,25 +64,48 @@ interface SpotifyErrorData {
       };
 }
 
-type ApiError =
+export type ApiError =
   | SpotifyErrorData['error']
   | {
-      status: null;
+      status: -1;
       reason: 'NO_ERROR_DATA';
+    }
+  | {
+      status: -1;
+      reason: 'UNRECOGNIZED_ERROR_DATA';
+      data: unknown;
     };
 
 function toApiError(err: AxiosError): ApiError {
   const { response } = err;
-  const { data, status } = response;
+  const { data } = response;
 
   if (!data) {
     return {
-      status: null,
+      status: -1,
       reason: 'NO_ERROR_DATA',
     };
   }
 
-  return data.error;
+  const { error } = data;
+
+  if (!isApiError(error)) {
+    return {
+      status: -1,
+      reason: 'UNRECOGNIZED_ERROR_DATA',
+      data: error,
+    };
+  }
+
+  return error;
+}
+
+export function isApiError(value: unknown): value is ApiError {
+  if (typeof value !== 'object') {
+    return false;
+  }
+
+  return 'status' in value;
 }
 
 export function handleApiError(input: unknown): ApiError {
@@ -95,7 +118,7 @@ export function handleApiError(input: unknown): ApiError {
   const apiError = toApiError(input);
 
   // Log
-  // console.error('[ERROR] Api Error:\n', apiError);
+  console.error('[ERROR] Api Error:\n', apiError);
 
   // return apiError;
   throw apiError;

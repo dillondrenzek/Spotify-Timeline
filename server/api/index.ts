@@ -31,6 +31,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         getAccessToken(req)
       );
 
+      console.log('saved Tracks', savedTracks.length);
+
       const result = generateTimeline(savedTracks);
 
       res.status(200).json(result ?? { success: true });
@@ -60,7 +62,6 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     try {
       const { body } = req;
 
-      console.log(' body ', body);
       await spotifyWebApi.startPlayback(
         body.uri,
         body.contextUri,
