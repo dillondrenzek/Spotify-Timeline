@@ -1,6 +1,5 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -8,7 +7,6 @@ import {
   TableRow,
 } from '@mui/material';
 import { useUserSavedTracks } from '../hooks/use-user-saved-tracks';
-import { usePlayButton } from '../hooks/use-play-button';
 import { PlayButton } from './play-button';
 
 export interface ColDef<T = any> {
