@@ -1,15 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import Cookie from 'js-cookie';
+import { getAuthCookie, clearAuthCookie } from '../lib/auth-cookie';
 
-const AUTH_TOKEN_COOKIE_NAME = 'access_token';
-
-export const useAuthToken = (initialValue: string = '', storeValue = true) => {
+export function useAuthToken(initialValue: string = '') {
   const [authToken, setAuthToken] = useState(initialValue);
 
   // load token from localstorage
   useEffect(() => {
     if (!initialValue && !authToken) {
-      const storedAuthToken = Cookie.get(AUTH_TOKEN_COOKIE_NAME);
+      const storedAuthToken = getAuthCookie();
       if (storedAuthToken) {
         setAuthToken(storedAuthToken);
       }
@@ -17,7 +15,7 @@ export const useAuthToken = (initialValue: string = '', storeValue = true) => {
   }, [initialValue, authToken]);
 
   const clearAuthToken = useCallback(() => {
-    Cookie.remove(AUTH_TOKEN_COOKIE_NAME);
+    clearAuthCookie();
     setAuthToken('');
   }, []);
 
@@ -25,4 +23,4 @@ export const useAuthToken = (initialValue: string = '', storeValue = true) => {
     authToken,
     clearAuthToken,
   };
-};
+}

@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
 import { generateTimeline } from '../timeline/generate-timeline';
-import { isApiError } from '../spotify/errors';
+import { isSpotifyApiError } from '../spotify/errors';
 
 const DEBUG_MODE = true;
 
@@ -12,8 +12,8 @@ function getAccessToken(req: express.Request) {
 }
 
 function errorResponse(err: unknown, res: express.Response) {
-  if (isApiError(err)) {
-    const status = err.status >= 200 ? err.status : 500;
+  if (isSpotifyApiError(err)) {
+    const status = err.response.status >= 200 ? err.response.status : 500;
     res.status(status).json(err);
   } else {
     res.status(500).json(err);

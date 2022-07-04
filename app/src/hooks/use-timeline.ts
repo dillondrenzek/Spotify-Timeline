@@ -1,6 +1,7 @@
 import * as Types from '../lib/timeline';
 import { useState, useEffect } from 'react';
 import { useAuthToken } from './use-auth-token';
+import { httpRequest, responseParser } from '../lib/http';
 
 interface TimelineResult {
   suggestedPlaylists: Types.SuggestedPlaylist[];
@@ -16,24 +17,8 @@ function isValidResult(value: unknown): value is TimelineResult {
 
 function convert(result: TimelineResult): Types.Timeline {
   return {
-    playlists: result.suggestedPlaylists,
+    playlists: result?.suggestedPlaylists ?? [],
   };
-}
-
-async function parseResponse(res: Response): Promise<Types.Timeline | null> {
-  try {
-    const json = await res.json();
-
-    if (!isValidResult(json)) {
-      throw new Error(
-        'Received unexpected values from API:\n' + JSON.stringify(json)
-      );
-    }
-
-    return convert(json);
-  } catch (err) {
-    throw new Error('Unable to parse timeline JSON');
-  }
 }
 
 export function useTimeline(): Types.Timeline {
@@ -47,12 +32,9 @@ export function useTimeline(): Types.Timeline {
       return;
     }
 
-    fetch('/api/timeline')
-      .then(parseResponse)
-      .then(setTimeline)
-      .catch((err) => {
-        console.error('Error fetching /api/timeline:\n', err);
-      });
+    httpRequest('/api/timeline')
+      .then(responseParser(isValidResult, convert))
+      .then(setTimeline);
   }, [authToken, clearAuthToken]);
 
   return timeline;

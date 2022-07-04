@@ -33,7 +33,8 @@
       "@typescript-eslint"
     ],
     "extends": [
-      "react-app"
+      "react-app",
+      "plugin:react-hooks/recommended"
     ]
   },
   "prettier": {
@@ -51,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^4.6.0"
   }
 }

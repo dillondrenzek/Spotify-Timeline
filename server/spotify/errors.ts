@@ -49,54 +49,77 @@ interface SpotifyErrorData {
       };
 }
 
-export type ApiError =
-  | SpotifyErrorData['error']
-  | {
-      status: -1;
-      reason: 'NO_ERROR_DATA';
-    }
-  | {
-      status: -1;
-      reason: 'UNRECOGNIZED_ERROR_DATA';
-      data: unknown;
-    };
+export type ApiError = {
+  reason: string;
+  message?: string;
+};
 
-function toApiError(err: AxiosError): ApiError {
-  const { response } = err;
-  const { data } = response;
+export function isApiError(value: unknown): value is ApiError {
+  return typeof value === 'object' && 'reason' in value;
+}
+
+export type SpotifyApiError = ApiError & {
+  response: {
+    status: AxiosResponse<any>['status'];
+    config: AxiosResponse<any>['config'];
+    data: AxiosResponse<any>['data'];
+  };
+};
+
+export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
+  return typeof value === 'object' && 'reason' in value && 'response' in value;
+}
+
+function toSpotifyApiError(err: AxiosError): SpotifyApiError {
+  const { response: spotifyResponse } = err;
+  const { data } = spotifyResponse;
+
+  const response: SpotifyApiError['response'] = {
+    config: spotifyResponse.config,
+    data: spotifyResponse.data,
+    status: spotifyResponse.status,
+  };
 
   if (!data) {
     return {
-      status: -1,
-      reason: 'NO_ERROR_DATA',
+      reason: 'UNKNOWN_ERROR',
+      message: null,
+      response,
+    };
+  }
+
+  // Handle Specific API errors
+  if (spotifyResponse.status === 401) {
+    return {
+      reason: 'UNAUTHORIZED',
+      message: null,
+      response,
     };
   }
 
   const { error } = data;
 
+  // Check ApiError
   if (!isApiError(error)) {
+    console.error('error data:', error);
     return {
-      status: -1,
-      reason: 'UNRECOGNIZED_ERROR_DATA',
-      data: error,
+      reason: 'UNKNOWN_ERROR',
+      message: null,
+      response,
     };
   }
 
-  return error;
-}
-
-export function isApiError(value: unknown): value is ApiError {
-  if (typeof value !== 'object') {
-    return false;
-  }
-
-  return 'status' in value;
+  return {
+    reason: error.reason,
+    message: error.message,
+    response,
+  };
 }
 
 /**
  * Handles errors thrown from an Axios API call
  *
- * @throws Throws a standard `ApiError` when handling a known axios error
+ * @throws `SpotifyApiError` when handling a known Axios error
  * @throws Re-throws a non-Axios error
  */
 export function handleAxiosError(err: unknown) {
@@ -106,10 +129,10 @@ export function handleAxiosError(err: unknown) {
   }
 
   // Convert to common API error
-  const apiError = toApiError(err);
+  const apiError = toSpotifyApiError(err);
 
   // Log
-  console.error('[ERROR] Api Error:\n', apiError);
+  console.error('[ERROR] Api Error: ', apiError.reason);
 
   // return apiError;
   throw apiError;

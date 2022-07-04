@@ -3,6 +3,7 @@ import querystring from 'querystring';
 import { AppEnvironment } from '../env';
 import * as Types from './types';
 import { handleAxiosError } from './errors';
+import { PaginatedSavedTrack } from './models/saved-track';
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -87,18 +88,15 @@ export class SpotifyWebApi {
   async getUsersSavedTracks(
     accessToken: string
   ): Promise<Types.Paginated<Types.SavedTrack>> {
-    try {
-      const url = SpotifyWebApi.url('/me/tracks');
-      const { data } = await axios.get(url, {
+    const url = SpotifyWebApi.url('/me/tracks');
+    return await axios
+      .get(url, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      });
-
-      return data;
-    } catch (error) {
-      handleAxiosError(error);
-    }
+      })
+      .catch(handleAxiosError)
+      .then(PaginatedSavedTrack.fromResponse);
   }
 
   /**
