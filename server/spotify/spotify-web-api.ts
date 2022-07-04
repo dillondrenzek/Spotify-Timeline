@@ -4,6 +4,7 @@ import { AppEnvironment } from '../env';
 import * as Types from './types';
 import { handleAxiosError } from './errors';
 import { PaginatedSavedTrack } from './models/saved-track';
+import { PlayerState } from './models/player-state';
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -78,6 +79,23 @@ export class SpotifyWebApi {
     } catch (error) {
       handleAxiosError(error);
     }
+  }
+
+  /**
+   * The current state of playback in Spotify
+   * @param accessToken
+   * @returns
+   */
+  async getPlayerState(accessToken: string): Promise<PlayerState> {
+    const url = SpotifyWebApi.url('/me/player');
+    return await axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(PlayerState.fromResponse);
   }
 
   /**
