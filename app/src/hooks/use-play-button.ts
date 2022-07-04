@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useAuthToken } from './use-auth-token';
-import { ErrorHandler } from './use-timeline';
+import { ErrorHandler } from '../lib/error';
+import { httpRequest } from '../lib/http';
 
 export function usePlayButton(
   uri: string,
@@ -20,7 +21,7 @@ export function usePlayButton(
         ...(contextUri && { contextUri: contextUri }),
       };
 
-      fetch('/api/me/player/play', {
+      httpRequest('/api/me/player/play', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
