@@ -49,49 +49,77 @@ interface SpotifyErrorData {
       };
 }
 
-type ApiError = {
+export type ApiError = {
   reason: string;
   message?: string;
-  data?: unknown;
 };
 
-function toApiError(err: AxiosError): ApiError {
-  const { response } = err;
-  const { data } = response;
+export function isApiError(value: unknown): value is ApiError {
+  return typeof value === 'object' && 'reason' in value;
+}
+
+export type SpotifyApiError = ApiError & {
+  response: {
+    status: AxiosResponse<any>['status'];
+    config: AxiosResponse<any>['config'];
+    data: AxiosResponse<any>['data'];
+  };
+};
+
+export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
+  return typeof value === 'object' && 'reason' in value && 'response' in value;
+}
+
+function toSpotifyApiError(err: AxiosError): SpotifyApiError {
+  const { response: spotifyResponse } = err;
+  const { data } = spotifyResponse;
+
+  const response: SpotifyApiError['response'] = {
+    config: spotifyResponse.config,
+    data: spotifyResponse.data,
+    status: spotifyResponse.status,
+  };
 
   if (!data) {
     return {
       reason: 'UNKNOWN_ERROR',
       message: null,
-      data: null,
+      response,
+    };
+  }
+
+  // Handle Specific API errors
+  if (spotifyResponse.status === 401) {
+    return {
+      reason: 'UNAUTHORIZED',
+      message: null,
+      response,
     };
   }
 
   const { error } = data;
 
+  // Check ApiError
   if (!isApiError(error)) {
+    console.error('error data:', error);
     return {
       reason: 'UNKNOWN_ERROR',
       message: null,
-      data: error,
+      response,
     };
   }
 
   return {
     reason: error.reason,
     message: error.message,
-    data: error,
+    response,
   };
-}
-
-export function isApiError(value: unknown): value is ApiError {
-  return typeof value === 'object' && 'reason' in value;
 }
 
 /**
  * Handles errors thrown from an Axios API call
  *
- * @throws Throws a standard `ApiError` when handling a known axios error
+ * @throws `SpotifyApiError` when handling a known Axios error
  * @throws Re-throws a non-Axios error
  */
 export function handleAxiosError(err: unknown) {
@@ -101,10 +129,10 @@ export function handleAxiosError(err: unknown) {
   }
 
   // Convert to common API error
-  const apiError = toApiError(err);
+  const apiError = toSpotifyApiError(err);
 
   // Log
-  console.error('[ERROR] Api Error:\n', apiError);
+  console.error('[ERROR] Api Error: ', apiError.reason);
 
   // return apiError;
   throw apiError;
