@@ -13,8 +13,6 @@ export function PlayButton(props: { uri: string; contextUri?: string }) {
 
   const handleError = useCallback<ErrorHandler>(
     (err: any) => {
-      console.log('handle error');
-
       if (isApiError(err)) {
         const { reason } = err;
 
