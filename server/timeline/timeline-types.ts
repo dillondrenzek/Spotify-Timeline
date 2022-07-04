@@ -35,6 +35,8 @@ export interface Playlist extends SpotifyUri {
 export interface SuggestedPlaylist {
   title: string;
   tracks: Track[];
+  startDate: string;
+  endDate: string;
 }
 
 export interface Timeline {
