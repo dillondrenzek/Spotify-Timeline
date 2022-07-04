@@ -1,5 +1,5 @@
 // import * as Types from '../lib/timeline';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { httpRequest, responseParser } from '../lib/http';
 // import { useAuthToken } from './use-auth-token';
 // import { httpRequest, responseParser } from '../lib/http';
@@ -91,6 +91,11 @@ export function usePlayerState() {
   const [playerState, setPlayerState] =
     useState<PlayerState>(defaultPlayerState);
 
+  const dateTimeString = useMemo(() => {
+    const date = new Date(playerState.timestamp);
+    return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
+  }, [playerState?.timestamp]);
+
   const fetch = useCallback(() => {
     return httpRequest('/api/player')
       .then(responseParser(isValidResult, convert))
@@ -104,5 +109,6 @@ export function usePlayerState() {
   return {
     state: playerState,
     fetch,
+    timestamp: dateTimeString,
   };
 }
