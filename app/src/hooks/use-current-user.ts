@@ -1,5 +1,21 @@
 import { useEffect, useState } from 'react';
+import { httpRequest, responseParser } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
+
+type CurrentUserResult = SpotifyApi.CurrentUserProfile;
+
+function isValidResult(value: unknown): value is CurrentUserResult {
+  if (typeof value !== 'object') {
+    return false;
+  }
+
+  // TODO: figure this out
+  return true;
+}
+
+function convert(result: CurrentUserResult): SpotifyApi.CurrentUserProfile {
+  return result;
+}
 
 export const useCurrentUser = () => {
   const { authToken, clearAuthToken } = useAuthToken();
@@ -9,13 +25,9 @@ export const useCurrentUser = () => {
 
   useEffect(() => {
     if (authToken && !currentUser) {
-      fetch('/api/me')
-        .then((res) => res.json())
-        .then((result: SpotifyApi.CurrentUserProfile) => setCurrentUser(result))
-        .catch((err) => {
-          console.error('Error fetching /api/me:', err);
-          // clearAuthToken();
-        })
+      httpRequest('/api/me')
+        .then(responseParser(isValidResult, convert))
+        .then(setCurrentUser)
         .finally(() => setIsLoaded(true));
     }
   }, [authToken, clearAuthToken, currentUser]);

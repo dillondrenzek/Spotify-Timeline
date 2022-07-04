@@ -1,9 +1,5 @@
 export interface ApiError {
   /**
-   * @example 404
-   */
-  status: number;
-  /**
    * @example 'Player command failed: No active device found'
    */
   message: string;
@@ -14,14 +10,12 @@ export interface ApiError {
 }
 
 export class ApiError extends Error {
-  status: number;
   reason: string;
   message: string;
 
-  constructor(err?: ApiError) {
-    super(err.message);
+  constructor(err?: { reason: string; message: string }) {
+    super(null);
     this.message = err.message;
-    this.status = err.status;
     this.reason = err.reason;
     this.name = err.reason;
   }

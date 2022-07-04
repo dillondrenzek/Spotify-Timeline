@@ -1,7 +1,24 @@
 import { useCallback } from 'react';
 import { useAuthToken } from './use-auth-token';
 import { ErrorHandler } from '../lib/error';
-import { httpRequest } from '../lib/http';
+import { httpRequest, responseParser } from '../lib/http';
+
+interface PlayResult {
+  uri: string;
+}
+
+function isValidResult(value: unknown): value is PlayResult {
+  if (typeof value !== 'object') {
+    return false;
+  }
+
+  // TODO: figure this out
+  return true;
+}
+
+function convert(result: PlayResult): PlayResult {
+  return result;
+}
 
 export function usePlayButton(
   uri: string,
@@ -26,7 +43,7 @@ export function usePlayButton(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
-        .then((res) => res.json())
+        .then(responseParser(isValidResult, convert))
         .catch((err) => {
           handleError?.(err);
         });
