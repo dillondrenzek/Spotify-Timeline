@@ -26,12 +26,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.182",
     "axios": "0.21.2",
     "cookie-parser": "1.4.5",
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "http": "0.0.1-security",
     "https": "1.0.0",
+    "lodash": "^4.17.21",
     "luxon": "^2.4.0",
     "querystring": "0.2.0"
   },
