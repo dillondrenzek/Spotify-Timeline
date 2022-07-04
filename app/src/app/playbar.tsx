@@ -23,6 +23,9 @@ function DeviceDisplay(props: {
         {isPlaying ? 'Playing' : 'Paused'} on
       </Typography>
       <Typography variant="caption">{device?.name}</Typography>
+      <Typography variant="caption">
+        volume: {device?.volume_percent}
+      </Typography>
     </Stack>
   );
 }
