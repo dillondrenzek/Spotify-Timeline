@@ -42,7 +42,7 @@ export async function httpRequest(
   try {
     res = await fetch(input, init);
   } catch (err) {
-    console.error('[ERROR] httpRequest');
+    console.error('[ERROR] httpRequest:', err);
     return;
   }
 
