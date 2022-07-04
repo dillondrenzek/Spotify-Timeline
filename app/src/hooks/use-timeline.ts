@@ -1,5 +1,5 @@
 import * as Types from '../lib/timeline';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuthToken } from './use-auth-token';
 import { httpRequest, responseParser } from '../lib/http';
 
@@ -32,9 +32,14 @@ export function useTimeline(): Types.Timeline {
       return;
     }
 
-    httpRequest('/api/timeline')
-      .then(responseParser(isValidResult, convert))
-      .then(setTimeline);
+    // IDEA
+    function makeApiCall() {
+      return httpRequest('/api/timeline').then(
+        responseParser(isValidResult, convert)
+      );
+    }
+
+    makeApiCall().then(setTimeline);
   }, [authToken, clearAuthToken]);
 
   return timeline;
