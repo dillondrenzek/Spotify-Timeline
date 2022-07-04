@@ -1,16 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import Cookie from 'js-cookie';
+import { getAuthCookie, clearAuthCookie } from '../lib/auth-cookie';
 import { isApiError } from '../lib/api-error';
-
-const AUTH_TOKEN_COOKIE_NAME = 'access_token';
-
-function getAuthCookie() {
-  return Cookie.get(AUTH_TOKEN_COOKIE_NAME);
-}
-
-function clearAuthCookie() {
-  return Cookie.remove(AUTH_TOKEN_COOKIE_NAME);
-}
 
 export function useAuthToken(initialValue: string = '') {
   const [authToken, setAuthToken] = useState(initialValue);
