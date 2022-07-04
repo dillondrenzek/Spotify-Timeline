@@ -1,10 +1,13 @@
 import React from 'react';
 import { AppBar, Toolbar, Stack, Typography, Button } from '@mui/material';
+import { usePlayerState } from '../hooks/use-player-state';
 
 export function Playbar() {
-  const { title, artistName } = {
-    title: 'Test',
-    artistName: 'Artist',
+  const { state, fetch } = usePlayerState();
+  const { item, is_playing } = state;
+
+  const { title } = {
+    title: item?.name ?? '',
   };
 
   return (
@@ -15,11 +18,15 @@ export function Playbar() {
             Player
           </Typography>
           <Typography variant="body1" noWrap component="div">
-            {title} by {artistName}
+            {title}
           </Typography>
-          <Button>Prev</Button>
+          <Typography variant="caption" color="secondary.main">
+            {is_playing ? 'Playing' : 'Paused'}
+          </Typography>
+          <Button onClick={fetch}>Refresh</Button>
+          {/* <Button>Prev</Button>
           <Button>Play</Button>
-          <Button>Next</Button>
+          <Button>Next</Button> */}
         </Stack>
       </Toolbar>
     </AppBar>
