@@ -9,20 +9,22 @@ export function responseParser<T = unknown, U = T>(
   convert: ResponseConverter<T, U>
 ): (res: Response) => Promise<U> {
   return async (res: Response) => {
-    try {
-      const json = await res.json();
+    const json = await res.json();
 
-      if (!isValid(json)) {
-        throw new Error(
-          'Received unexpected values from API:\n' + JSON.stringify(json)
-        );
-      }
-
-      return convert(json);
-    } catch (err) {
-      // throw new Error('Unable to parse timeline JSON');
-      return convert(null);
+    // Check for ApiError
+    if (ApiError.isApiError(json)) {
+      throw new ApiError(json);
     }
+
+    // Is valid response shape
+    if (!isValid(json)) {
+      throw new Error(
+        'Received unexpected values from API:\n' + JSON.stringify(json)
+      );
+    }
+
+    // Return guaranteed shape
+    return convert(json);
   };
 }
 
@@ -44,10 +46,6 @@ export async function httpRequest(
     return;
   }
 
-  if (res.status < 400) {
-    return res;
-  }
-
   // 504 GATEWAY_TIMEOUT is no connection
   if (res.status === 504) {
     throw new ApiError({
@@ -55,15 +53,6 @@ export async function httpRequest(
       reason: 'NO_API_CONNECTION',
     });
   }
-
-  // Try Parse JSON
-  try {
-    const body = await res.json();
-
-    if (ApiError.isApiError(body)) {
-      throw new ApiError(body);
-    }
-  } catch (err) {}
 
   return res;
 }
