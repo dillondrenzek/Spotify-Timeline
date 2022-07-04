@@ -48,6 +48,18 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
+  api.get('/player', async (req, res) => {
+    try {
+      const playerState = await spotifyWebApi.getPlayerState(
+        getAccessToken(req)
+      );
+
+      res.status(200).json(playerState);
+    } catch (err) {
+      errorResponse(err, res);
+    }
+  });
+
   api.get('/playlists/:id/tracks', async (req, res) => {
     const { params } = req;
     const playlistId = params.id;
