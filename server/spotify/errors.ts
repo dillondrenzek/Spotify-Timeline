@@ -49,17 +49,11 @@ interface SpotifyErrorData {
       };
 }
 
-export type ApiError =
-  | SpotifyErrorData['error']
-  | {
-      status: -1;
-      reason: 'NO_ERROR_DATA';
-    }
-  | {
-      status: -1;
-      reason: 'UNRECOGNIZED_ERROR_DATA';
-      data: unknown;
-    };
+type ApiError = {
+  reason: string;
+  message?: string;
+  data?: unknown;
+};
 
 function toApiError(err: AxiosError): ApiError {
   const { response } = err;
@@ -67,8 +61,9 @@ function toApiError(err: AxiosError): ApiError {
 
   if (!data) {
     return {
-      status: -1,
-      reason: 'NO_ERROR_DATA',
+      reason: 'UNKNOWN_ERROR',
+      message: null,
+      data: null,
     };
   }
 
@@ -76,21 +71,21 @@ function toApiError(err: AxiosError): ApiError {
 
   if (!isApiError(error)) {
     return {
-      status: -1,
-      reason: 'UNRECOGNIZED_ERROR_DATA',
+      reason: 'UNKNOWN_ERROR',
+      message: null,
       data: error,
     };
   }
 
-  return error;
+  return {
+    reason: error.reason,
+    message: error.message,
+    data: error,
+  };
 }
 
 export function isApiError(value: unknown): value is ApiError {
-  if (typeof value !== 'object') {
-    return false;
-  }
-
-  return 'status' in value;
+  return typeof value === 'object' && 'reason' in value;
 }
 
 /**

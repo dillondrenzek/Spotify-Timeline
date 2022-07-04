@@ -15,9 +15,7 @@ export interface ApiError {
 
 export class ApiError extends Error {
   status: number;
-
   reason: string;
-
   message: string;
 
   constructor(err?: ApiError) {
@@ -34,6 +32,6 @@ export class ApiError extends Error {
 export function isApiError(value: unknown): value is ApiError {
   return (
     value instanceof ApiError ||
-    (typeof value === 'object' && 'status' in value)
+    (typeof value === 'object' && 'reason' in value)
   );
 }
