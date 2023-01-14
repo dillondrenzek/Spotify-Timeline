@@ -5,12 +5,13 @@ import { useAuthToken } from './use-auth-token';
 type CurrentUserResult = SpotifyApi.CurrentUserProfile;
 
 function isValidResult(value: unknown): value is CurrentUserResult {
-  if (typeof value !== 'object') {
+  if (!value) {
     return false;
   }
-
-  // TODO: figure this out
-  return true;
+  return (
+    typeof value === 'object' &&
+    (value as Record<string, unknown>)['type'] === 'user'
+  );
 }
 
 function convert(result: CurrentUserResult): SpotifyApi.CurrentUserProfile {
