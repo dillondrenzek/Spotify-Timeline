@@ -24,6 +24,9 @@ export class ApiError extends Error {
 }
 
 export function isApiError(value: unknown): value is ApiError {
+  if (!value) {
+    return false;
+  }
   return (
     value instanceof ApiError ||
     (typeof value === 'object' && 'reason' in value)
