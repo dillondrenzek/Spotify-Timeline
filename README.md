@@ -8,13 +8,13 @@ A web app that takes your Spotify account and creates a timeline of all your son
 
 ### Server
 
-1. `cd src/server`
+1. `cd server`
 1. `yarn install`
 1. `yarn start`
 
 ### Client
 
-1. `cd src/app`
+1. `cd app`
 1. `yarn install`
 1. `yarn start`
 
