@@ -24,7 +24,10 @@ const defaultPlayerState: PlayerState = {
 };
 
 function isValidResult(value: unknown): value is PlayerStateResult {
-  return typeof value === 'object';
+  if (!value) {
+    return false;
+  }
+  return !!value && typeof value === 'object';
 }
 
 function convert(result: PlayerStateResult): PlayerState {
@@ -36,8 +39,10 @@ export function usePlayerState() {
   const [playerState, setPlayerState] =
     useState<PlayerState>(defaultPlayerState);
 
-  const dateTimeString = useMemo(() => {
-    const date = new Date(playerState.timestamp);
+  const timestamp = useMemo(() => {
+    const date = playerState?.timestamp
+      ? new Date(playerState.timestamp)
+      : new Date();
     return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
   }, [playerState?.timestamp]);
 
@@ -54,6 +59,6 @@ export function usePlayerState() {
   return {
     state: playerState,
     fetch,
-    timestamp: dateTimeString,
+    timestamp,
   };
 }
