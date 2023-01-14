@@ -21,7 +21,7 @@ export function TimelineRoute() {
 
   return (
     <BaseRoute>
-      <Container fixed>
+      <Container fixed sx={{ pb: 6 }}>
         <Box my={3}>
           <Typography variant="h4">Timeline</Typography>
         </Box>
