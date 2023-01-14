@@ -5,6 +5,10 @@ import * as Types from './types';
 import { handleAxiosError } from './errors';
 import { PaginatedSavedTrack } from './models/saved-track';
 import { PlayerState } from './models/player-state';
+import {
+  startPlaybackRequest,
+  StartPlaybackRequest,
+} from './models/request/start-playback-request';
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -82,23 +86,6 @@ export class SpotifyWebApi {
   }
 
   /**
-   * The current state of playback in Spotify
-   * @param accessToken
-   * @returns
-   */
-  async getPlayerState(accessToken: string): Promise<PlayerState> {
-    const url = SpotifyWebApi.url('/me/player');
-    return await axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .catch(handleAxiosError)
-      .then(PlayerState.fromResponse);
-  }
-
-  /**
    * Get Current User's Saved Tracks
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
@@ -163,6 +150,23 @@ export class SpotifyWebApi {
   }
 
   /**
+   * The current state of playback in Spotify
+   * @param accessToken
+   * @returns
+   */
+  async getPlayerState(accessToken: string): Promise<PlayerState> {
+    const url = SpotifyWebApi.url('/me/player');
+    return await axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(PlayerState.fromResponse);
+  }
+
+  /**
    * Start/Resume Playback
    *
    * Start a new context or resume current playback on the user's active device.
@@ -170,29 +174,24 @@ export class SpotifyWebApi {
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/start-a-users-playback)
    */
   async startPlayback(
-    spotifyUri: string,
-    contextUri: string,
+    playItemUri: string,
+    inContextUri: string,
     accessToken: string
   ): Promise<void> {
     try {
       const url = SpotifyWebApi.url(`/me/player/play`);
-      const { data } = await axios.put(
-        url,
-        JSON.stringify({
-          ...(contextUri && { context_uri: contextUri }),
-          ...(spotifyUri && { uris: [spotifyUri] }),
-          // offset: {
-          //   position: 0,
-          // },
-          // position_ms: 0,
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+
+      const body: StartPlaybackRequest = startPlaybackRequest(
+        playItemUri,
+        inContextUri
       );
+
+      const { data } = await axios.put(url, body, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       return data;
     } catch (error) {
       handleAxiosError(error);
