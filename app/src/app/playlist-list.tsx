@@ -25,11 +25,11 @@ export function PlaylistList(props: {
 }) {
   const { playlists } = props;
 
-  return (
+  return Array.isArray(playlists) ? (
     <List>
       {playlists?.map((playlist) => (
         <PlaylistListItem key={playlist.id} playlist={playlist} />
       ))}
     </List>
-  );
+  ) : null;
 }
