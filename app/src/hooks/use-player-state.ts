@@ -1,9 +1,7 @@
-// import * as Types from '../lib/timeline';
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { baseErrorHandler } from '../lib/error';
 import { httpRequest, parseResponse } from '../lib/http';
 import { PlayerStateResult } from '../lib/player/player-types';
-// import { useAuthToken } from './use-auth-token';
-// import { httpRequest, responseParser } from '../lib/http';
 
 /**
  * Application Player state
@@ -49,7 +47,8 @@ export function usePlayerState() {
   const fetch = useCallback(() => {
     return httpRequest('/api/player')
       .then(parseResponse(isValidResult, convert))
-      .then(setPlayerState);
+      .then(setPlayerState)
+      .catch(baseErrorHandler);
   }, []);
 
   useEffect(() => {

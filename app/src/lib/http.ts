@@ -1,8 +1,9 @@
 import { ApiError } from './api-error';
-
-type ResponseConverter<T = unknown, U = T> = (input: T) => U;
+import { baseErrorHandler } from './error';
 
 type ResponseGuard<T = unknown> = (value: unknown) => value is T;
+
+type ResponseConverter<T = unknown, U = T> = (input: T) => U;
 
 /**
  *
@@ -45,13 +46,13 @@ export async function httpRequest(
   input: RequestInfo | URL,
   init?: RequestInit
 ): Promise<Response> {
-  let res: Response;
+  let res: Response | void;
 
   // Make HTTP request
   try {
     res = await fetch(input, init);
   } catch (err) {
-    console.error('[ERROR] httpRequest:', err);
+    baseErrorHandler(err);
     return;
   }
 
