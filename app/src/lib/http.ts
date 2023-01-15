@@ -4,7 +4,16 @@ type ResponseConverter<T = unknown, U = T> = (input: T) => U;
 
 type ResponseGuard<T = unknown> = (value: unknown) => value is T;
 
-export function responseParser<T = unknown, U = T>(
+/**
+ *
+ * @param isValid function used to determine if a given response is able to be converted to what is expected
+ * @param convert performs conversion
+ * @returns Promise with the type guaranteed
+ *
+ * @throws `ApiError` - if response JSON is shaped like an ApiError
+ * @throws `Error` - if received JSON does not pass the `isValid` check
+ */
+export function parseResponse<T = unknown, U = T>(
   isValid: ResponseGuard<T>,
   convert: ResponseConverter<T, U>
 ): (res: Response) => Promise<U> {
