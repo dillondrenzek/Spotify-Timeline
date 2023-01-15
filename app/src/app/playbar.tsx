@@ -84,7 +84,7 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 
 export function Playbar() {
   const { state, fetch, timestamp } = usePlayerState();
-  const { item, is_playing, device, repeat_state, shuffle_state } = state;
+  const { item, is_playing, device, repeat_state, shuffle_state } = state ?? {};
 
   return (
     <AppBar color="default" position="fixed" sx={{ top: 'auto', bottom: 0 }}>
