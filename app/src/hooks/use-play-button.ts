@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAuthToken } from './use-auth-token';
 import { ErrorHandler } from '../lib/error';
-import { httpRequest, responseParser } from '../lib/http';
+import { httpRequest, parseResponse } from '../lib/http';
 
 interface PlayResult {
   uri: string;
@@ -43,7 +43,7 @@ export function usePlayButton(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
-        .then(responseParser(isValidResult, convert))
+        .then(parseResponse(isValidResult, convert))
         .catch((err) => {
           handleError?.(err);
         });

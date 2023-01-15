@@ -1,7 +1,7 @@
 import * as Types from '../lib/timeline';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthToken } from './use-auth-token';
-import { httpRequest, responseParser } from '../lib/http';
+import { httpRequest, parseResponse } from '../lib/http';
 
 interface TimelineResult {
   suggestedPlaylists: Types.SuggestedPlaylist[];
@@ -35,7 +35,7 @@ export function useTimeline(): Types.Timeline {
     // IDEA
     function makeApiCall() {
       return httpRequest('/api/timeline').then(
-        responseParser(isValidResult, convert)
+        parseResponse(isValidResult, convert)
       );
     }
 

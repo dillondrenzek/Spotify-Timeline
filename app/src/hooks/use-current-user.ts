@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { httpRequest, responseParser } from '../lib/http';
+import { httpRequest, parseResponse } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
 
 type CurrentUserResult = SpotifyApi.CurrentUserProfile;
@@ -27,7 +27,7 @@ export const useCurrentUser = () => {
   useEffect(() => {
     if (authToken && !currentUser) {
       httpRequest('/api/me')
-        .then(responseParser(isValidResult, convert))
+        .then(parseResponse(isValidResult, convert))
         .then(setCurrentUser)
         .finally(() => setIsLoaded(true));
     }

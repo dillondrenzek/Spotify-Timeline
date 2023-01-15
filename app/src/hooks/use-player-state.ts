@@ -1,6 +1,6 @@
 // import * as Types from '../lib/timeline';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { httpRequest, responseParser } from '../lib/http';
+import { httpRequest, parseResponse } from '../lib/http';
 import { PlayerStateResult } from '../lib/player/player-types';
 // import { useAuthToken } from './use-auth-token';
 // import { httpRequest, responseParser } from '../lib/http';
@@ -48,7 +48,7 @@ export function usePlayerState() {
 
   const fetch = useCallback(() => {
     return httpRequest('/api/player')
-      .then(responseParser(isValidResult, convert))
+      .then(parseResponse(isValidResult, convert))
       .then(setPlayerState);
   }, []);
 
