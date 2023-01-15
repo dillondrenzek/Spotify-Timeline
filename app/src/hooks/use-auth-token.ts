@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { ApiError } from '../lib/api-error';
 import { getAuthCookie, clearAuthCookie } from '../lib/auth-cookie';
 
 export function useAuthToken(initialValue: string = '') {
@@ -19,8 +20,22 @@ export function useAuthToken(initialValue: string = '') {
     setAuthToken('');
   }, []);
 
+  const handleUnauthorized = useCallback(
+    (err: any) => {
+      const errAsApiError = ApiError.fromAny(err);
+      if (errAsApiError.reason === 'UNAUTHORIZED') {
+        clearAuthToken();
+        return;
+      }
+      // re-throw
+      throw err;
+    },
+    [clearAuthToken]
+  );
+
   return {
     authToken,
     clearAuthToken,
+    handleUnauthorized,
   };
 }
