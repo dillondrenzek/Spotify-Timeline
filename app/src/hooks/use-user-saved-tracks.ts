@@ -1,29 +1,42 @@
 import { useState, useEffect } from 'react';
+import { httpRequest, parseJson } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
 
+function isValidResult(
+  value: unknown
+): value is SpotifyApi.CurrentUserSavedSongs {
+  return (
+    typeof value === 'object' &&
+    'href' in value &&
+    'items' in value &&
+    'limit' in value &&
+    'next' in value &&
+    'offset' in value &&
+    'previous' in value &&
+    'total' in value
+  );
+}
+
+function convert(
+  result: SpotifyApi.CurrentUserSavedSongs
+): SpotifyApi.CurrentUserSavedSongs {
+  return result;
+}
+
 export function useUserSavedTracks() {
-  const { authToken, clearAuthToken } = useAuthToken();
+  const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [savedTracks, setSavedTracks] = useState<SpotifyApi.SavedSongs[]>([]);
 
   useEffect(() => {
     if (authToken && !savedTracks?.length) {
-      fetch('/api/me/tracks')
-        .then((res) => {
-          res
-            .json()
-            .then((result: SpotifyApi.CurrentUserSavedSongs) => {
-              console.log('result:', result);
-              setSavedTracks(result.items);
-            })
-            .catch((err) => {
-              console.error('Error parsing JSON:', err);
-            });
-        })
-        .catch((err) => {
-          console.error('Error fetching /api/me:', err);
+      httpRequest('/api/me/tracks')
+        .catch(handleUnauthorized)
+        .then(parseJson(isValidResult, convert))
+        .then((result) => {
+          setSavedTracks(result.items);
         });
     }
-  }, [authToken, clearAuthToken, savedTracks]);
+  }, [authToken, clearAuthToken, savedTracks, handleUnauthorized]);
 
   return {
     savedTracks,
