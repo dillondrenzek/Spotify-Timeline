@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { baseErrorHandler } from '../lib/error';
-import { httpRequest, parseResponse } from '../lib/http';
+import { httpRequest, parseJson } from '../lib/http';
 import { PlayerStateResult } from '../lib/player/player-types';
+import { useAuthToken } from './use-auth-token';
 
 /**
  * Application Player state
@@ -33,7 +33,7 @@ function convert(result: PlayerStateResult): PlayerState {
 }
 
 export function usePlayerState() {
-  // const { authToken, clearAuthToken } = useAuthToken();
+  const { handleUnauthorized } = useAuthToken();
   const [playerState, setPlayerState] =
     useState<PlayerState>(defaultPlayerState);
 
@@ -46,10 +46,10 @@ export function usePlayerState() {
 
   const fetch = useCallback(() => {
     return httpRequest('/api/player')
-      .then(parseResponse(isValidResult, convert))
-      .then(setPlayerState)
-      .catch(baseErrorHandler);
-  }, []);
+      .catch(handleUnauthorized)
+      .then(parseJson(isValidResult, convert))
+      .then(setPlayerState);
+  }, [handleUnauthorized]);
 
   useEffect(() => {
     fetch();

@@ -19,19 +19,20 @@ function convert(result: CurrentUserResult): SpotifyApi.CurrentUserProfile {
 }
 
 export const useCurrentUser = () => {
-  const { authToken, clearAuthToken } = useAuthToken();
+  const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [currentUser, setCurrentUser] =
     useState<SpotifyApi.CurrentUserProfile | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (authToken && !currentUser) {
+    if (authToken && !isLoaded) {
       httpRequest('/api/me')
+        .catch(handleUnauthorized)
         .then(parseResponse(isValidResult, convert))
         .then(setCurrentUser)
         .finally(() => setIsLoaded(true));
     }
-  }, [authToken, clearAuthToken, currentUser]);
+  }, [authToken, clearAuthToken, isLoaded, handleUnauthorized]);
 
   return {
     currentUser,
