@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useAuthToken } from './use-auth-token';
 import { ErrorHandler } from '../lib/error';
-import { httpRequest, parseJson, parseResponse } from '../lib/http';
+import { httpRequest, parseJson } from '../lib/http';
 
 interface PlayResult {
   uri: string;

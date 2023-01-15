@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ErrorHandler } from '../lib/error';
-import { httpRequest, parseResponse } from '../lib/http';
+import { httpRequest, parseJson, parseResponse } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
 
 function isValidResult(
@@ -22,7 +22,7 @@ function convert(
 }
 
 export function useUserPlaylists(handleError?: ErrorHandler) {
-  const { authToken, clearAuthToken } = useAuthToken();
+  const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [playlists, setPlaylists] = useState<SpotifyApi.CurrentUserPlaylist[]>(
     []
   );
@@ -31,17 +31,15 @@ export function useUserPlaylists(handleError?: ErrorHandler) {
   useEffect(() => {
     if (authToken && !requestMade) {
       httpRequest('/api/me/playlists')
-        .then(parseResponse(isValidResult, convert))
-        .then((playlists) => {
-          setPlaylists(playlists);
-        })
+        .catch(handleUnauthorized)
+        .then(parseJson(isValidResult, convert))
+        .then(setPlaylists)
         .catch((err) => {
-          console.error('Error fetching /api/me:', err);
           handleError?.(err);
         });
       setRequestMade(true);
     }
-  }, [authToken, clearAuthToken, requestMade, handleError]);
+  }, [authToken, clearAuthToken, requestMade, handleError, handleUnauthorized]);
 
   return {
     playlists,

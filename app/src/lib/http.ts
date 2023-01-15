@@ -32,10 +32,10 @@ export function parseResponse<T = unknown, U = T>(
   };
 }
 
-export function parseJson<T = unknown>(
+export function parseJson<T = unknown, U = T>(
   isValid: ResponseGuard<T>,
-  convert: ResponseConverter<any, T>
-): (json: any) => T {
+  convert: ResponseConverter<T, U>
+): (json: any) => U {
   return (json: any) => {
     if (!json) {
       return;
@@ -86,11 +86,7 @@ function checkHttpStatusCodes(res: Response) {
  */
 export async function httpRequest<T, U>(
   input: RequestInfo | URL,
-  init?: RequestInit,
-  hooks?: {
-    isValid: ResponseGuard<T>;
-    convert: ResponseConverter<T, U>;
-  }
+  init?: RequestInit
 ): Promise<Response> {
   try {
     // Make HTTP request
@@ -108,7 +104,9 @@ export async function httpRequest<T, U>(
     return json;
   } catch (err) {
     const error = ApiError.fromAny(err);
+
     console.error('[API ERROR]', error.reason, error.message);
+
     throw error;
   }
 }
