@@ -86,6 +86,23 @@ export class SpotifyWebApi {
   }
 
   /**
+   * The current state of playback in Spotify
+   * @param accessToken
+   * @returns
+   */
+  async getPlayerState(accessToken: string): Promise<PlayerState> {
+    const url = SpotifyWebApi.url('/me/player');
+    return await axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(PlayerState.fromResponse);
+  }
+
+  /**
    * Get Current User's Saved Tracks
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
@@ -147,23 +164,6 @@ export class SpotifyWebApi {
     } catch (error) {
       handleAxiosError(error);
     }
-  }
-
-  /**
-   * The current state of playback in Spotify
-   * @param accessToken
-   * @returns
-   */
-  async getPlayerState(accessToken: string): Promise<PlayerState> {
-    const url = SpotifyWebApi.url('/me/player');
-    return await axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .catch(handleAxiosError)
-      .then(PlayerState.fromResponse);
   }
 
   /**
