@@ -60,6 +60,21 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
+  api.put('/player/play', async (req, res) => {
+    try {
+      const { body } = req;
+
+      await spotifyWebApi.startPlayback(
+        body.uri,
+        body.contextUri,
+        getAccessToken(req)
+      );
+      res.status(200).json(body);
+    } catch (err) {
+      errorResponse(err, res);
+    }
+  });
+
   api.get('/playlists/:id/tracks', async (req, res) => {
     const { params } = req;
     const playlistId = params.id;

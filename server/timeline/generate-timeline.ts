@@ -1,38 +1,51 @@
 import * as SpotifyTypes from '../spotify/types';
 import { SpotifyConverter } from './spotify-converter';
 import * as Types from './timeline-types';
+import { chunk, reduce } from 'lodash';
 
 interface Timeline {
   suggestedPlaylists: Types.SuggestedPlaylist[];
 }
 
-function suggestedPlaylist(): Types.SuggestedPlaylist {
+function suggestedPlaylist(
+  title: string = 'Untitled playlist',
+  savedTracks: SpotifyTypes.SavedTrack[] = []
+): Types.SuggestedPlaylist {
+  const addedAtDates = savedTracks.map((t) => new Date(t.added_at));
+  const startDate = reduce(addedAtDates, (prev, curr) => {
+    return prev.getTime() < curr.getTime() ? prev : curr;
+  }).toISOString();
+  const endDate = reduce(addedAtDates, (prev, curr) => {
+    return prev.getTime() > curr.getTime() ? prev : curr;
+  }).toISOString();
+
+  const tracks = savedTracks.map((t) => SpotifyConverter.toTrack(t));
+
   return {
-    title: null,
-    tracks: [],
+    title,
+    tracks,
+    startDate,
+    endDate,
   };
 }
 
 export function generateTimeline(
   savedTracks: SpotifyTypes.SavedTrack[]
 ): Timeline {
-  const playlists: Types.SuggestedPlaylist[] = [];
+  const groupSize = 8;
 
-  const groupSize = 5;
-  const numberOfPlaylists = Math.ceil(savedTracks.length / groupSize); // groups of five
-  for (let i = 0; i < numberOfPlaylists; i++) {
-    const newPlaylist = suggestedPlaylist();
-    const startIndex = i * groupSize;
-    const endIndex = (i + 1) * groupSize;
-    newPlaylist.title = 'Playlist ' + i.toString();
-    newPlaylist.tracks = [
-      ...savedTracks
-        .map((t) => SpotifyConverter.toTrack(t))
-        .slice(startIndex, endIndex),
-    ];
+  const tracksGroupedToSize = chunk(savedTracks, groupSize);
 
-    playlists.push(newPlaylist);
-  }
+  const playlists: Types.SuggestedPlaylist[] = tracksGroupedToSize.map(
+    (groupedTracks, i) => {
+      const result = suggestedPlaylist(
+        'Playlist ' + i.toString(),
+        groupedTracks
+      );
+
+      return result;
+    }
+  );
 
   return {
     suggestedPlaylists: playlists,

@@ -1,9 +1,7 @@
-// import * as Types from '../lib/timeline';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { httpRequest, responseParser } from '../lib/http';
+import { httpRequest, parseJson } from '../lib/http';
 import { PlayerStateResult } from '../lib/player/player-types';
-// import { useAuthToken } from './use-auth-token';
-// import { httpRequest, responseParser } from '../lib/http';
+import { useAuthToken } from './use-auth-token';
 
 /**
  * Application Player state
@@ -24,7 +22,10 @@ const defaultPlayerState: PlayerState = {
 };
 
 function isValidResult(value: unknown): value is PlayerStateResult {
-  return typeof value === 'object';
+  if (!value) {
+    return false;
+  }
+  return !!value && typeof value === 'object';
 }
 
 function convert(result: PlayerStateResult): PlayerState {
@@ -32,20 +33,23 @@ function convert(result: PlayerStateResult): PlayerState {
 }
 
 export function usePlayerState() {
-  // const { authToken, clearAuthToken } = useAuthToken();
+  const { handleUnauthorized } = useAuthToken();
   const [playerState, setPlayerState] =
     useState<PlayerState>(defaultPlayerState);
 
-  const dateTimeString = useMemo(() => {
-    const date = new Date(playerState.timestamp);
+  const timestamp = useMemo(() => {
+    const date = playerState?.timestamp
+      ? new Date(playerState.timestamp)
+      : new Date();
     return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
   }, [playerState?.timestamp]);
 
   const fetch = useCallback(() => {
     return httpRequest('/api/player')
-      .then(responseParser(isValidResult, convert))
+      .catch(handleUnauthorized)
+      .then(parseJson(isValidResult, convert))
       .then(setPlayerState);
-  }, []);
+  }, [handleUnauthorized]);
 
   useEffect(() => {
     fetch();
@@ -54,6 +58,6 @@ export function usePlayerState() {
   return {
     state: playerState,
     fetch,
-    timestamp: dateTimeString,
+    timestamp,
   };
 }

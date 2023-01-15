@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { httpRequest, responseParser } from '../lib/http';
+import { httpRequest, parseJson } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
 
 type CurrentUserResult = SpotifyApi.CurrentUserProfile;
 
 function isValidResult(value: unknown): value is CurrentUserResult {
-  if (typeof value !== 'object') {
+  if (!value) {
     return false;
   }
-
-  // TODO: figure this out
-  return true;
+  return (
+    typeof value === 'object' &&
+    (value as Record<string, unknown>)['type'] === 'user'
+  );
 }
 
 function convert(result: CurrentUserResult): SpotifyApi.CurrentUserProfile {
@@ -18,19 +19,20 @@ function convert(result: CurrentUserResult): SpotifyApi.CurrentUserProfile {
 }
 
 export const useCurrentUser = () => {
-  const { authToken, clearAuthToken } = useAuthToken();
+  const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [currentUser, setCurrentUser] =
     useState<SpotifyApi.CurrentUserProfile | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (authToken && !currentUser) {
+    if (authToken && !isLoaded) {
       httpRequest('/api/me')
-        .then(responseParser(isValidResult, convert))
+        .catch(handleUnauthorized)
+        .then(parseJson(isValidResult, convert))
         .then(setCurrentUser)
         .finally(() => setIsLoaded(true));
     }
-  }, [authToken, clearAuthToken, currentUser]);
+  }, [authToken, clearAuthToken, isLoaded, handleUnauthorized]);
 
   return {
     currentUser,

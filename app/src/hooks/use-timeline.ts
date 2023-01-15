@@ -1,7 +1,7 @@
 import * as Types from '../lib/timeline';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthToken } from './use-auth-token';
-import { httpRequest, responseParser } from '../lib/http';
+import { httpRequest, parseJson } from '../lib/http';
 
 interface TimelineResult {
   suggestedPlaylists: Types.SuggestedPlaylist[];
@@ -15,14 +15,17 @@ function isValidResult(value: unknown): value is TimelineResult {
   return 'suggestedPlaylists' in value;
 }
 
-function convert(result: TimelineResult): Types.Timeline {
+function convert(result: any): Types.Timeline {
+  const playlists = Array.isArray(result?.suggestedPlaylists)
+    ? result.suggestedPlaylists
+    : [];
   return {
-    playlists: result?.suggestedPlaylists ?? [],
+    playlists,
   };
 }
 
 export function useTimeline(): Types.Timeline {
-  const { authToken, clearAuthToken } = useAuthToken();
+  const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [timeline, setTimeline] = useState<Types.Timeline>({
     playlists: [],
   });
@@ -32,15 +35,11 @@ export function useTimeline(): Types.Timeline {
       return;
     }
 
-    // IDEA
-    function makeApiCall() {
-      return httpRequest('/api/timeline').then(
-        responseParser(isValidResult, convert)
-      );
-    }
-
-    makeApiCall().then(setTimeline);
-  }, [authToken, clearAuthToken]);
+    httpRequest('/api/timeline')
+      .catch(handleUnauthorized)
+      .then(parseJson(isValidResult, convert))
+      .then(setTimeline);
+  }, [authToken, clearAuthToken, handleUnauthorized]);
 
   return timeline;
 }

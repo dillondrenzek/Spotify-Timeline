@@ -1,32 +1,45 @@
 import { useState, useEffect } from 'react';
+import { ErrorHandler } from '../lib/error';
+import { httpRequest, parseJson, parseResponse } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
 
-export function useUserPlaylists() {
-  const { authToken, clearAuthToken } = useAuthToken();
+function isValidResult(
+  value: unknown
+): value is SpotifyApi.CurrentUserPlaylist[] {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+
+  // TODO: check for specific properties
+
+  return true;
+}
+
+function convert(
+  result: SpotifyApi.CurrentUserPlaylist[]
+): SpotifyApi.CurrentUserPlaylist[] {
+  return result;
+}
+
+export function useUserPlaylists(handleError?: ErrorHandler) {
+  const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [playlists, setPlaylists] = useState<SpotifyApi.CurrentUserPlaylist[]>(
     []
   );
+  const [requestMade, setRequestMade] = useState(false);
 
   useEffect(() => {
-    if (authToken && !playlists?.length) {
-      fetch('/api/me/playlists')
-        .then((res) => {
-          res
-            .json()
-            .then((result: SpotifyApi.CurrentUserPlaylist[]) => {
-              console.log('result:', result);
-              setPlaylists(result);
-            })
-            .catch((err) => {
-              console.error('Error parsing JSON:', err);
-            });
-        })
+    if (authToken && !requestMade) {
+      httpRequest('/api/me/playlists')
+        .catch(handleUnauthorized)
+        .then(parseJson(isValidResult, convert))
+        .then(setPlaylists)
         .catch((err) => {
-          console.error('Error fetching /api/me:', err);
-          // clearAuthToken();
+          handleError?.(err);
         });
+      setRequestMade(true);
     }
-  }, [authToken, clearAuthToken, playlists]);
+  }, [authToken, clearAuthToken, requestMade, handleError, handleUnauthorized]);
 
   return {
     playlists,
