@@ -24,3 +24,4 @@ A web app that takes your Spotify account and creates a timeline of all your son
 
 [Wiki](https://github.com/dillondrenzek/Spotify-Timeline/wiki)
 [Spotify Developer API](https://developer.spotify.com/documentation/web-api/)
+[Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
