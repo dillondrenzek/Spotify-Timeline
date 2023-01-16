@@ -62,11 +62,13 @@ function SavedTrackRow(props: {
 
   return (
     <TableRow>
-      <TableCell>
+      <TableCell sx={{ py: 0.5 }}>
         <PlayButton uri={track?.track.uri} contextUri={contextUri} />
       </TableCell>
       {colDefs.map((col, j) => (
-        <TableCell key={j}>{col.valueGetter(track)}</TableCell>
+        <TableCell key={j} sx={{ py: 0.5 }}>
+          {col.valueGetter(track)}
+        </TableCell>
       ))}
     </TableRow>
   );

@@ -65,14 +65,14 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 
   return item ? (
     <Stack direction="column">
-      <Typography>{item?.name || ''}</Typography>
+      <Typography fontWeight={500}>{item?.name || ''}</Typography>
       <Box>
         {Array.isArray(item?.artists)
           ? item?.artists.map((item, i) => (
               <Typography
                 variant="caption"
                 key={i}
-                sx={{ color: grey[400], mr: 1 }}
+                sx={{ color: grey[400], mr: 1, fontWeight: 400 }}
               >
                 {item?.name}
               </Typography>
@@ -107,7 +107,7 @@ export function Playbar() {
           justifyContent="space-between"
           sx={{ width: '100%' }}
         >
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" alignItems="center" spacing={2}>
             <IconButton size="small" onClick={fetch}>
               <Sync color="primary" />
             </IconButton>
@@ -115,16 +115,11 @@ export function Playbar() {
               <Typography variant="h6" noWrap component="div">
                 Player
               </Typography>
-              <Stack direction="row" spacing={1} alignItems="center">
-                {renderedTimestamp ? (
-                  <Typography
-                    variant="caption"
-                    sx={{ color: grey[400], mr: 1 }}
-                  >
-                    {renderedTimestamp}
-                  </Typography>
-                ) : null}
-              </Stack>
+              {renderedTimestamp ? (
+                <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
+                  {renderedTimestamp}
+                </Typography>
+              ) : null}
             </Stack>
             <CurrentItemDisplay item={item} />
           </Stack>

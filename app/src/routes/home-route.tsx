@@ -9,7 +9,7 @@ export function HomeRoute() {
   const { playlists } = useUserPlaylists();
   return (
     <BaseRoute>
-      <Stack direction="row" sx={{ mt: 8 }}>
+      <Stack direction="row" sx={{ mt: 6, mb: 12 }}>
         <Box sx={{ flex: '1' }}>
           <Typography variant="h4">Playlists</Typography>
           <PlaylistList playlists={playlists} />
