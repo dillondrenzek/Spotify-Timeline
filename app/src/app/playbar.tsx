@@ -11,6 +11,7 @@ import {
 import { usePlayerState, PlayerState } from '../hooks/use-player-state';
 import { green, grey, orange } from '@mui/material/colors';
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
+import { usePlayerStore } from '../stores/use-player-store';
 
 function DeviceDisplay(props: {
   device: PlayerState['device'];
@@ -83,8 +84,10 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 }
 
 export function Playbar() {
-  const { state, fetch, timestamp } = usePlayerState();
-  const { item, is_playing, device, repeat_state, shuffle_state } = state ?? {};
+  const { timestamp } = usePlayerState();
+  const { fetch, player } = usePlayerStore();
+  const { item, is_playing, device, repeat_state, shuffle_state } =
+    player ?? {};
 
   return (
     <AppBar color="default" position="fixed" sx={{ top: 'auto', bottom: 0 }}>
