@@ -98,7 +98,7 @@ export function Playbar() {
   }, [fetch]);
 
   return (
-    <AppBar color="default" position="fixed" sx={{ top: 'auto', bottom: 0 }}>
+    <AppBar color="default" position="relative" sx={{ top: 'auto', bottom: 0 }}>
       <Toolbar sx={{ justifyContent: 'stretch', width: '100%' }}>
         <Stack
           direction="row"

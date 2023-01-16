@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { CssBaseline, Stack } from '@mui/material';
+import { CssBaseline, Stack, Box } from '@mui/material';
 import { Nav } from '../app/Nav';
 import { grey } from '@mui/material/colors';
 import { Playbar } from '../app/playbar';
@@ -22,11 +22,15 @@ export function BaseRoute(props: BaseRouteProps) {
   return (
     <>
       <CssBaseline />
-      {!hideNav && <Nav />}
-      {!hidePlaybar && <Playbar />}
-      <Stack direction="column" sx={{ mt: 8, backgroundColor: grey[200] }}>
-        {children}
-      </Stack>
+      <Box
+        display="grid"
+        gridTemplateRows="64px 1fr 64px"
+        sx={{ height: '100vh', backgroundColor: grey[400] }}
+      >
+        <Box>{!hideNav && <Nav />}</Box>
+        <Box sx={{ overflow: 'auto' }}>{children}</Box>
+        <Box>{!hidePlaybar && <Playbar />}</Box>
+      </Box>
     </>
   );
 }

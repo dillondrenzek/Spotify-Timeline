@@ -49,7 +49,7 @@ export function Nav() {
   }, [isLoaded, pullCurrentUser]);
 
   return (
-    <AppBar color="default">
+    <AppBar color="default" position="relative">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Stack direction="row" spacing={3} alignItems="center">
           <Typography variant="h6" noWrap component="div">
