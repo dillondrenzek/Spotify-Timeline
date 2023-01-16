@@ -84,7 +84,7 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 }
 
 export function Playbar() {
-  const { fetch, player } = usePlayerStore();
+  const { pullPlayerState, player } = usePlayerStore();
   const { item, is_playing, device, repeat_state, shuffle_state, timestamp } =
     player ?? {};
 
@@ -94,8 +94,8 @@ export function Playbar() {
   }, [timestamp]);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    pullPlayerState();
+  }, [pullPlayerState]);
 
   return (
     <AppBar color="default" position="relative" sx={{ top: 'auto', bottom: 0 }}>
@@ -108,7 +108,7 @@ export function Playbar() {
           sx={{ width: '100%' }}
         >
           <Stack direction="row" alignItems="center" spacing={2}>
-            <IconButton size="small" onClick={fetch}>
+            <IconButton size="small" onClick={pullPlayerState}>
               <Sync color="primary" />
             </IconButton>
             <Stack direction="column">

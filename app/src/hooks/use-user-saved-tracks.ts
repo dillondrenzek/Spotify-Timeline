@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { httpRequest, parseJson } from '../lib/http';
 import { useUserStore } from '../stores/use-user-store';
 import { useAuthToken } from './use-auth-token';
@@ -25,26 +25,23 @@ function convert(
 }
 
 export function useUserSavedTracks() {
-  const { authToken, clearAuthToken } = useAuthToken();
-
   const { handleUnauthorized, isLoaded } = useUserStore();
 
   const [paginator, setPaginator] =
     useState<SpotifyApi.CurrentUserSavedSongs>();
 
-  const [savedTracks, setSavedTracks] = useState<SpotifyApi.SavedSongs[]>([]);
+  const savedTracks = useMemo<SpotifyApi.SavedSongs[]>(() => {
+    return paginator?.items ?? [];
+  }, [paginator?.items]);
 
   useEffect(() => {
     if (!isLoaded) {
       httpRequest('/api/me/tracks')
         .catch(handleUnauthorized)
         .then(parseJson(isValidResult, convert))
-        .then((result) => {
-          setPaginator(result);
-          setSavedTracks(result.items);
-        });
+        .then(setPaginator);
     }
-  }, [authToken, clearAuthToken, savedTracks, handleUnauthorized]);
+  }, [savedTracks, handleUnauthorized, isLoaded]);
 
   return {
     savedTracks,

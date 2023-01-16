@@ -4,6 +4,7 @@ import { SavedTracksTable } from '../app/saved-tracks-table';
 import { PlaylistList } from '../app/playlist-list';
 import { useUserPlaylists } from '../hooks/use-user-playlists';
 import { BaseRoute } from './base-route';
+import { blueGrey } from '@mui/material/colors';
 
 export function HomeRoute() {
   const { playlists } = useUserPlaylists();
@@ -11,7 +12,14 @@ export function HomeRoute() {
     <BaseRoute>
       <Card sx={{ height: '100%' }}>
         <Stack direction="row" alignItems="stretch" sx={{ height: '100%' }}>
-          <Box sx={{ height: '100%', flex: '1', overflow: 'auto' }}>
+          <Box
+            sx={{
+              height: '100%',
+              flex: '1',
+              overflow: 'auto',
+              background: blueGrey[100],
+            }}
+          >
             <Typography variant="h4">Playlists</Typography>
             <PlaylistList playlists={playlists} />
           </Box>

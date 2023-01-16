@@ -27,7 +27,7 @@ export function usePlayButton(
   handleError?: ErrorHandler
 ) {
   const { authToken, handleUnauthorized } = useAuthToken();
-  const { fetch } = usePlayerStore();
+  const { pullPlayerState } = usePlayerStore();
 
   const play = useCallback(
     (uri: string, contextUri: string) => {
@@ -50,9 +50,9 @@ export function usePlayButton(
         .catch((err) => {
           handleError?.(err);
         })
-        .finally(() => fetch());
+        .finally(() => pullPlayerState());
     },
-    [authToken, handleUnauthorized, handleError, fetch]
+    [authToken, handleUnauthorized, handleError, pullPlayerState]
   );
 
   return useCallback(() => {
