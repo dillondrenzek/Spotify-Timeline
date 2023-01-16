@@ -31,7 +31,7 @@ export function PlayButton(props: { uri: string; contextUri?: string }) {
   return (
     <>
       <Toast {...toastProps} />
-      <IconButton size="small" sx={{ mr: 1 }} onClick={clickPlay}>
+      <IconButton size="small" onClick={clickPlay}>
         <PlayCircleOutlineIcon />
       </IconButton>
     </>
