@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { AppBar, Box, Toolbar, Typography, Link, Stack } from '@mui/material';
-import { useCurrentUser } from '../hooks/use-current-user';
 import { AuthLinks } from '../lib/auth';
+import { useUserStore } from '../stores/use-user-store';
 
 function NavProfileDisplay(
   props: PropsWithChildren<{
@@ -38,7 +38,15 @@ function NavLink(
 }
 
 export function Nav() {
-  const { currentUser } = useCurrentUser();
+  // const { currentUser } = useCurrentUser();
+
+  const { currentUser, isLoaded, pullCurrentUser } = useUserStore();
+
+  useEffect(() => {
+    if (!isLoaded) {
+      pullCurrentUser();
+    }
+  }, [isLoaded, pullCurrentUser]);
 
   return (
     <AppBar color="default">

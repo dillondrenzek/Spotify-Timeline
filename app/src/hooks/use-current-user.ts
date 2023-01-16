@@ -18,6 +18,10 @@ function convert(result: CurrentUserResult): SpotifyApi.CurrentUserProfile {
   return result;
 }
 
+/**
+ * @deprecated use User global store instead
+ * @returns
+ */
 export const useCurrentUser = () => {
   const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [currentUser, setCurrentUser] =
