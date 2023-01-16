@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useAuthToken } from './use-auth-token';
 import { ErrorHandler } from '../lib/error';
 import { httpRequest, parseJson } from '../lib/http';
+import { usePlayerStore } from '../stores/use-player-store';
 
 interface PlayResult {
   uri: string;
@@ -26,6 +27,7 @@ export function usePlayButton(
   handleError?: ErrorHandler
 ) {
   const { authToken, handleUnauthorized } = useAuthToken();
+  const { fetch } = usePlayerStore();
 
   const play = useCallback(
     (uri: string, contextUri: string) => {
@@ -47,9 +49,10 @@ export function usePlayButton(
         .then(parseJson(isValidResult, convert))
         .catch((err) => {
           handleError?.(err);
-        });
+        })
+        .finally(() => fetch());
     },
-    [authToken, handleUnauthorized, handleError]
+    [authToken, handleUnauthorized, handleError, fetch]
   );
 
   return useCallback(() => {

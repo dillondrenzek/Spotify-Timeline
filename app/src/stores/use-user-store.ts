@@ -29,7 +29,7 @@ interface UserStore {
   pullCurrentUser(): Promise<void>;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   currentUser: null,
 
   isLoaded: false,
@@ -60,19 +60,7 @@ export const useUserStore = create<UserStore>((set) => ({
    */
   async pullCurrentUser() {
     const currentUser = await httpRequest('/api/me')
-      .catch((err) => {
-        const errAsApiError = ApiError.fromAny(err);
-        if (errAsApiError.reason === 'UNAUTHORIZED') {
-          // Remove cookie
-          clearAuthCookie();
-
-          // Set global state
-          set({ currentUser: null });
-          return;
-        }
-        // re-throw
-        throw err;
-      })
+      .catch(get().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
     set({ currentUser, isLoaded: true });
