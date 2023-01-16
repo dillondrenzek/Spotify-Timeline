@@ -116,6 +116,15 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
+  api.get('/saved-tracks', async (req, res) => {
+    try {
+      const user = await spotifyWebApi.getUsersSavedTracks(getAccessToken(req));
+      res.status(200).json(user);
+    } catch (err) {
+      errorResponse(err, res);
+    }
+  });
+
   api.get('/me/tracks', async (req, res) => {
     try {
       const user = await spotifyWebApi.getUsersSavedTracks(getAccessToken(req));
