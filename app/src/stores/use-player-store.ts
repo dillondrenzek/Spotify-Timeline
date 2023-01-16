@@ -34,17 +34,19 @@ function convert(result: PlayerStateResult): PlayerState {
 
 type PlayerStore = {
   player: PlayerState;
+  isLoaded: boolean;
   fetch: () => void;
 };
 
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
   player: defaultPlayerState,
+  isLoaded: false,
 
   async fetch() {
     const playerState = await httpRequest('/api/player')
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
-    set({ player: { ...playerState } });
+    set({ player: { ...playerState }, isLoaded: true });
   },
 }));
