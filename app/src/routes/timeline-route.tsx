@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -13,11 +13,17 @@ import {
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { BaseRoute } from './base-route';
-import { useTimeline } from '../hooks/use-timeline';
 import { PlayButton } from '../app/play-button';
+import { useTimelineStore } from '../stores/use-timeline-store';
 
 export function TimelineRoute() {
-  const { playlists } = useTimeline();
+  const { timeline, generateTimeline } = useTimelineStore();
+
+  const { playlists } = timeline ?? {};
+
+  useEffect(() => {
+    generateTimeline();
+  }, [generateTimeline]);
 
   return (
     <BaseRoute>
@@ -28,7 +34,7 @@ export function TimelineRoute() {
         {!playlists?.length && (
           <Typography variant="h6">No timeline was generated</Typography>
         )}
-        {playlists.map((playlist, j) => (
+        {playlists?.map((playlist, j) => (
           <Paper elevation={3} key={j.toString()}>
             <Stack direction="column" spacing={2} sx={{ mb: 6 }}>
               <List>
