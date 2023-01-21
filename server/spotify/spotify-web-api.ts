@@ -112,8 +112,8 @@ export class SpotifyWebApi {
     params: Partial<Types.GetUserSavedTracksRequest> = {}
   ): Promise<Types.Paginated<Types.SavedTrack>> {
     params = params ?? { limit: '50', offset: '0' };
-    const querystring = new URLSearchParams(params).toString();
-    const url = SpotifyWebApi.url('/me/tracks' + querystring);
+    const queryString = new URLSearchParams(params).toString();
+    const url = SpotifyWebApi.url('/me/tracks?' + queryString);
     return await axios
       .get(url, {
         headers: {

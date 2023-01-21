@@ -36,20 +36,57 @@ function suggestedPlaylist(
   };
 }
 
+async function fetchSavedTracks(
+  numberToFetch: number,
+  spotifyWebApi: SpotifyWebApi,
+  accessToken: string
+): Promise<SpotifyTypes.SavedTrack[]> {
+  // Result
+  let result: SpotifyTypes.SavedTrack[] = [];
+
+  // Set Limit
+  const maxLimit = 50; // limit from Spotify
+  const limit = numberToFetch > maxLimit ? maxLimit : numberToFetch;
+
+  // Iterate offset
+  let offset = 0;
+  while (offset < numberToFetch) {
+    // Get Spotify Data
+    const paginatedSavedTracks: SpotifyTypes.Paginated<SpotifyTypes.SavedTrack> =
+      await spotifyWebApi.getUsersSavedTracks(accessToken, {
+        limit: limit.toString(),
+        offset: offset.toString(),
+      });
+
+    if (!paginatedSavedTracks.items?.length) {
+      break;
+    }
+
+    result = result.concat(paginatedSavedTracks.items);
+
+    offset += paginatedSavedTracks.offset + paginatedSavedTracks.items.length;
+  }
+
+  return result;
+}
+
 export async function generateTimeline(
   spotifyWebApi: SpotifyWebApi,
   accessToken: string,
   options: GenerateTimelineOptions = { groupSize: 8, numPlaylists: 10 }
 ): Promise<Timeline> {
   // Timeline Options
-  const { groupSize } = options;
+  const { groupSize, numPlaylists } = options;
 
-  // Get Spotify Data
-  const paginatedSavedTracks: SpotifyTypes.Paginated<SpotifyTypes.SavedTrack> =
-    await spotifyWebApi.getUsersSavedTracks(accessToken, {});
+  // Assemble all saved tracks needed
+  const savedTracks = await fetchSavedTracks(
+    groupSize * numPlaylists,
+    spotifyWebApi,
+    accessToken
+  );
 
   // Group Tracks into playlists
-  const tracksGroupedToSize = chunk(paginatedSavedTracks.items, groupSize);
+  const tracksGroupedToSize = chunk(savedTracks, groupSize);
 
   // Create suggested playlists
   const suggestedPlaylists: Types.SuggestedPlaylist[] = tracksGroupedToSize.map(
