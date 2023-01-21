@@ -24,6 +24,9 @@ function convert(result: any): Types.Timeline {
   };
 }
 
+/**
+ * @deprecated Use global timeline store
+ */
 export function useTimeline(): Types.Timeline {
   const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
   const [timeline, setTimeline] = useState<Types.Timeline>({
