@@ -8,19 +8,6 @@ import { useUserStore } from './use-user-store';
  */
 export type PlayerState = PlayerStateResult;
 
-const defaultPlayerState: PlayerStateResult = {
-  actions: null,
-  context: null,
-  item: null,
-  currently_playing_type: null,
-  device: null,
-  is_playing: null,
-  progress_ms: null,
-  repeat_state: null,
-  shuffle_state: null,
-  timestamp: null,
-};
-
 function isValidResult(value: unknown): value is PlayerStateResult {
   if (!value) {
     return false;
@@ -39,7 +26,8 @@ type PlayerStore = {
 };
 
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
-  player: defaultPlayerState,
+  player: null,
+
   isLoaded: false,
 
   async pullPlayerState() {
