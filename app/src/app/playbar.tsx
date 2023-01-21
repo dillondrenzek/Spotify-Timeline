@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   AppBar,
   Toolbar,
   Stack,
   Typography,
-  Button,
   Box,
   Slider,
+  IconButton,
 } from '@mui/material';
-import { usePlayerState, PlayerState } from '../hooks/use-player-state';
+import { PlayerState } from '../hooks/use-player-state';
 import { green, grey, orange } from '@mui/material/colors';
-import { VolumeDown, VolumeUp } from '@mui/icons-material';
+import { VolumeDown, VolumeUp, Sync } from '@mui/icons-material';
+import { usePlayerStore } from '../stores/use-player-store';
 
 function DeviceDisplay(props: {
   device: PlayerState['device'];
@@ -64,14 +65,14 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 
   return item ? (
     <Stack direction="column">
-      <Typography>{item?.name || ''}</Typography>
+      <Typography fontWeight={500}>{item?.name || ''}</Typography>
       <Box>
         {Array.isArray(item?.artists)
           ? item?.artists.map((item, i) => (
               <Typography
                 variant="caption"
                 key={i}
-                sx={{ color: grey[400], mr: 1 }}
+                sx={{ color: grey[400], mr: 1, fontWeight: 400 }}
               >
                 {item?.name}
               </Typography>
@@ -83,37 +84,60 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 }
 
 export function Playbar() {
-  const { state, fetch, timestamp } = usePlayerState();
-  const { item, is_playing, device, repeat_state, shuffle_state } = state ?? {};
+  const { pullPlayerState, player } = usePlayerStore();
+  const { item, is_playing, device, repeat_state, shuffle_state, timestamp } =
+    player ?? {};
+
+  const renderedTimestamp = useMemo(() => {
+    const date = timestamp ? new Date(timestamp) : new Date();
+    return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
+  }, [timestamp]);
+
+  useEffect(() => {
+    pullPlayerState();
+  }, [pullPlayerState]);
 
   return (
-    <AppBar color="default" position="fixed" sx={{ top: 'auto', bottom: 0 }}>
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <Stack direction="row" spacing={3} alignItems="center">
-          <Typography variant="h6" noWrap component="div">
-            Player
-          </Typography>
-          <Stack direction="column">
-            <Button onClick={fetch}>Refresh</Button>
-            {timestamp ? (
-              <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
-                {timestamp}
-              </Typography>
-            ) : null}
-          </Stack>
-          <DeviceDisplay device={device} isPlaying={is_playing} />
-          {device && <VolumeDisplay volumePercent={device?.volume_percent} />}
-          {repeat_state != null && shuffle_state != null && (
+    <AppBar color="default" position="relative" sx={{ top: 'auto', bottom: 0 }}>
+      <Toolbar sx={{ justifyContent: 'stretch', width: '100%' }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ width: '100%' }}
+        >
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <IconButton size="small" onClick={pullPlayerState}>
+              <Sync color="primary" />
+            </IconButton>
             <Stack direction="column">
-              <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
-                Repeat: {repeat_state}
+              <Typography variant="h6" noWrap component="div">
+                Player
               </Typography>
-              <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
-                Shuffle: {shuffle_state ? 'on' : 'off'}
-              </Typography>
+              {renderedTimestamp ? (
+                <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
+                  {renderedTimestamp}
+                </Typography>
+              ) : null}
             </Stack>
-          )}
-          <CurrentItemDisplay item={item} />
+            <CurrentItemDisplay item={item} />
+          </Stack>
+
+          <Stack direction="row" spacing={2}>
+            {repeat_state != null && shuffle_state != null && (
+              <Stack direction="column">
+                <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
+                  Repeat: {repeat_state}
+                </Typography>
+                <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
+                  Shuffle: {shuffle_state ? 'on' : 'off'}
+                </Typography>
+              </Stack>
+            )}
+            {device && <VolumeDisplay volumePercent={device?.volume_percent} />}
+            <DeviceDisplay device={device} isPlaying={is_playing} />
+          </Stack>
         </Stack>
       </Toolbar>
     </AppBar>

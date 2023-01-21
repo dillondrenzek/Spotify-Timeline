@@ -43,19 +43,39 @@ declare namespace SpotifyApi {
   }
 
   interface CurrentUserSavedSongs {
-    // href: "https://api.spotify.com/v1/me/tracks?offset=0&limit=20"
+    /**
+     * @example "https://api.spotify.com/v1/me/tracks?offset=0&limit=20"
+     */
     href: string;
-    // items: [{ added_at: "2020-07-20T23:19:07Z", track: { album: { album_type: "single", … }, … } }, …]
+
+    /**
+     * @example [{ added_at: "2020-07-20T23:19:07Z", track: { album: { album_type: "single", … }, … } }, …]
+     */
     items: SavedSongs[];
-    // limit: 20
+
+    /**
+     * @example 20
+     */
     limit: number;
-    // next: "https://api.spotify.com/v1/me/tracks?offset=20&limit=20"
+
+    /**
+     * @example "https://api.spotify.com/v1/me/tracks?offset=20&limit=20"
+     */
     next: string;
-    // offset: 0
+
+    /**
+     * @example 0
+     */
     offset: string;
-    // previous: null
+
+    /**
+     * @example null
+     */
     previous: null;
-    // total: 743
+
+    /**
+     * @example 743
+     */
     total: number;
   }
 

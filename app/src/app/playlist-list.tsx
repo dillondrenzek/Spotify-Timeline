@@ -12,8 +12,8 @@ function PlaylistListItem(props: { playlist: SpotifyApi.CurrentUserPlaylist }) {
   }, [playlist.id, navigate]);
 
   return (
-    <ListItem key={playlist.id}>
-      <ListItemButton onClick={handleClick}>
+    <ListItem key={playlist.id} disablePadding>
+      <ListItemButton sx={{ py: 0.5 }} onClick={handleClick}>
         <ListItemText primary={playlist.name} />
       </ListItemButton>
     </ListItem>

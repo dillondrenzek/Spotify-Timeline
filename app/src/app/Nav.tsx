@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useEffect } from 'react';
 import { AppBar, Box, Toolbar, Typography, Link, Stack } from '@mui/material';
-import { useCurrentUser } from '../hooks/use-current-user';
-import { Playbar } from './playbar';
+import { AuthLinks } from '../lib/auth';
+import { useUserStore } from '../stores/use-user-store';
 
 function NavProfileDisplay(
   props: PropsWithChildren<{
@@ -38,10 +38,18 @@ function NavLink(
 }
 
 export function Nav() {
-  const { currentUser } = useCurrentUser();
+  // const { currentUser } = useCurrentUser();
+
+  const { currentUser, isLoaded, pullCurrentUser } = useUserStore();
+
+  useEffect(() => {
+    if (!isLoaded) {
+      pullCurrentUser();
+    }
+  }, [isLoaded, pullCurrentUser]);
 
   return (
-    <AppBar color="default">
+    <AppBar color="default" position="relative">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Stack direction="row" spacing={3} alignItems="center">
           <Typography variant="h6" noWrap component="div">
@@ -56,10 +64,10 @@ export function Nav() {
             <NavLink href="https://accounts.spotify.com/en/status">
               Account
             </NavLink>
-            <NavLink href="/spotify/logout">Logout</NavLink>
+            <NavLink href={AuthLinks.logout}>Logout</NavLink>
           </Stack>
         ) : (
-          <NavLink href="/spotify/login">Login</NavLink>
+          <NavLink href={AuthLinks.login}>Login</NavLink>
         )}
       </Toolbar>
     </AppBar>

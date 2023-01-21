@@ -39,9 +39,11 @@ export function SavedTracksTable() {
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell></TableCell>
+          <TableCell sx={{ py: 0.5 }}></TableCell>
           {colDefs.map((col) => (
-            <TableCell key={col.columnLabel}>{col.columnLabel}</TableCell>
+            <TableCell key={col.columnLabel} sx={{ py: 0 }}>
+              {col.columnLabel}
+            </TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -62,11 +64,13 @@ function SavedTrackRow(props: {
 
   return (
     <TableRow>
-      <TableCell>
+      <TableCell sx={{ py: 0.5, px: 0.25, width: '36px', textAlign: 'center' }}>
         <PlayButton uri={track?.track.uri} contextUri={contextUri} />
       </TableCell>
       {colDefs.map((col, j) => (
-        <TableCell key={j}>{col.valueGetter(track)}</TableCell>
+        <TableCell key={j} sx={{ py: 0.5 }}>
+          {col.valueGetter(track)}
+        </TableCell>
       ))}
     </TableRow>
   );

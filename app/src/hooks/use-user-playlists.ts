@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ErrorHandler } from '../lib/error';
-import { httpRequest, parseJson, parseResponse } from '../lib/http';
+import { httpRequest, parseJson } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
 
 function isValidResult(
