@@ -1,3 +1,14 @@
+export interface Timeline {
+  playlists: SuggestedPlaylist[];
+}
+
+export interface SuggestedPlaylist {
+  title: string;
+  tracks: Track[];
+  startDate: string;
+  endDate: string;
+}
+
 interface SpotifyUri {
   /**
    * The SpotifyURI returned by the spotify uri
@@ -30,15 +41,4 @@ export interface Playlist extends SpotifyUri {
   title: string;
 
   tracks: Track[];
-}
-
-export interface SuggestedPlaylist {
-  title: string;
-  tracks: Track[];
-  startDate: string;
-  endDate: string;
-}
-
-export interface Timeline {
-  playlists: SuggestedPlaylist[];
 }
