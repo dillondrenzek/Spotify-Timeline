@@ -36,11 +36,14 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/timeline', async (req, res) => {
     try {
-      const savedTracks = await spotifyWebApi.getUsersSavedTracks(
-        getAccessToken(req)
+      const result = await generateTimeline(
+        spotifyWebApi,
+        getAccessToken(req),
+        {
+          groupSize: 8,
+          numPlaylists: 10,
+        }
       );
-
-      const result = generateTimeline(savedTracks.items);
 
       res.status(200).json(result ?? { success: true });
     } catch (err) {
