@@ -108,9 +108,12 @@ export class SpotifyWebApi {
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
    */
   async getUsersSavedTracks(
-    accessToken: string
+    accessToken: string,
+    params: Partial<Types.GetUserSavedTracksRequest> = {}
   ): Promise<Types.Paginated<Types.SavedTrack>> {
-    const url = SpotifyWebApi.url('/me/tracks');
+    params = params ?? { limit: '50', offset: '0' };
+    const querystring = new URLSearchParams(params).toString();
+    const url = SpotifyWebApi.url('/me/tracks' + querystring);
     return await axios
       .get(url, {
         headers: {
