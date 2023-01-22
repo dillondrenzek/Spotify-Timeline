@@ -1,14 +1,14 @@
-import * as Types from './timeline-types';
 import * as SpotifyTypes from '../spotify/types';
+import { ApiTypes } from 'api-types';
 
 export const SpotifyConverter = {
-  toArtist(value: SpotifyTypes.SimplifiedArtist): Types.Artist {
+  toArtist(value: SpotifyTypes.SimplifiedArtist): ApiTypes.Artist {
     return {
       name: value.name,
     };
   },
 
-  toTrack(value: SpotifyTypes.SavedTrack): Types.Track {
+  toTrack(value: SpotifyTypes.SavedTrack): ApiTypes.Track {
     const { track } = value;
     return {
       spotifyUri: track.uri,

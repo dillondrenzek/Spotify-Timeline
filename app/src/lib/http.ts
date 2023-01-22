@@ -84,7 +84,7 @@ function checkHttpStatusCodes(res: Response) {
  * @throws `ApiError` for any and all errors from `fetch` call
  * @throws `ApiError` for particular HTTP status codes
  */
-export async function httpRequest<T, U>(
+export async function httpRequest(
   input: RequestInfo | URL,
   init?: RequestInit
 ): Promise<Response> {

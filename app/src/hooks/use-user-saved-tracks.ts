@@ -1,10 +1,11 @@
+import { ApiTypes } from 'api-types';
 import { useState, useEffect, useMemo } from 'react';
 import { httpRequest, parseJson } from '../lib/http';
 import { useUserStore } from '../stores/use-user-store';
 
 function isValidResult(
   value: unknown
-): value is SpotifyApi.CurrentUserSavedSongs {
+): value is ApiTypes.CurrentUserSavedSongs {
   return (
     typeof value === 'object' &&
     'href' in value &&
@@ -18,18 +19,17 @@ function isValidResult(
 }
 
 function convert(
-  result: SpotifyApi.CurrentUserSavedSongs
-): SpotifyApi.CurrentUserSavedSongs {
+  result: ApiTypes.CurrentUserSavedSongs
+): ApiTypes.CurrentUserSavedSongs {
   return result;
 }
 
 export function useUserSavedTracks() {
   const { handleUnauthorized, isLoaded } = useUserStore();
 
-  const [paginator, setPaginator] =
-    useState<SpotifyApi.CurrentUserSavedSongs>();
+  const [paginator, setPaginator] = useState<ApiTypes.CurrentUserSavedSongs>();
 
-  const savedTracks = useMemo<SpotifyApi.SavedSongs[]>(() => {
+  const savedTracks = useMemo<ApiTypes.SavedSong[]>(() => {
     return paginator?.items ?? [];
   }, [paginator?.items]);
 

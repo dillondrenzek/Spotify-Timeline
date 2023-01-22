@@ -1,15 +1,10 @@
 import * as SpotifyTypes from '../spotify/types';
-import express from 'express';
 import { ckmeans } from 'simple-statistics';
 import { DateTime } from 'luxon';
 import { SpotifyConverter } from './spotify-converter';
-import * as Types from './timeline-types';
-import { chunk, reduce } from 'lodash';
+import { reduce } from 'lodash';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
-
-interface Timeline {
-  suggestedPlaylists: Types.SuggestedPlaylist[];
-}
+import { ApiTypes } from 'api-types';
 
 interface GenerateTimelineOptions {
   numPlaylists: number;
@@ -18,7 +13,7 @@ interface GenerateTimelineOptions {
 function suggestedPlaylist(
   title: string = 'Untitled playlist',
   savedTracks: SpotifyTypes.SavedTrack[] = []
-): Types.SuggestedPlaylist {
+): ApiTypes.SuggestedPlaylist {
   const addedAtDates = savedTracks.map((t) => new Date(t.added_at));
   const startDate = reduce(addedAtDates, (prev, curr) => {
     return prev.getTime() < curr.getTime() ? prev : curr;
@@ -147,7 +142,7 @@ function groupTracks(
 
 function convertGroupsToPlaylists(
   groups: SpotifyTypes.SavedTrack[][]
-): Types.SuggestedPlaylist[] {
+): ApiTypes.SuggestedPlaylist[] {
   return groups.map((group, i) => {
     const [minDate, maxDate] = getMinMaxDate(group);
     const dateFormat = 'yyyy LLL dd';
@@ -162,7 +157,7 @@ export async function generateTimeline(
   spotifyWebApi: SpotifyWebApi,
   accessToken: string,
   options: GenerateTimelineOptions = { numPlaylists: 10 }
-): Promise<Timeline> {
+): Promise<ApiTypes.Timeline> {
   // Timeline Options
   const { numPlaylists } = options;
 
@@ -177,7 +172,7 @@ export async function generateTimeline(
   const tracksGroupedToSize = groupTracks(savedTracks, options);
 
   // Create suggested playlists
-  const suggestedPlaylists: Types.SuggestedPlaylist[] =
+  const suggestedPlaylists: ApiTypes.SuggestedPlaylist[] =
     convertGroupsToPlaylists(tracksGroupedToSize);
 
   return {

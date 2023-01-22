@@ -27,7 +27,7 @@ function dateRangeDisplay(startDate: string, endDate: string): string {
 export function TimelineRoute() {
   const { timeline, generateTimeline } = useTimelineStore();
 
-  const { playlists } = timeline ?? {};
+  const { suggestedPlaylists: playlists } = timeline ?? {};
 
   useEffect(() => {
     generateTimeline();

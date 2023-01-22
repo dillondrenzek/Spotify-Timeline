@@ -90,7 +90,7 @@ export class SpotifyWebApi {
    * @param accessToken
    * @returns
    */
-  async getPlayerState(accessToken: string): Promise<PlayerState> {
+  async getPlayerState(accessToken: string): Promise<Types.PlayerState> {
     const url = SpotifyWebApi.url('/me/player');
     return await axios
       .get(url, {
@@ -154,7 +154,7 @@ export class SpotifyWebApi {
   async getPlaylistItems(
     playlistId: string,
     accessToken: string
-  ): Promise<Types.Paginated<Types.Track>> {
+  ): Promise<Types.Paginated<Types.SavedTrack>> {
     try {
       const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
       const { data } = await axios.get(url, {
