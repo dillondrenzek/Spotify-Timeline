@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import { ApiTypes } from 'api-types';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
 import { generateTimeline } from '../timeline/generate-timeline';
@@ -36,7 +37,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/timeline', async (req, res) => {
     try {
-      const result = await generateTimeline(
+      const result: ApiTypes.Timeline = await generateTimeline(
         spotifyWebApi,
         getAccessToken(req),
         {
