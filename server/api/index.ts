@@ -53,9 +53,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/player', async (req, res) => {
     try {
-      const playerState = await spotifyWebApi.getPlayerState(
-        getAccessToken(req)
-      );
+      const playerState: ApiTypes.PlayerState =
+        await spotifyWebApi.getPlayerState(getAccessToken(req));
 
       res.status(200).json(playerState);
     } catch (err) {
