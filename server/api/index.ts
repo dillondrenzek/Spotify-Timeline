@@ -40,7 +40,6 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         spotifyWebApi,
         getAccessToken(req),
         {
-          groupSize: 8,
           numPlaylists: 10,
         }
       );

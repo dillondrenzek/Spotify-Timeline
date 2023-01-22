@@ -12,7 +12,6 @@ interface Timeline {
 }
 
 interface GenerateTimelineOptions {
-  groupSize: number;
   numPlaylists: number;
 }
 
@@ -162,14 +161,14 @@ function convertGroupsToPlaylists(
 export async function generateTimeline(
   spotifyWebApi: SpotifyWebApi,
   accessToken: string,
-  options: GenerateTimelineOptions = { groupSize: 8, numPlaylists: 10 }
+  options: GenerateTimelineOptions = { numPlaylists: 10 }
 ): Promise<Timeline> {
   // Timeline Options
-  const { groupSize, numPlaylists } = options;
+  const { numPlaylists } = options;
 
   // Assemble all saved tracks needed
   const savedTracks = await fetchSavedTracks(
-    groupSize * numPlaylists,
+    8 * numPlaylists,
     spotifyWebApi,
     accessToken
   );
