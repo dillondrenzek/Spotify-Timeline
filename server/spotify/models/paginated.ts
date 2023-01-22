@@ -1,7 +1,7 @@
 import * as Types from '../types';
-import { BaseModel } from './base-model';
+import { BaseResponse } from './base-model';
 
-export const Paginated: BaseModel<Types.Paginated<unknown>> = {
+export const Paginated: BaseResponse<Types.Paginated<unknown>> = {
   isValid(value): value is Types.Paginated<unknown> {
     if (typeof value !== 'object') {
       return false;

@@ -9,6 +9,11 @@ import {
   startPlaybackRequest,
   StartPlaybackRequest,
 } from './models/request/start-playback-request';
+import {
+  AddItemsToPlaylistResponse,
+  CreatePlaylistResponse,
+  GetPlaylistResponse,
+} from './models/playlist';
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -167,6 +172,73 @@ export class SpotifyWebApi {
     } catch (error) {
       handleAxiosError(error);
     }
+  }
+
+  /**
+   * Create a Playlist for the User
+   *
+   * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/create-playlist)
+   */
+  async createPlaylist(
+    data: Types.CreatePlaylistRequest,
+    userId: string,
+    accessToken: string
+  ): Promise<Types.CreatePlaylistResponse> {
+    const url = SpotifyWebApi.url('/users/' + userId + '/playlists');
+
+    return await axios
+      .post(url, data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(CreatePlaylistResponse.fromResponse);
+  }
+
+  /**
+   *
+   * @param playlistId ID for the playlist to fetch
+   * @param accessToken user's access token
+   */
+  async getPlaylist(
+    playlistId: string,
+    accessToken: string
+  ): Promise<Types.GetPlaylistResponse> {
+    const url = SpotifyWebApi.url('/playlists/' + playlistId);
+
+    return await axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(GetPlaylistResponse.fromResponse);
+  }
+
+  /**
+   * Add one or more items to a user's playlist.
+   * @param data HTTP request body
+   * @param playlistId ID for the playlist to add to
+   * @param accessToken user's access token
+   * @returns
+   */
+  async addItemsToPlaylist(
+    data: Types.AddItemsToPlaylistRequest,
+    playlistId: string,
+    accessToken: string
+  ): Promise<Types.AddItemsToPlaylistResponse> {
+    const url = SpotifyWebApi.url('/playlists/' + playlistId + '/tracks');
+
+    return await axios
+      .post(url, data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(AddItemsToPlaylistResponse.fromResponse);
   }
 
   /**

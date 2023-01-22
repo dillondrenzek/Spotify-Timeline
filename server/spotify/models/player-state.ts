@@ -1,11 +1,11 @@
-import { BaseModel } from './base-model';
+import { BaseResponse } from './base-model';
 import * as Types from '../types';
 
 /**
  * The response from the Spotify Web API
  */
 
-export const PlayerState: BaseModel<Types.PlayerState> = {
+export const PlayerState: BaseResponse<Types.PlayerState> = {
   isValid(value): value is Types.PlayerState {
     if (typeof value !== 'object') {
       return false;
