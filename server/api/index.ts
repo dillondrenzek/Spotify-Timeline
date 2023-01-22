@@ -82,12 +82,26 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     const playlistId = params.id;
 
     try {
-      const tracks = await spotifyWebApi.getPlaylistItems(
+      const items = await spotifyWebApi.getPlaylistItems(
         playlistId,
         getAccessToken(req)
       );
-      res.status(200).json(tracks);
+
+      const result: ApiTypes.GetTracksForPlaylistResponse = {
+        items: items.items.map((item) => ({
+          addedAt: item.added_at,
+          title: item.track.name,
+          spotifyUri: item.track.uri,
+          artists: item.track.artists.map((artist) => ({ name: artist.name })),
+        })),
+        limit: items.limit,
+        offset: items.offset,
+        total: items.total,
+      };
+
+      res.status(200).json(result);
     } catch (err) {
+      console.error(err);
       errorResponse(err, res);
     }
   });
@@ -109,19 +123,9 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/me/playlists', async (req, res) => {
     try {
-      const playlists = await spotifyWebApi.getUsersPlaylists(
-        getAccessToken(req)
-      );
+      const playlists: ApiTypes.Paginated<ApiTypes.CurrentUserPlaylist> =
+        await spotifyWebApi.getUsersPlaylists(getAccessToken(req));
       res.status(200).json(playlists.items);
-    } catch (err) {
-      errorResponse(err, res);
-    }
-  });
-
-  api.get('/saved-tracks', async (req, res) => {
-    try {
-      const user = await spotifyWebApi.getUsersSavedTracks(getAccessToken(req));
-      res.status(200).json(user);
     } catch (err) {
       errorResponse(err, res);
     }
@@ -129,7 +133,27 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/me/tracks', async (req, res) => {
     try {
-      const user = await spotifyWebApi.getUsersSavedTracks(getAccessToken(req));
+      const user: ApiTypes.CurrentUserSavedSongs = await spotifyWebApi
+        .getUsersSavedTracks(getAccessToken(req))
+        .then((data) => {
+          const result: ApiTypes.CurrentUserSavedSongs = {
+            items: data.items.map((value) => ({
+              added_at: value.added_at,
+              track: {
+                addedAt: value.added_at,
+                title: value.track.name,
+                spotifyUri: value.track.uri,
+                artists: value.track.artists.map((artist) => ({
+                  name: artist.name,
+                })),
+              },
+            })),
+            limit: data.limit,
+            offset: data.offset,
+            total: data.total,
+          };
+          return result;
+        });
       res.status(200).json(user);
     } catch (err) {
       errorResponse(err, res);

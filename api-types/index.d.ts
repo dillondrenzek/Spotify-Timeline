@@ -160,4 +160,61 @@ export namespace ApiTypes {
     // "uri": "spotify:user:wizzler"
     uri: string;
   }
+
+  interface Paginated<T> {
+    // "href": "https://api.spotify.com/v1/me/shows?offset=0&limit=20\n",
+    // href: string;
+
+    // "items": [
+    //   {}
+    // ],
+    items: T[];
+
+    // "limit": 20,
+    limit: number;
+
+    // "next": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+    // next: string;
+
+    // "offset": 0,
+    offset: number;
+
+    // "previous": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
+    // previous: string;
+
+    // "total": 4
+    total: number;
+  }
+
+  interface SavedSong {
+    added_at: string; // Date
+    track: Track;
+  }
+
+  type CurrentUserSavedSongs = Paginated<SavedSong>;
+
+  interface CurrentUserPlaylist {
+    // collaborative: false
+    collaborative: boolean;
+    // description: ""
+    description: string;
+    // external_urls: {spotify: "https://open.spotify.com/playlist/5AhTQlpEpW7eSYc37v8zs2"}
+    // href: "https://api.spotify.com/v1/playlists/5AhTQlpEpW7eSYc37v8zs2"
+    // id: "5AhTQlpEpW7eSYc37v8zs2"
+    id: string;
+    // images: [{height: 640, url: "https://i.scdn.co/image/ab67616d0000b2736ee651e65c3766d80e7fcab7", width: 640}]
+    // name: "Hi & Slo"
+    name: string;
+    // owner: {display_name: "Dillon Drenzek", external_urls: {spotify: "https://open.spotify.com/user/121028591"},…}
+    // primary_color: null
+    // public: true
+    // snapshot_id: "NCxiN2JlNmJmMzUyYjhlNDI2ZWUxNTE4YjI5NGJmNDY1YTI0N2E4NzU1"
+    // tracks: {href: "https://api.spotify.com/v1/playlists/5AhTQlpEpW7eSYc37v8zs2/tracks", total: 3}
+    // type: "playlist";
+    type: 'playlist';
+    // uri: "spotify:playlist:5AhTQlpEpW7eSYc37v8zs2"
+    uri: string;
+  }
+
+  type GetTracksForPlaylistResponse = Paginated<Track>;
 }

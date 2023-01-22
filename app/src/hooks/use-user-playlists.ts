@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { ApiTypes } from 'api-types';
 import { ErrorHandler } from '../lib/error';
 import { httpRequest, parseJson } from '../lib/http';
 import { useAuthToken } from './use-auth-token';
 
 function isValidResult(
   value: unknown
-): value is SpotifyApi.CurrentUserPlaylist[] {
+): value is ApiTypes.CurrentUserPlaylist[] {
   if (!Array.isArray(value)) {
     return false;
   }
@@ -16,14 +17,14 @@ function isValidResult(
 }
 
 function convert(
-  result: SpotifyApi.CurrentUserPlaylist[]
-): SpotifyApi.CurrentUserPlaylist[] {
+  result: ApiTypes.CurrentUserPlaylist[]
+): ApiTypes.CurrentUserPlaylist[] {
   return result;
 }
 
 export function useUserPlaylists(handleError?: ErrorHandler) {
   const { authToken, clearAuthToken, handleUnauthorized } = useAuthToken();
-  const [playlists, setPlaylists] = useState<SpotifyApi.CurrentUserPlaylist[]>(
+  const [playlists, setPlaylists] = useState<ApiTypes.CurrentUserPlaylist[]>(
     []
   );
   const [requestMade, setRequestMade] = useState(false);

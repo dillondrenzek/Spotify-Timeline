@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { useUserSavedTracks } from '../hooks/use-user-saved-tracks';
 import { PlayButton } from './play-button';
+import { ApiTypes } from 'api-types';
 
 export interface ColDef<T = any> {
   columnLabel: string;
@@ -15,20 +16,20 @@ export interface ColDef<T = any> {
   formatGetter?: (value: any, rowNode: T) => any;
 }
 
-const colDefs: ColDef<SpotifyApi.SavedSongs>[] = [
+const colDefs: ColDef<ApiTypes.SavedSong>[] = [
   {
     columnLabel: 'Name',
-    valueGetter: (row: SpotifyApi.SavedSongs) =>
-      row['track'] ? row['track']['name'] : '',
+    valueGetter: (row: ApiTypes.SavedSong) =>
+      row['track'] ? row['track']['title'] : '',
   },
   {
     columnLabel: 'Artist',
-    valueGetter: (row: SpotifyApi.SavedSongs) =>
+    valueGetter: (row: ApiTypes.SavedSong) =>
       row['track'] ? row['track']['artists'][0]['name'] : '',
   },
   {
     columnLabel: 'Date Added',
-    valueGetter: (row: SpotifyApi.SavedSongs) => row['added_at'],
+    valueGetter: (row: ApiTypes.SavedSong) => row['added_at'],
   },
 ];
 
@@ -49,7 +50,7 @@ export function SavedTracksTable() {
       </TableHead>
       <TableBody>
         {savedTracks?.map((row, i) => (
-          <SavedTrackRow track={row} key={row.track.id} />
+          <SavedTrackRow track={row} key={row.track.spotifyUri} />
         ))}
       </TableBody>
     </Table>
@@ -57,7 +58,7 @@ export function SavedTracksTable() {
 }
 
 function SavedTrackRow(props: {
-  track: SpotifyApi.SavedSongs;
+  track: ApiTypes.SavedSong;
   contextUri?: string;
 }): JSX.Element {
   const { track, contextUri } = props;
@@ -65,7 +66,7 @@ function SavedTrackRow(props: {
   return (
     <TableRow>
       <TableCell sx={{ py: 0.5, px: 0.25, width: '36px', textAlign: 'center' }}>
-        <PlayButton uri={track?.track.uri} contextUri={contextUri} />
+        <PlayButton uri={track?.track.spotifyUri} contextUri={contextUri} />
       </TableCell>
       {colDefs.map((col, j) => (
         <TableCell key={j} sx={{ py: 0.5 }}>

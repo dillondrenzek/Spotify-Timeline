@@ -2,10 +2,11 @@ import React, { PropsWithChildren, useEffect } from 'react';
 import { AppBar, Box, Toolbar, Typography, Link, Stack } from '@mui/material';
 import { AuthLinks } from '../lib/auth';
 import { useUserStore } from '../stores/use-user-store';
+import { ApiTypes } from 'api-types';
 
 function NavProfileDisplay(
   props: PropsWithChildren<{
-    user: SpotifyApi.CurrentUserProfile;
+    user: ApiTypes.CurrentUserProfile;
   }>
 ) {
   const { user } = props;

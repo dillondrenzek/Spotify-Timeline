@@ -7,6 +7,7 @@ import {
   TableRow,
 } from '@mui/material';
 import { PlayButton } from './play-button';
+import { ApiTypes } from 'api-types';
 
 export interface ColDef<T = any> {
   columnLabel: string;
@@ -14,26 +15,25 @@ export interface ColDef<T = any> {
   formatGetter?: (value: any, rowNode: T) => any;
 }
 
-const colDefs: ColDef<SpotifyApi.SavedSongs>[] = [
+const colDefs: ColDef<ApiTypes.Track>[] = [
   {
     columnLabel: 'Name',
-    valueGetter: (row: SpotifyApi.SavedSongs) =>
-      row['track'] ? row['track']['name'] : '',
+    valueGetter: (row: ApiTypes.Track) => row['title'],
   },
   {
     columnLabel: 'Artist',
-    valueGetter: (row: SpotifyApi.SavedSongs) =>
-      row['track'] ? row['track']['artists'][0]['name'] : '',
+    valueGetter: (row: ApiTypes.Track) =>
+      row['artists'].map((a) => a.name).join(' '),
   },
   {
     columnLabel: 'Date Added',
-    valueGetter: (row: SpotifyApi.SavedSongs) => row['added_at'],
+    valueGetter: (row: ApiTypes.Track) => row['addedAt'],
   },
 ];
 
-function TrackRow(props: { track: SpotifyApi.SavedSongs; contextUri: string }) {
+function TrackRow(props: { track: ApiTypes.Track; contextUri: string }) {
   const { track, contextUri } = props;
-  const uri = track?.track?.uri;
+  const uri = track?.spotifyUri;
 
   return (
     <TableRow>
@@ -48,7 +48,7 @@ function TrackRow(props: { track: SpotifyApi.SavedSongs; contextUri: string }) {
 }
 
 interface TracksTableProps {
-  tracks: SpotifyApi.SavedSongs[];
+  tracks: ApiTypes.Track[];
   contextUri?: string;
 }
 
