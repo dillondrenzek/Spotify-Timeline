@@ -18,6 +18,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       'user-read-email',
       'user-library-read',
       'playlist-read-private',
+      'playlist-modify-public',
       'user-modify-playback-state',
       'user-read-playback-state',
       'user-read-currently-playing',

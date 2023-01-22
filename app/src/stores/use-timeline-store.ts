@@ -23,17 +23,21 @@ function convert(result: any): ApiTypes.Timeline {
 type TimelineStore = {
   timeline: ApiTypes.Timeline;
 
+  isLoaded: boolean;
+
   generateTimeline: () => void;
 };
 
 export const useTimelineStore = create<TimelineStore>((set, get) => ({
   timeline: null,
 
+  isLoaded: false,
+
   async generateTimeline() {
     const timeline = await httpRequest('/api/timeline')
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
-    set({ timeline });
+    set({ timeline, isLoaded: true });
   },
 }));
