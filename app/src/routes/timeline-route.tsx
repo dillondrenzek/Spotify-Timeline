@@ -84,7 +84,7 @@ export function TimelineRoute() {
                         alignItems="center"
                         sx={{ width: '100%' }}
                       >
-                        <Stack direction="row" spacing={1}>
+                        <Stack direction="row" alignItems="center" spacing={1}>
                           <PlayButton uri={track?.spotifyUri} />
                           <Stack direction="column">
                             <Typography>
