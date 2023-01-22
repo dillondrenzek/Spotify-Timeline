@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography, Grid, Card, Stack } from '@mui/material';
 import { PlaylistList } from '../app/playlist-list';
 import { useUserPlaylists } from '../hooks/use-user-playlists';
 import { useTracksForPlaylist } from '../hooks/use-tracks-for-playlist';
@@ -29,14 +29,25 @@ export function SinglePlaylistRoute() {
       <Box sx={{ pt: 8, height: '100vh' }}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
-            <Typography variant="h4">Playlists</Typography>
-            <PlaylistList playlists={playlists} />
+            <Card elevation={3}>
+              <Typography variant="h4">Playlists</Typography>
+              <PlaylistList playlists={playlists} />
+            </Card>
           </Grid>
           <Grid item xs={9}>
-            <Box>
-              <Typography variant="h4">{currentPlaylist?.name}</Typography>
-            </Box>
-            <TracksTable tracks={tracks} contextUri={playlistUri} />
+            <Card elevation={3} sx={{ pb: 8 }}>
+              <Stack direction="column" sx={{ p: 3 }} spacing={3}>
+                {currentPlaylist?.name && (
+                  <Typography variant="h4">{currentPlaylist?.name}</Typography>
+                )}
+                {currentPlaylist?.description && (
+                  <Typography variant="h6">
+                    {currentPlaylist?.description}
+                  </Typography>
+                )}
+              </Stack>
+              <TracksTable tracks={tracks} contextUri={playlistUri} />
+            </Card>
           </Grid>
         </Grid>
       </Box>

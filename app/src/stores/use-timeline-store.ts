@@ -33,6 +33,15 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
 
   isLoaded: false,
 
+  updateTimeline(newTimeline: ApiTypes.Timeline) {
+    const timeline: ApiTypes.Timeline = {
+      ...get().timeline,
+      ...newTimeline,
+    };
+
+    set({ timeline });
+  },
+
   async generateTimeline() {
     const timeline = await httpRequest('/api/timeline')
       .catch(useUserStore.getState().handleUnauthorized)
