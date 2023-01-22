@@ -37,13 +37,15 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/timeline', async (req, res) => {
     try {
-      const result: ApiTypes.Timeline = await generateTimeline(
+      const generatedTimeline = await generateTimeline(
         spotifyWebApi,
         getAccessToken(req),
         {
           numPlaylists: 10,
         }
       );
+
+      const result: ApiTypes.Timeline = generatedTimeline;
 
       res.status(200).json(result ?? { success: true });
     } catch (err) {
