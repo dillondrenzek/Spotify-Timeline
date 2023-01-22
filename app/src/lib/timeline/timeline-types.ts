@@ -32,7 +32,15 @@ export interface Playlist extends SpotifyUri {
   tracks: Track[];
 }
 
-export interface SuggestedPlaylist extends SpotifyUri {
+export interface SuggestedPlaylist {
+  /**
+   * ISO string
+   */
+  startDate: string;
+  /**
+   * ISO string
+   */
+  endDate: string;
   title: string;
   tracks: Track[];
 }

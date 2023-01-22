@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -15,6 +15,12 @@ import { grey } from '@mui/material/colors';
 import { BaseRoute } from './base-route';
 import { PlayButton } from '../app/play-button';
 import { useTimelineStore } from '../stores/use-timeline-store';
+
+function dateRangeDisplay(startDate: string, endDate: string): string {
+  const displayStart = new Date(Date.parse(startDate)).toLocaleDateString();
+  const displayEnd = new Date(Date.parse(endDate)).toLocaleDateString();
+  return `${displayStart} to ${displayEnd}`;
+}
 
 export function TimelineRoute() {
   const { timeline, generateTimeline } = useTimelineStore();
@@ -48,9 +54,21 @@ export function TimelineRoute() {
                       }}
                     >
                       <Typography variant="h6">{playlist.title}</Typography>
-                      <Typography variant="caption">
-                        {playlist.tracks.length} tracks
-                      </Typography>
+                      <Stack
+                        direction="column"
+                        justifyContent="flex-end"
+                        alignItems="flex-end"
+                      >
+                        <Typography variant="caption">
+                          {playlist.tracks.length} tracks
+                        </Typography>
+                        <Typography variant="caption">
+                          {dateRangeDisplay(
+                            playlist.startDate,
+                            playlist.endDate
+                          )}
+                        </Typography>
+                      </Stack>
                     </Stack>
                   </ListItemText>
                 </ListItem>
