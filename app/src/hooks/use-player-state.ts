@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { httpRequest, parseJson } from '../lib/http';
-import { PlayerStateResult } from '../lib/player/player-types';
+import { ApiTypes } from 'api-types';
 import { useAuthToken } from './use-auth-token';
 
 /**
  * Application Player state
  */
-export type PlayerState = PlayerStateResult;
+export type PlayerState = ApiTypes.PlayerState;
 
 const defaultPlayerState: PlayerState = {
   actions: null,
@@ -21,14 +21,14 @@ const defaultPlayerState: PlayerState = {
   timestamp: null,
 };
 
-function isValidResult(value: unknown): value is PlayerStateResult {
+function isValidResult(value: unknown): value is PlayerState {
   if (!value) {
     return false;
   }
   return !!value && typeof value === 'object';
 }
 
-function convert(result: PlayerStateResult): PlayerState {
+function convert(result: PlayerState): PlayerState {
   return result;
 }
 
