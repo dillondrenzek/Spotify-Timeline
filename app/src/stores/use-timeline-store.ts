@@ -1,14 +1,9 @@
 import { create } from 'zustand';
 import { httpRequest, parseJson } from '../lib/http';
-import { Timeline } from '../lib/timeline';
-import * as Types from '../lib/timeline';
+import { ApiTypes } from 'api-types';
 import { useUserStore } from './use-user-store';
 
-interface TimelineResult {
-  suggestedPlaylists: Types.SuggestedPlaylist[];
-}
-
-function isValidResult(value: unknown): value is TimelineResult {
+function isValidResult(value: unknown): value is ApiTypes.Timeline {
   if (typeof value !== 'object') {
     return false;
   }
@@ -16,17 +11,17 @@ function isValidResult(value: unknown): value is TimelineResult {
   return 'suggestedPlaylists' in value;
 }
 
-function convert(result: any): Types.Timeline {
+function convert(result: any): ApiTypes.Timeline {
   const playlists = Array.isArray(result?.suggestedPlaylists)
     ? result.suggestedPlaylists
     : [];
   return {
-    playlists,
+    suggestedPlaylists: playlists,
   };
 }
 
 type TimelineStore = {
-  timeline: Timeline;
+  timeline: ApiTypes.Timeline;
 
   generateTimeline: () => void;
 };
