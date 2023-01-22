@@ -138,7 +138,9 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/me', async (req, res) => {
     try {
-      const user = await spotifyWebApi.getMe(getAccessToken(req));
+      const user: ApiTypes.CurrentUserProfile = await spotifyWebApi.getMe(
+        getAccessToken(req)
+      );
       res.status(200).json(user);
     } catch (err) {
       errorResponse(err, res);

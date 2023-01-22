@@ -1,11 +1,12 @@
+import { ApiTypes } from 'api-types';
 import { create } from 'zustand';
 import { ApiError } from '../lib/api-error';
 import { clearAuthCookie } from '../lib/auth-cookie';
 import { httpRequest, parseJson } from '../lib/http';
 
-type CurrentUserResult = SpotifyApi.CurrentUserProfile;
+type CurrentUserProfile = ApiTypes.CurrentUserProfile;
 
-function isValidResult(value: unknown): value is CurrentUserResult {
+function isValidResult(value: unknown): value is CurrentUserProfile {
   if (!value) {
     return false;
   }
@@ -15,12 +16,12 @@ function isValidResult(value: unknown): value is CurrentUserResult {
   );
 }
 
-function convert(result: CurrentUserResult): SpotifyApi.CurrentUserProfile {
+function convert(result: CurrentUserProfile): CurrentUserProfile {
   return result;
 }
 
 interface UserStore {
-  currentUser: SpotifyApi.CurrentUserProfile | null;
+  currentUser: CurrentUserProfile | null;
 
   isLoaded: boolean;
 

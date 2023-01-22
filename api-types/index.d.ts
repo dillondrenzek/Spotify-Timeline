@@ -124,4 +124,40 @@ export namespace ApiTypes {
     //   volume_percent: 73;
     volume_percent: number;
   }
+
+  interface CurrentUserProfile {
+    // "country": "SE",
+    country: string;
+    // "display_name": "JM Wizzler",
+    display_name: string;
+    // "email": "email@example.com",
+    email: string;
+    // "external_urls": { "spotify": "https://open.spotify.com/user/wizzler" },
+    external_urls: {
+      spotify: string;
+    };
+    // "followers": { "href": null, "total": 3829 },
+    followers: {
+      href: string;
+      total: number;
+    };
+    // "href": "https://api.spotify.com/v1/users/wizzler",
+    href: string;
+    // "id": "wizzler",
+    id: string;
+    // "images": [
+    //   { "height": null, "url": "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/1970403_10152215092574354_1798272330_n.jpg", "width": null }
+    // ],
+    images: {
+      height: null; // number?
+      url: string;
+      width: null; // number?
+    }[];
+    // "product": "premium",
+    product: 'premium';
+    // "type": "user",
+    type: 'user';
+    // "uri": "spotify:user:wizzler"
+    uri: string;
+  }
 }
