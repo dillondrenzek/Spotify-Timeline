@@ -25,6 +25,10 @@ export interface Track extends SpotifyUri {
    * Artists on the track
    */
   artists: Artist[];
+  /**
+   * ISO String for when the track was saved by User
+   */
+  addedAt: string;
 }
 
 export interface Artist {

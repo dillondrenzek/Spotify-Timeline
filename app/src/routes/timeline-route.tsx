@@ -16,10 +16,12 @@ import { BaseRoute } from './base-route';
 import { PlayButton } from '../app/play-button';
 import { useTimelineStore } from '../stores/use-timeline-store';
 
+function formatDate(value: string): string {
+  return new Date(Date.parse(value)).toLocaleDateString();
+}
+
 function dateRangeDisplay(startDate: string, endDate: string): string {
-  const displayStart = new Date(Date.parse(startDate)).toLocaleDateString();
-  const displayEnd = new Date(Date.parse(endDate)).toLocaleDateString();
-  return `${displayStart} to ${displayEnd}`;
+  return `${formatDate(startDate)} to ${formatDate(endDate)}`;
 }
 
 export function TimelineRoute() {
@@ -76,20 +78,34 @@ export function TimelineRoute() {
                 {!!playlist.tracks?.length ? (
                   playlist.tracks.map((track, i) => (
                     <ListItemButton key={i.toString()}>
-                      <PlayButton uri={track?.spotifyUri} />
-                      <Stack direction="column">
-                        <Typography>{track?.title || 'Untitled'}</Typography>
-                        <Box>
-                          {track?.artists.map((artist, i) => (
-                            <Typography
-                              variant="caption"
-                              key={i}
-                              sx={{ color: grey[400], mr: 1 }}
-                            >
-                              {artist.name}
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{ width: '100%' }}
+                      >
+                        <Stack direction="row" spacing={1}>
+                          <PlayButton uri={track?.spotifyUri} />
+                          <Stack direction="column">
+                            <Typography>
+                              {track?.title || 'Untitled'}
                             </Typography>
-                          ))}
-                        </Box>
+                            <Stack direction="row" spacing={1}>
+                              {track?.artists.map((artist, i) => (
+                                <Typography
+                                  variant="caption"
+                                  key={i}
+                                  sx={{ color: grey[400] }}
+                                >
+                                  {artist.name}
+                                </Typography>
+                              ))}
+                            </Stack>
+                          </Stack>
+                        </Stack>
+                        <Typography variant="caption">
+                          {formatDate(track.addedAt)}
+                        </Typography>
                       </Stack>
                     </ListItemButton>
                   ))
