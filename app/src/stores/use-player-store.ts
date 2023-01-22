@@ -1,26 +1,21 @@
 import { create } from 'zustand';
+import { ApiTypes } from 'api-types';
 import { httpRequest, parseJson } from '../lib/http';
-import { PlayerStateResult } from '../lib/player/player-types';
 import { useUserStore } from './use-user-store';
 
-/**
- * Application Player state
- */
-export type PlayerState = PlayerStateResult;
-
-function isValidResult(value: unknown): value is PlayerStateResult {
+function isValidResult(value: unknown): value is ApiTypes.PlayerState {
   if (!value) {
     return false;
   }
   return !!value && typeof value === 'object';
 }
 
-function convert(result: PlayerStateResult): PlayerState {
+function convert(result: ApiTypes.PlayerState): ApiTypes.PlayerState {
   return result;
 }
 
 type PlayerStore = {
-  player: PlayerState;
+  player: ApiTypes.PlayerState;
   isLoaded: boolean;
   pullPlayerState: () => void;
 };
