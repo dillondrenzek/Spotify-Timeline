@@ -14,6 +14,10 @@ export interface Track extends SpotifyUri {
    * Artists on the track
    */
   artists: Artist[];
+  /**
+   * ISO string for when the track was saved by the User
+   */
+  addedAt: string;
 }
 
 export interface Artist {
@@ -32,7 +36,15 @@ export interface Playlist extends SpotifyUri {
   tracks: Track[];
 }
 
-export interface SuggestedPlaylist extends SpotifyUri {
+export interface SuggestedPlaylist {
+  /**
+   * ISO string
+   */
+  startDate: string;
+  /**
+   * ISO string
+   */
+  endDate: string;
   title: string;
   tracks: Track[];
 }

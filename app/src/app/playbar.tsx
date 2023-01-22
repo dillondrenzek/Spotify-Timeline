@@ -125,7 +125,7 @@ export function Playbar() {
           </Stack>
 
           <Stack direction="row" spacing={2}>
-            {repeat_state != null && shuffle_state != null && (
+            {/* {repeat_state != null && shuffle_state != null && (
               <Stack direction="column">
                 <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
                   Repeat: {repeat_state}
@@ -134,8 +134,8 @@ export function Playbar() {
                   Shuffle: {shuffle_state ? 'on' : 'off'}
                 </Typography>
               </Stack>
-            )}
-            {device && <VolumeDisplay volumePercent={device?.volume_percent} />}
+            )} */}
+            {/* {device && <VolumeDisplay volumePercent={device?.volume_percent} />} */}
             <DeviceDisplay device={device} isPlaying={is_playing} />
           </Stack>
         </Stack>

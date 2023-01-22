@@ -14,6 +14,7 @@ export const SpotifyConverter = {
       spotifyUri: track.uri,
       artists: track.artists.map(SpotifyConverter.toArtist),
       title: track.name,
+      addedAt: value.added_at,
     };
   },
 };

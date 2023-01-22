@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { httpRequest, parseJson } from '../lib/http';
 import { useUserStore } from '../stores/use-user-store';
-import { useAuthToken } from './use-auth-token';
 
 function isValidResult(
   value: unknown

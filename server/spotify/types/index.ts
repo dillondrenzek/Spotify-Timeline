@@ -227,3 +227,34 @@ export interface Paginated<T> {
   // "total": 4
   total: number;
 }
+
+export interface GetUserSavedTracksRequest {
+  /**
+   * The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+   *
+   * @type integer
+   * @default 20
+   * @example 10
+   */
+  limit: string;
+
+  /**
+   * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
+   * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
+   *
+   * Note: If neither market or user country are provided, the content is considered unavailable for the client.
+   * Users can view the country that is associated with their account in the account settings.
+   *
+   * @example 'ES'
+   */
+  market: string;
+
+  /**
+   * The index of the first item to return. Default: 0 (the first item). Use with limit to get the next set of items.
+   *
+   * @type integer
+   * @default 0
+   * @example 5
+   */
+  offset: string;
+}

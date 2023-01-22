@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -13,11 +13,25 @@ import {
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { BaseRoute } from './base-route';
-import { useTimeline } from '../hooks/use-timeline';
 import { PlayButton } from '../app/play-button';
+import { useTimelineStore } from '../stores/use-timeline-store';
+
+function formatDate(value: string): string {
+  return new Date(Date.parse(value)).toLocaleDateString();
+}
+
+function dateRangeDisplay(startDate: string, endDate: string): string {
+  return `${formatDate(startDate)} to ${formatDate(endDate)}`;
+}
 
 export function TimelineRoute() {
-  const { playlists } = useTimeline();
+  const { timeline, generateTimeline } = useTimelineStore();
+
+  const { playlists } = timeline ?? {};
+
+  useEffect(() => {
+    generateTimeline();
+  }, [generateTimeline]);
 
   return (
     <BaseRoute>
@@ -28,7 +42,7 @@ export function TimelineRoute() {
         {!playlists?.length && (
           <Typography variant="h6">No timeline was generated</Typography>
         )}
-        {playlists.map((playlist, j) => (
+        {playlists?.map((playlist, j) => (
           <Paper elevation={3} key={j.toString()}>
             <Stack direction="column" spacing={2} sx={{ mb: 6 }}>
               <List>
@@ -42,9 +56,21 @@ export function TimelineRoute() {
                       }}
                     >
                       <Typography variant="h6">{playlist.title}</Typography>
-                      <Typography variant="caption">
-                        {playlist.tracks.length} tracks
-                      </Typography>
+                      <Stack
+                        direction="column"
+                        justifyContent="flex-end"
+                        alignItems="flex-end"
+                      >
+                        <Typography variant="caption">
+                          {playlist.tracks.length} tracks
+                        </Typography>
+                        <Typography variant="caption">
+                          {dateRangeDisplay(
+                            playlist.startDate,
+                            playlist.endDate
+                          )}
+                        </Typography>
+                      </Stack>
                     </Stack>
                   </ListItemText>
                 </ListItem>
@@ -52,20 +78,34 @@ export function TimelineRoute() {
                 {!!playlist.tracks?.length ? (
                   playlist.tracks.map((track, i) => (
                     <ListItemButton key={i.toString()}>
-                      <PlayButton uri={track?.spotifyUri} />
-                      <Stack direction="column">
-                        <Typography>{track?.title || 'Untitled'}</Typography>
-                        <Box>
-                          {track?.artists.map((artist, i) => (
-                            <Typography
-                              variant="caption"
-                              key={i}
-                              sx={{ color: grey[400], mr: 1 }}
-                            >
-                              {artist.name}
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{ width: '100%' }}
+                      >
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                          <PlayButton uri={track?.spotifyUri} />
+                          <Stack direction="column">
+                            <Typography>
+                              {track?.title || 'Untitled'}
                             </Typography>
-                          ))}
-                        </Box>
+                            <Stack direction="row" spacing={1}>
+                              {track?.artists.map((artist, i) => (
+                                <Typography
+                                  variant="caption"
+                                  key={i}
+                                  sx={{ color: grey[400] }}
+                                >
+                                  {artist.name}
+                                </Typography>
+                              ))}
+                            </Stack>
+                          </Stack>
+                        </Stack>
+                        <Typography variant="caption">
+                          {formatDate(track.addedAt)}
+                        </Typography>
                       </Stack>
                     </ListItemButton>
                   ))
