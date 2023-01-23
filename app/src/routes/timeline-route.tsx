@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Typography, Stack, Container, Paper } from '@mui/material';
+import { Typography, Stack, Container, Paper, Card } from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
@@ -19,22 +19,40 @@ export function TimelineRoute() {
 
   return (
     <BaseRoute>
-      <Container fixed sx={{ pb: 6, display: 'flex', flexDirection: 'row' }}>
-        <Stack direction="column" sx={{ flex: '10 0 33%', mr: 3 }} spacing={3}>
-          <Typography variant="h4">Playlists</Typography>
+      <Container sx={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
+        <Stack
+          direction="column"
+          sx={{ height: '100%', overflow: 'auto', flex: '10 0 33%', mr: 3 }}
+          spacing={3}
+        >
+          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+            <Typography variant="h4" mb={2}>
+              Playlists
+            </Typography>
+            <Typography variant="caption">
+              To delete a playlist you've created, you must delete in the
+              Spotify app.
+            </Typography>
+          </Paper>
           <Paper elevation={3}>
             <PlaylistList playlists={playlists} />
           </Paper>
         </Stack>
-        <Stack direction="column" sx={{ flex: '12 0 66%' }} spacing={3}>
-          <Typography variant="h4">Timeline</Typography>
+        <Stack
+          direction="column"
+          sx={{ height: '100%', overflow: 'auto', flex: '12 0 66%' }}
+          spacing={3}
+        >
+          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+            <Typography variant="h4">Timeline</Typography>
+            {!isLoaded && (
+              <Typography variant="h6">Generating timeline</Typography>
+            )}
+            {isLoaded && !suggestedPlaylists?.length && (
+              <Typography variant="h6">No timeline was generated</Typography>
+            )}
+          </Paper>
 
-          {!isLoaded && (
-            <Typography variant="h6">Generating timeline</Typography>
-          )}
-          {isLoaded && !suggestedPlaylists?.length && (
-            <Typography variant="h6">No timeline was generated</Typography>
-          )}
           {suggestedPlaylists?.map((playlist, j) => (
             <Paper elevation={3} key={j.toString()}>
               <TimelineSuggestedPlaylist playlist={playlist} />

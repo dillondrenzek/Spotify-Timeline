@@ -63,11 +63,8 @@ export function Nav() {
           {authToken ? <NavLink href="/timeline">Timeline</NavLink> : null}
         </Stack>
         {currentUser ? (
-          <Stack direction="row" spacing={1} alignItems="center">
+          <Stack direction="row" spacing={3} alignItems="center">
             <NavProfileDisplay user={currentUser} />
-            <NavLink href="https://accounts.spotify.com/en/status">
-              Account
-            </NavLink>
             <NavLink href={AuthLinks.logout}>Logout</NavLink>
           </Stack>
         ) : (

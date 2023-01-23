@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Grid, Card, Stack } from '@mui/material';
 import { PlaylistList } from '../app/playlist-list';
@@ -8,7 +8,7 @@ import { TracksTable } from '../app/tracks-table';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 
 export function SinglePlaylistRoute() {
-  const { playlists } = useUserPlaylistsStore();
+  const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
 
   const params = useParams();
   const playlistId = params['id'] ?? null;
@@ -24,9 +24,13 @@ export function SinglePlaylistRoute() {
 
   const playlistUri = currentPlaylist?.uri;
 
+  useEffect(() => {
+    pullUserPlaylists();
+  }, [pullUserPlaylists]);
+
   return (
     <BaseRoute>
-      <Box sx={{ pt: 8, height: '100vh' }}>
+      <Box sx={{ pt: 2, height: '100vh' }}>
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <Card elevation={3}>
