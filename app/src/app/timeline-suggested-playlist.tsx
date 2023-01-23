@@ -84,6 +84,7 @@ export function TimelineSuggestedPlaylist(props: {
 
   const handleCancelTextField = useCallback(() => {
     handleReset({ values: state.value });
+    setIsTextField(false);
   }, [handleReset, state.value]);
 
   return (
