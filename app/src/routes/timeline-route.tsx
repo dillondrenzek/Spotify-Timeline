@@ -1,13 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Typography,
-  Stack,
-  Container,
-  Paper,
-  Card,
-  Box,
-  Button,
-} from '@mui/material';
+import { Typography, Stack, Paper, Box, Button } from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
@@ -27,10 +19,10 @@ export function TimelineRoute() {
 
   return (
     <BaseRoute>
-      <Container sx={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
+      <Stack direction="row" spacing={3} sx={{ px: 3, height: '100%' }}>
         <Stack
           direction="column"
-          sx={{ height: '100%', overflow: 'auto', flex: '10 0 33%', mr: 3 }}
+          sx={{ height: '100%', overflow: 'auto', flex: '2', py: 2 }}
           spacing={3}
         >
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
@@ -48,7 +40,7 @@ export function TimelineRoute() {
         </Stack>
         <Stack
           direction="column"
-          sx={{ height: '100%', overflow: 'auto', flex: '12 0 66%' }}
+          sx={{ height: '100%', overflow: 'auto', flex: '5', py: 2 }}
           spacing={3}
         >
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
@@ -79,7 +71,7 @@ export function TimelineRoute() {
             </Paper>
           ))}
         </Stack>
-      </Container>
+      </Stack>
     </BaseRoute>
   );
 }

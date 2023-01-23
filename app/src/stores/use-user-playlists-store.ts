@@ -5,19 +5,13 @@ import { useUserStore } from './use-user-store';
 
 function isValidResult(
   value: unknown
-): value is ApiTypes.CurrentUserPlaylist[] {
-  if (!Array.isArray(value)) {
-    return false;
-  }
-
-  // TODO: check for specific properties
-
+): value is ApiTypes.GetUsersPlaylistsResponse {
   return true;
 }
 
 function convert(
-  result: ApiTypes.CurrentUserPlaylist[]
-): ApiTypes.CurrentUserPlaylist[] {
+  result: ApiTypes.GetUsersPlaylistsResponse
+): ApiTypes.GetUsersPlaylistsResponse {
   return result;
 }
 
@@ -56,9 +50,11 @@ export const useUserPlaylistsStore = create<UserPlaylistsStore>((set, get) => ({
   },
 
   async pullUserPlaylists() {
-    const playlists = await httpRequest('/api/me/playlists')
+    const paginatedSongs = await httpRequest('/api/me/playlists')
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
+
+    const playlists = paginatedSongs.items;
 
     set({ playlists, isLoaded: true });
   },

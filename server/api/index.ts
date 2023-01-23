@@ -180,9 +180,9 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/me/playlists', async (req, res) => {
     try {
-      const playlists: ApiTypes.Paginated<ApiTypes.CurrentUserPlaylist> =
+      const playlists: ApiTypes.GetUsersPlaylistsResponse =
         await spotifyWebApi.getUsersPlaylists(getAccessToken(req));
-      res.status(200).json(playlists.items);
+      res.status(200).json(playlists);
     } catch (err) {
       errorResponse(err, res);
     }
