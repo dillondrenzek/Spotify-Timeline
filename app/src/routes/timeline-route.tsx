@@ -1,5 +1,13 @@
 import React, { useEffect } from 'react';
-import { Typography, Stack, Container, Paper, Card } from '@mui/material';
+import {
+  Typography,
+  Stack,
+  Container,
+  Paper,
+  Card,
+  Box,
+  Button,
+} from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
@@ -7,15 +15,15 @@ import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
 
 export function TimelineRoute() {
-  const { timeline, generateTimeline, isLoaded } = useTimelineStore();
+  const { timeline, generateTimeline, isLoaded, isLoading } =
+    useTimelineStore();
   const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
 
   const { suggestedPlaylists } = timeline ?? {};
 
   useEffect(() => {
     pullUserPlaylists();
-    generateTimeline();
-  }, [generateTimeline, pullUserPlaylists]);
+  }, [pullUserPlaylists]);
 
   return (
     <BaseRoute>
@@ -45,12 +53,24 @@ export function TimelineRoute() {
         >
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Timeline</Typography>
-            {!isLoaded && (
-              <Typography variant="h6">Generating timeline</Typography>
-            )}
-            {isLoaded && !suggestedPlaylists?.length && (
-              <Typography variant="h6">No timeline was generated</Typography>
-            )}
+          </Paper>
+
+          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+            <Stack direction="row">
+              <Button color="success" onClick={generateTimeline}>
+                {'Generate Timeline'}
+              </Button>
+              <Box>
+                {isLoading && (
+                  <Typography variant="h6">Generating timeline</Typography>
+                )}
+                {isLoaded && !suggestedPlaylists?.length && (
+                  <Typography variant="h6">
+                    No timeline was generated
+                  </Typography>
+                )}
+              </Box>
+            </Stack>
           </Paper>
 
           {suggestedPlaylists?.map((playlist, j) => (
