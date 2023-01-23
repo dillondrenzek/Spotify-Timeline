@@ -2,19 +2,19 @@ import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Grid, Card, Stack } from '@mui/material';
 import { PlaylistList } from '../app/playlist-list';
-import { useUserPlaylists } from '../hooks/use-user-playlists';
 import { useTracksForPlaylist } from '../hooks/use-tracks-for-playlist';
 import { BaseRoute } from './base-route';
 import { TracksTable } from '../app/tracks-table';
+import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 
 export function SinglePlaylistRoute() {
-  const { playlists } = useUserPlaylists();
+  const { playlists } = useUserPlaylistsStore();
 
   const params = useParams();
   const playlistId = params['id'] ?? null;
 
   const currentPlaylist = useMemo(() => {
-    if (!playlistId) {
+    if (!playlistId || !playlists) {
       return null;
     }
     return playlists.find((p) => p.id === playlistId) ?? null;

@@ -3,6 +3,7 @@ import { AppBar, Box, Toolbar, Typography, Link, Stack } from '@mui/material';
 import { AuthLinks } from '../lib/auth';
 import { useUserStore } from '../stores/use-user-store';
 import { ApiTypes } from 'api-types';
+import { useAuthToken } from '../hooks/use-auth-token';
 
 function NavProfileDisplay(
   props: PropsWithChildren<{
@@ -41,6 +42,8 @@ function NavLink(
 export function Nav() {
   // const { currentUser } = useCurrentUser();
 
+  const { authToken } = useAuthToken();
+
   const { currentUser, isLoaded, pullCurrentUser } = useUserStore();
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export function Nav() {
             Spotify Timeline
           </Typography>
           <NavLink href="/">Home</NavLink>
-          <NavLink href="/timeline">Timeline</NavLink>
+          {authToken ? <NavLink href="/timeline">Timeline</NavLink> : null}
         </Stack>
         {currentUser ? (
           <Stack direction="row" spacing={1} alignItems="center">
