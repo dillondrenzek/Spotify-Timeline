@@ -1,7 +1,7 @@
 import * as Types from '../types';
-import { BaseModel } from './base-model';
+import { BaseResponse } from './base-model';
 
-export const Track: BaseModel<Types.Track> = {
+export const Track: BaseResponse<Types.Track> = {
   isValid(value): value is Types.Track {
     if (typeof value !== 'object') {
       return false;

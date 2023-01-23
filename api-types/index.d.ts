@@ -54,6 +54,20 @@ export namespace ApiTypes {
     tracks: Track[];
   }
 
+  interface CreatePlaylistRequest {
+    user_id: string;
+
+    name: string;
+
+    track_uris: string[];
+  }
+
+  interface CreatePlaylistResponse {
+    snapshot_id: string;
+
+    playlist: Playlist;
+  }
+
   interface PlayerState {
     // device
     // object

@@ -313,7 +313,7 @@ export interface PlayerState {
   actions: Record<string, unknown>;
 }
 
-interface Device {
+export interface Device {
   //   id: 'e99deeef3e4b2c0b134289c3e85cf83dc6418a70';
   id: string;
   //   is_active: true;
@@ -328,4 +328,159 @@ interface Device {
   type: string;
   //   volume_percent: 73;
   volume_percent: number;
+}
+
+export interface CreatePlaylistRequest {
+  //   name
+  // string
+  // required
+  // The name for the new playlist, for example "Your Coolest Playlist". This name does not need to be unique; a user may have several playlists with the same name.
+  name: string;
+
+  // public
+  // boolean
+  // Defaults to true. If true the playlist will be public, if false it will be private. To be able to create private playlists, the user must have granted the playlist-modify-private scope
+  public?: boolean;
+
+  // collaborative
+  // boolean
+  // Defaults to false. If true the playlist will be collaborative. Note: to create a collaborative playlist you must also set public to false. To create collaborative playlists you must have granted playlist-modify-private and playlist-modify-public scopes.
+  collaborative?: boolean;
+
+  // description
+  // string
+  // value for playlist description as displayed in Spotify Clients and in the Web API.
+  description: string;
+}
+
+export interface CreatePlaylistResponse {
+  // true if the owner allows other users to modify the playlist
+  // collaborative: boolean;
+
+  // The playlist description. Only returned for modified, verified playlists, otherwise null.
+  // description: string | null;
+
+  // object
+  // Known external URLs for this playlist.
+  // external_urls: Record<string, unknown>;
+
+  // spotify: string;
+  // The Spotify URL for the object.
+
+  // followers: Record<string, unknown>;
+  // Information about the followers of the playlist.
+
+  // href
+  // string
+  // This will always be set to null, as the Web API does not support it at the moment.
+
+  // total
+  // integer
+  // The total number of followers.
+
+  // href
+  // string
+  // A link to the Web API endpoint providing full details of the playlist.
+
+  /**
+   * The Spotify ID for the playlist.
+   */
+  id: string;
+
+  // images
+  // array of objects
+  // Images for the playlist. The array may be empty or contain up to three images. The images are returned by size in descending order. See Working with Playlists. Note: If returned, the source URL for the image (url) is temporary and will expire in less than a day.
+
+  // url
+  // string
+  // required
+  // The source URL of the image.
+
+  // height
+  // integer
+  // required
+  // The image height in pixels.
+
+  // width
+  // integer
+  // required
+  // The image width in pixels.
+
+  // name
+  // string
+  // The name of the playlist.
+  name: string;
+
+  // owner
+  // allOf
+  // The user who owns the playlist
+
+  // object
+  // external_urls
+  // object
+  // Known public external URLs for this user.
+
+  // followers
+  // object
+  // Information about the followers of this user.
+
+  // href
+  // string
+  // A link to the Web API endpoint for this user.
+
+  // id
+  // string
+  // The Spotify user ID for this user.
+
+  // type
+  // string
+  // The object type.
+
+  // Allowed value:
+  // "user"
+  // uri
+  // string
+  // The Spotify URI for this user.
+  // uri: string;
+
+  // object
+  // display_name
+  // string
+  // The name displayed on the user's profile. null if not available.
+
+  // public
+  // boolean
+  // The playlist's public/private status: true the playlist is public, false the playlist is private, null the playlist status is not relevant. For more about public/private status, see Working with Playlists
+
+  /**
+   * The version identifier for the current playlist. Can be supplied in other requests to target a specific playlist version
+   */
+  snapshot_id: string;
+
+  // tracks
+  // object
+  // The tracks of the playlist.
+  tracks: Paginated<Track>;
+
+  // type
+  // string
+  // The object type: "playlist"
+  type: 'playlist';
+
+  // uri
+  // string
+  // The Spotify URI for the playlist.
+  uri: string;
+}
+
+export type GetPlaylistResponse = CreatePlaylistResponse;
+
+export interface AddItemsToPlaylistRequest {
+  uris: string[];
+
+  position: number;
+}
+
+export interface AddItemsToPlaylistResponse {
+  snapshot_id: string;
 }

@@ -5,6 +5,7 @@ import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
 import { generateTimeline } from '../timeline/generate-timeline';
 import { isSpotifyApiError } from '../spotify/errors';
+import { CreatePlaylistRequest } from './models/playlists';
 
 const DEBUG_MODE = true;
 
@@ -104,6 +105,60 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       res.status(200).json(result);
     } catch (err) {
       console.error(err);
+      errorResponse(err, res);
+    }
+  });
+
+  api.post('/playlists', async (req, res) => {
+    try {
+      const { user_id, name, track_uris } =
+        CreatePlaylistRequest.fromRequest(req);
+      const accessToken = getAccessToken(req);
+
+      // Create Playlist on Spotify
+      const newPlaylist = await spotifyWebApi.createPlaylist(
+        { description: '', name },
+        user_id,
+        accessToken
+      );
+
+      // Add Items to Created playlist
+      const addItemsResponse = await spotifyWebApi.addItemsToPlaylist(
+        {
+          position: 0,
+          uris: track_uris,
+        },
+        newPlaylist.id,
+        accessToken
+      );
+
+      const getPlaylistResponse = await spotifyWebApi.getPlaylist(
+        newPlaylist.id,
+        accessToken
+      );
+
+      // Create Playlist Response
+      const response: ApiTypes.CreatePlaylistResponse = {
+        snapshot_id: addItemsResponse.snapshot_id,
+        playlist: {
+          spotifyUri: getPlaylistResponse.uri,
+          title: getPlaylistResponse.name,
+          tracks: getPlaylistResponse.tracks.items.map((track) => ({
+            // addedAt: track.
+            addedAt: null,
+            artists: track.artists.map((artist) => ({ name: artist.name })),
+            title: track.name,
+            spotifyUri: track.uri,
+          })),
+          // spotifyUri:
+          // title:
+          // tracks:
+        },
+      };
+
+      // Respond
+      res.status(200).json(response);
+    } catch (err) {
       errorResponse(err, res);
     }
   });
