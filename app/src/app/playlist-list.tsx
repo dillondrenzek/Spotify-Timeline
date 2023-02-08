@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 import { List, ListItem, ListItemText, ListItemButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { ApiTypes } from 'api-types';
 
-function PlaylistListItem(props: { playlist: SpotifyApi.CurrentUserPlaylist }) {
+function PlaylistListItem(props: { playlist: ApiTypes.CurrentUserPlaylist }) {
   const { playlist } = props;
 
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function PlaylistListItem(props: { playlist: SpotifyApi.CurrentUserPlaylist }) {
 }
 
 export function PlaylistList(props: {
-  playlists: SpotifyApi.CurrentUserPlaylist[];
+  playlists: ApiTypes.CurrentUserPlaylist[];
 }) {
   const { playlists } = props;
 
