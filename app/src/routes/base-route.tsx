@@ -5,6 +5,9 @@ import { grey } from '@mui/material/colors';
 import { Playbar } from '../app/playbar';
 import { useAuthToken } from '../hooks/use-auth-token';
 import { usePlayerStore } from '../stores/use-player-store';
+import { createTheme, ThemeProvider } from '@mui/material';
+
+const theme = createTheme();
 
 type BaseRouteProps = PropsWithChildren<{
   /**
@@ -27,7 +30,7 @@ export function BaseRoute(props: BaseRouteProps) {
   const showPlaybar = !hidePlaybar && authToken && !!player;
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box
         display="grid"
@@ -38,6 +41,6 @@ export function BaseRoute(props: BaseRouteProps) {
         <Box sx={{ overflow: 'auto' }}>{children}</Box>
         <Box>{showPlaybar && <Playbar />}</Box>
       </Box>
-    </>
+    </ThemeProvider>
   );
 }

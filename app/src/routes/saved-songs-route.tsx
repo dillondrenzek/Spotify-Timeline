@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Typography,
   Stack,
@@ -14,10 +14,14 @@ import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { useAuthToken } from '../hooks/use-auth-token';
 import { AuthLinks } from '../lib/auth';
 
-export function HomeRoute() {
-  const { playlists } = useUserPlaylistsStore();
+export function SavedSongsRoute() {
+  const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
 
   const { authToken } = useAuthToken();
+
+  useEffect(() => {
+    pullUserPlaylists();
+  }, [pullUserPlaylists]);
 
   return (
     <BaseRoute hidePlaybar={!authToken} hideNav={!authToken}>
