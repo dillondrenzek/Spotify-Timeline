@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Grid, Card, Stack } from '@mui/material';
+import { Box, Typography, Grid, Card, Stack, Paper } from '@mui/material';
 import { PlaylistList } from '../app/playlist-list';
 import { useTracksForPlaylist } from '../hooks/use-tracks-for-playlist';
 import { BaseRoute } from './base-route';
@@ -30,31 +30,41 @@ export function SinglePlaylistRoute() {
 
   return (
     <BaseRoute>
-      <Box sx={{ pt: 2, height: '100vh' }}>
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <Card elevation={3}>
-              <Typography variant="h4">Playlists</Typography>
-              <PlaylistList playlists={playlists} />
-            </Card>
-          </Grid>
-          <Grid item xs={9}>
-            <Card elevation={3} sx={{ pb: 8 }}>
-              <Stack direction="column" sx={{ p: 3 }} spacing={3}>
-                {currentPlaylist?.name && (
-                  <Typography variant="h4">{currentPlaylist?.name}</Typography>
-                )}
-                {currentPlaylist?.description && (
-                  <Typography variant="h6">
-                    {currentPlaylist?.description}
-                  </Typography>
-                )}
-              </Stack>
-              <TracksTable tracks={tracks} contextUri={playlistUri} />
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
+      <Stack direction="row" spacing={3} sx={{ px: 3, height: '100%' }}>
+        <Stack
+          spacing={3}
+          direction={'column'}
+          sx={{ height: '100%', overflow: 'auto', flex: '2', py: 2 }}
+        >
+          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+            <Typography variant="h4">Playlists</Typography>
+          </Paper>
+          <Paper elevation={3}>
+            <PlaylistList playlists={playlists} />
+          </Paper>
+        </Stack>
+        <Stack
+          direction={'column'}
+          spacing={3}
+          sx={{ height: '100%', overflow: 'auto', flex: '5', py: 2 }}
+        >
+          <Card elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+            <Stack direction="column" spacing={3}>
+              {currentPlaylist?.name && (
+                <Typography variant="h4">{currentPlaylist?.name}</Typography>
+              )}
+              {currentPlaylist?.description && (
+                <Typography variant="h6">
+                  {currentPlaylist?.description}
+                </Typography>
+              )}
+            </Stack>
+          </Card>
+          <Card elevation={3} sx={{ pb: 8 }}>
+            <TracksTable tracks={tracks} contextUri={playlistUri} />
+          </Card>
+        </Stack>
+      </Stack>
     </BaseRoute>
   );
 }
