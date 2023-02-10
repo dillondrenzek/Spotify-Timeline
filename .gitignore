@@ -1,2 +1,5 @@
 # Editor Settings
 .vscode
+
+# VS Code Workspace
+*.code-workspace
