@@ -6,12 +6,6 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   const env = loadEnv();
   const api = express();
 
-  // Log Requests
-  api.use((req, res, next) => {
-    console.log(`[${req.method.toUpperCase()}] ${req.path}`);
-    next();
-  });
-
   api.get('/login', (req, res) => {
     const scope = [
       'user-read-private',
@@ -38,7 +32,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/logout', (req, res) => {
     res.clearCookie('access_token');
-    res.redirect('/');
+    res.redirect(env.CLIENT_BASE_URL);
   });
 
   api.get('/callback', (req, res) => {

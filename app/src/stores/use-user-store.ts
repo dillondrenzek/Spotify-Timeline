@@ -2,7 +2,7 @@ import { ApiTypes } from 'api-types';
 import { create } from 'zustand';
 import { ApiError } from '../lib/api-error';
 import { AuthLinks } from '../lib/auth';
-import { clearAuthCookie } from '../lib/auth-cookie';
+import { clearAuthCookie, getAuthCookie } from '../lib/auth-cookie';
 import { httpRequest, parseJson } from '../lib/http';
 
 type CurrentUserProfile = ApiTypes.CurrentUserProfile;
@@ -11,6 +11,9 @@ interface UserStore {
   currentUser: CurrentUserProfile | null;
 
   isLoaded: boolean;
+  isAuthenticated: boolean;
+
+  logout(): void;
 
   handleUnauthorized(err: any): void;
 
@@ -20,7 +23,22 @@ interface UserStore {
 export const useUserStore = create<UserStore>((set, get) => ({
   currentUser: null,
 
+  get isAuthenticated(): boolean {
+    return !!getAuthCookie();
+  },
+
   isLoaded: false,
+
+  logout() {
+    // Remove Auth cookie
+    clearAuthCookie();
+
+    // Set client state
+    set({ currentUser: null, isAuthenticated: false });
+
+    // Navigate to logout page
+    window.location.href = AuthLinks.logout;
+  },
 
   /**
    * Handler that looks for an Unauthorized API response
@@ -35,10 +53,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
       // Remove cookie
       clearAuthCookie();
 
-      // Set global state
-      set({ currentUser: null });
+      // Set client state
+      set({ currentUser: null, isAuthenticated: false });
 
-      window.location.href = AuthLinks.login;
       return;
     }
     // re-throw
