@@ -8,12 +8,9 @@ function isValidResult(
 ): value is ApiTypes.CurrentUserSavedSongs {
   return (
     typeof value === 'object' &&
-    'href' in value &&
     'items' in value &&
     'limit' in value &&
-    'next' in value &&
     'offset' in value &&
-    'previous' in value &&
     'total' in value
   );
 }

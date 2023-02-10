@@ -31,22 +31,6 @@ const colDefs: ColDef<ApiTypes.Track>[] = [
   },
 ];
 
-function TrackRow(props: { track: ApiTypes.Track; contextUri: string }) {
-  const { track, contextUri } = props;
-  const uri = track?.spotifyUri;
-
-  return (
-    <TableRow>
-      <TableCell>
-        <PlayButton uri={uri} contextUri={contextUri} />
-      </TableCell>
-      {colDefs.map((col, j) => (
-        <TableCell key={j}>{col.valueGetter(track)}</TableCell>
-      ))}
-    </TableRow>
-  );
-}
-
 interface TracksTableProps {
   tracks: ApiTypes.Track[];
   contextUri?: string;
@@ -59,9 +43,11 @@ export function TracksTable(props: TracksTableProps) {
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell></TableCell>
+          <TableCell sx={{ py: 0.5 }}></TableCell>
           {colDefs.map((col) => (
-            <TableCell key={col.columnLabel}>{col.columnLabel}</TableCell>
+            <TableCell key={col.columnLabel} sx={{ py: 0 }}>
+              {col.columnLabel}
+            </TableCell>
           ))}
         </TableRow>
       </TableHead>
@@ -71,5 +57,23 @@ export function TracksTable(props: TracksTableProps) {
         ))}
       </TableBody>
     </Table>
+  );
+}
+
+function TrackRow(props: { track: ApiTypes.Track; contextUri: string }) {
+  const { track, contextUri } = props;
+  const uri = track?.spotifyUri;
+
+  return (
+    <TableRow>
+      <TableCell sx={{ py: 0.5, px: 0.25 }}>
+        <PlayButton uri={uri} contextUri={contextUri} />
+      </TableCell>
+      {colDefs.map((col, j) => (
+        <TableCell key={j} sx={{ py: 0.5 }}>
+          {col.valueGetter(track)}
+        </TableCell>
+      ))}
+    </TableRow>
   );
 }

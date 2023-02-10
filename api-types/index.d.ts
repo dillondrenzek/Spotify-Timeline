@@ -231,4 +231,6 @@ export namespace ApiTypes {
   }
 
   type GetTracksForPlaylistResponse = Paginated<Track>;
+
+  type GetUsersPlaylistsResponse = Paginated<CurrentUserPlaylist>;
 }

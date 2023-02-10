@@ -25,6 +25,8 @@ type TimelineStore = {
 
   isLoaded: boolean;
 
+  isLoading: boolean;
+
   generateTimeline: () => void;
 };
 
@@ -32,6 +34,8 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
   timeline: null,
 
   isLoaded: false,
+
+  isLoading: false,
 
   updateTimeline(newTimeline: ApiTypes.Timeline) {
     const timeline: ApiTypes.Timeline = {
@@ -43,10 +47,12 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
   },
 
   async generateTimeline() {
+    set({ isLoading: true });
+
     const timeline = await httpRequest('/api/timeline')
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
-    set({ timeline, isLoaded: true });
+    set({ timeline, isLoaded: true, isLoading: false });
   },
 }));
