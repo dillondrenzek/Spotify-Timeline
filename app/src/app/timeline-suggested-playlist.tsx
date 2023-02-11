@@ -15,12 +15,14 @@ import {
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { grey } from '@mui/material/colors';
+import { useToggle } from 'usehooks-ts';
 import { PlayButton } from '../app/play-button';
 import { ApiTypes } from 'api-types';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { useUserStore } from '../stores/use-user-store';
 import { useEditSuggestedPlaylist } from '../hooks/use-edit-suggested-playlist';
 import { FormikHelpers, useFormik } from 'formik';
+import { SavePlaylistConfirmationDialog } from './save-playlist-confirmation-dialog';
 
 type EditTitleForm = {
   title: string;
@@ -41,16 +43,23 @@ export function TimelineSuggestedPlaylist(props: {
   const { createPlaylist } = useUserPlaylistsStore();
   const { currentUser } = useUserStore();
 
+  const [isModalOpen, toggleModal] = useToggle();
+
   // Update Suggested Playlist
   const [state, dispatch] = useEditSuggestedPlaylist(playlist);
 
   const handleClickSave = useCallback(() => {
+    toggleModal();
+  }, [toggleModal]);
+
+  const handleConfirmSave = useCallback(() => {
     createPlaylist({
       name: state.value.title,
       track_uris: state.value.tracks.map((t) => t.spotifyUri),
       user_id: currentUser.id,
     });
-  }, [createPlaylist, state.value, currentUser]);
+    toggleModal();
+  }, [createPlaylist, state.value, currentUser, toggleModal]);
 
   // New Title
   const [isTextField, setIsTextField] = useState(false);
@@ -151,6 +160,12 @@ export function TimelineSuggestedPlaylist(props: {
               >
                 Save
               </Button>
+              <SavePlaylistConfirmationDialog
+                open={isModalOpen}
+                playlist={playlist}
+                onClose={toggleModal}
+                onConfirm={handleConfirmSave}
+              />
             </Stack>
           </Stack>
         </ListItemText>
