@@ -149,7 +149,10 @@ function convertGroupsToPlaylists(
     const playlistName = `Playlist ${i.toString()} - (${minDate.toFormat(
       dateFormat
     )} - ${maxDate.toFormat(dateFormat)})`;
-    return suggestedPlaylist(playlistName, group);
+    const generatedPlaylist = suggestedPlaylist(playlistName, group);
+    // Reverse track order
+    generatedPlaylist.tracks.reverse();
+    return generatedPlaylist;
   });
 }
 
@@ -174,6 +177,9 @@ export async function generateTimeline(
   // Create suggested playlists
   const suggestedPlaylists: ApiTypes.SuggestedPlaylist[] =
     convertGroupsToPlaylists(tracksGroupedToSize);
+
+  // Reverse sort order
+  suggestedPlaylists.reverse();
 
   return {
     suggestedPlaylists,
