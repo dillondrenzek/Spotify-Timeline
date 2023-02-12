@@ -44,7 +44,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         spotifyWebApi,
         getAccessToken(req),
         {
-          averagePlaylistLength: params?.average_length ?? 10,
+          numPlaylists: 10,
         }
       );
 
