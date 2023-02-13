@@ -244,4 +244,12 @@ export namespace ApiTypes {
   };
 
   type GetTimelineResponse = Timeline;
+
+  type GetSuggestedPlaylistsRequestParams = {
+    limit: number;
+    offset: number;
+    avg_length: number;
+  };
+
+  type GetSuggestedPlaylistsResponse = Paginated<SuggestedPlaylist>;
 }
