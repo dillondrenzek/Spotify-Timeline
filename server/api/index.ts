@@ -3,23 +3,35 @@ import cookieParser from 'cookie-parser';
 import { ApiTypes } from 'api-types';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
-import { generateTimeline } from '../timeline/generate-timeline';
+import { getSuggestedPlaylists } from '../timeline/generate-timeline';
 import { isSpotifyApiError } from '../spotify/errors';
 import { CreatePlaylistRequest } from './models/playlists';
 
 const DEBUG_MODE = true;
+
+function debug(...data: any[]) {
+  if (DEBUG_MODE) {
+    console.log(...data);
+  }
+}
 
 function getAccessToken(req: express.Request) {
   return req.cookies.access_token;
 }
 
 function errorResponse(err: unknown, res: express.Response) {
+  const body: any = err;
+  let status: number;
+
   if (isSpotifyApiError(err)) {
-    const status = err.response.status >= 200 ? err.response.status : 500;
-    res.status(status).json(err);
+    status = err.response.status >= 200 ? err.response.status : 500;
   } else {
-    res.status(500).json(err);
+    status = 500;
   }
+
+  debug('  [ERR] Status:', status, '- Error:', err);
+
+  res.status(status).json(body);
 }
 
 export default function (spotifyWebApi: SpotifyWebApi) {
@@ -36,19 +48,39 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     });
   }
 
-  api.get('/timeline', async (req, res) => {
+  api.get('/suggested-playlists', async (req, res) => {
     try {
-      const params = req.params as ApiTypes.GetTimelineRequestParams;
+      // TODO: Type this properly
+      const queryParams = req.query as any;
 
-      const generatedTimeline = await generateTimeline(
-        spotifyWebApi,
-        getAccessToken(req),
-        {
-          numPlaylists: 10,
-        }
+      debug('  QUERY:', queryParams);
+
+      const params: ApiTypes.GetSuggestedPlaylistsRequestParams = {
+        limit: parseInt(queryParams.limit ?? '200', 10),
+        offset: parseInt(queryParams.offset ?? '0', 10),
+        avg_length: parseInt(queryParams.avg_length ?? '10', 10),
+      };
+
+      debug(
+        '  query params:'.toUpperCase(),
+        'limit=',
+        params.limit,
+        'offset=',
+        params.offset,
+        'avg_length',
+        params.avg_length
       );
 
-      const result: ApiTypes.GetTimelineResponse = generatedTimeline;
+      const result: ApiTypes.GetSuggestedPlaylistsResponse =
+        await getSuggestedPlaylists(spotifyWebApi, getAccessToken(req), params);
+
+      debug(
+        '  response:'.toUpperCase(),
+        '(',
+        result.items.length,
+        'items',
+        ')'
+      );
 
       res.status(200).json(result);
     } catch (err) {

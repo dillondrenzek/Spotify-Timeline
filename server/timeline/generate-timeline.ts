@@ -2,68 +2,99 @@ import * as SpotifyTypes from '../spotify/types';
 import { ckmeans } from 'simple-statistics';
 import { DateTime } from 'luxon';
 import { SpotifyConverter } from './spotify-converter';
-import { reduce } from 'lodash';
+import { reduce, min, max } from 'lodash';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { ApiTypes } from 'api-types';
+import { getMinMaxDateTime } from '../lib/date-time';
+
+const DEBUG_MODE = true;
+
+function debug(...data: any[]) {
+  if (DEBUG_MODE) {
+    console.log(...data);
+  }
+}
 
 interface GenerateTimelineOptions {
   numPlaylists: number;
 }
 
+function formatDate(date: DateTime): string {
+  const dateFormat = 'yyyy LLL dd';
+  return date.toFormat(dateFormat);
+}
+
 function suggestedPlaylist(
-  title: string = 'Untitled playlist',
   savedTracks: SpotifyTypes.SavedTrack[] = []
 ): ApiTypes.SuggestedPlaylist {
-  const addedAtDates = savedTracks.map((t) => new Date(t.added_at));
-  const startDate = reduce(addedAtDates, (prev, curr) => {
-    return prev.getTime() < curr.getTime() ? prev : curr;
-  }).toISOString();
-  const endDate = reduce(addedAtDates, (prev, curr) => {
-    return prev.getTime() > curr.getTime() ? prev : curr;
-  }).toISOString();
+  const [minDate, maxDate] = getMinMaxDate(savedTracks);
+  const startDate = minDate?.toISODate() ?? null;
+  const endDate = maxDate?.toISODate() ?? null;
 
-  const tracks = savedTracks.map((t) => SpotifyConverter.toTrack(t));
+  const title = [
+    'Liked Songs',
+    minDate && maxDate
+      ? `(${formatDate(minDate)} - ${formatDate(maxDate)})`
+      : null,
+  ]
+    .filter(Boolean)
+    .join(' - ');
+
+  const tracks = savedTracks.map((t) => SpotifyConverter.toTrack(t)).reverse();
 
   return {
-    title,
-    tracks,
     startDate,
     endDate,
+    title,
+    tracks,
   };
 }
 
 async function fetchSavedTracks(
-  numberToFetch: number,
+  params: ApiTypes.GetSuggestedPlaylistsRequestParams,
   spotifyWebApi: SpotifyWebApi,
   accessToken: string
-): Promise<SpotifyTypes.SavedTrack[]> {
+): Promise<ApiTypes.Paginated<SpotifyTypes.SavedTrack>> {
   // Result
   let result: SpotifyTypes.SavedTrack[] = [];
-
-  // Set Limit
-  const maxLimit = 50; // limit from Spotify
-  const limit = numberToFetch > maxLimit ? maxLimit : numberToFetch;
+  let total: number;
 
   // Iterate offset
-  let offset = 0;
-  while (offset < numberToFetch) {
+  let offset = params.offset;
+  const endOffset = params.offset + params.limit;
+  while (offset < endOffset) {
+    // Set Limit
+    const spotifyLimit = 50;
     // Get Spotify Data
     const paginatedSavedTracks: SpotifyTypes.Paginated<SpotifyTypes.SavedTrack> =
       await spotifyWebApi.getUsersSavedTracks(accessToken, {
-        limit: limit.toString(),
+        limit: min([params.limit, spotifyLimit]).toString(),
         offset: offset.toString(),
       });
 
-    if (!paginatedSavedTracks.items?.length) {
+    if (!paginatedSavedTracks?.items?.length) {
+      debug('   No response');
       break;
     }
 
-    result = result.concat(paginatedSavedTracks.items);
+    debug('    Add', paginatedSavedTracks.items.length, 'items');
 
-    offset += paginatedSavedTracks.offset + paginatedSavedTracks.items.length;
+    result = result.concat(paginatedSavedTracks.items);
+    total = total ?? paginatedSavedTracks.total;
+    offset += paginatedSavedTracks.items.length;
+
+    // End condition
+    if (offset >= total) {
+      debug('   Reached end of Saved Tracks');
+      break;
+    }
   }
 
-  return result;
+  if (offset === total) {
+    offset = null;
+  }
+
+  return { items: result, limit: params.limit, total, offset };
 }
 
 function normalizeDate(
@@ -71,9 +102,6 @@ function normalizeDate(
   minDate: DateTime,
   maxDate: DateTime
 ): number {
-  const minNormalizedValue = 0;
-  const maxNormalizedValue = 1;
-
   // TODO: ensure subject is between `minDate` `maxDate`
 
   const minMs = minDate.toMillis();
@@ -84,10 +112,9 @@ function normalizeDate(
 }
 
 function getMinMaxDate(data: SpotifyTypes.SavedTrack[]): [DateTime, DateTime] {
-  const dates = data.map((d) => {
-    return DateTime.fromISO(d.added_at);
-  });
-  return [DateTime.min(...dates), DateTime.max(...dates)];
+  const dates = data.map((d) => DateTime.fromISO(d.added_at));
+
+  return getMinMaxDateTime(dates);
 }
 
 /**
@@ -127,7 +154,11 @@ function groupTracks(
   });
 
   // Run ckmeans algorithm
-  const groupedNormalizedValues = ckmeans(normalizedValues, numPlaylists);
+  const groupedNormalizedValues =
+    // check that numPlaylists is a reasonable value if few tracks are passed in
+    normalizedValues.length > numPlaylists
+      ? ckmeans(normalizedValues, numPlaylists)
+      : [normalizedValues];
 
   // Map ckmeans result back to SavedTrack[][];
   const groupedSavedTracks: SpotifyTypes.SavedTrack[][] =
@@ -140,48 +171,79 @@ function groupTracks(
   return groupedSavedTracks;
 }
 
-function convertGroupsToPlaylists(
-  groups: SpotifyTypes.SavedTrack[][]
-): ApiTypes.SuggestedPlaylist[] {
-  return groups.map((group, i) => {
-    const [minDate, maxDate] = getMinMaxDate(group);
-    const dateFormat = 'yyyy LLL dd';
-    const playlistName = `Playlist ${i.toString()} - (${minDate.toFormat(
-      dateFormat
-    )} - ${maxDate.toFormat(dateFormat)})`;
-    const generatedPlaylist = suggestedPlaylist(playlistName, group);
-    // Reverse track order
-    generatedPlaylist.tracks.reverse();
-    return generatedPlaylist;
-  });
+/**
+ * Counts the number of Tracks in a group of items
+ */
+function countTracks(input: ApiTypes.SuggestedPlaylist[]): number {
+  return input
+    .map((pl) => pl.tracks.length)
+    .reduce((prev, curr) => prev + curr, 0);
 }
 
-export async function generateTimeline(
-  spotifyWebApi: SpotifyWebApi,
-  accessToken: string,
-  options: GenerateTimelineOptions = { numPlaylists: 10 }
-): Promise<ApiTypes.Timeline> {
-  // Timeline Options
-  const { numPlaylists } = options;
+function savedTrackToSuggestedPlaylists(
+  savedTracks: ApiTypes.Paginated<SpotifyTypes.SavedTrack>,
+  options: ApiTypes.GetSuggestedPlaylistsRequestParams
+): ApiTypes.SuggestedPlaylist[] {
+  // Number of Groups (Playlists)
+  const { avg_length } = options;
+  const numPlaylists = max([
+    Math.ceil(savedTracks.items.length / avg_length),
+    1,
+  ]);
 
-  // Assemble all saved tracks needed
-  const savedTracks = await fetchSavedTracks(
-    8 * numPlaylists,
-    spotifyWebApi,
-    accessToken
+  const groupedTracks = groupTracks(savedTracks.items, {
+    numPlaylists,
+  });
+
+  // Group Tracks into Suggested Playlists
+  const suggestedPlaylists: ApiTypes.SuggestedPlaylist[] = groupedTracks.map(
+    (group, i) => suggestedPlaylist(group)
   );
-
-  // Group Tracks into playlists
-  const tracksGroupedToSize = groupTracks(savedTracks, options);
-
-  // Create suggested playlists
-  const suggestedPlaylists: ApiTypes.SuggestedPlaylist[] =
-    convertGroupsToPlaylists(tracksGroupedToSize);
 
   // Reverse sort order
   suggestedPlaylists.reverse();
 
+  // Remove last suggested playlist b/c we can assume that it is only a partial playlist
+  if (suggestedPlaylists.length > 1) {
+    suggestedPlaylists.pop();
+  }
+
+  return suggestedPlaylists;
+}
+
+export async function getSuggestedPlaylists(
+  spotifyWebApi: SpotifyWebApi,
+  accessToken: string,
+  options: ApiTypes.GetSuggestedPlaylistsRequestParams
+): Promise<ApiTypes.GetSuggestedPlaylistsResponse> {
+  // Timeline Options
+  const { limit, offset } = options;
+
+  // Call Spotify: All saved tracks needed
+  const savedTracks = await fetchSavedTracks(
+    options,
+    spotifyWebApi,
+    accessToken
+  );
+
+  debug('  SAVED TRACKS:', savedTracks.items.length);
+
+  // Convert Spotify responses to Suggested Playlists
+  const suggestedPlaylists = savedTrackToSuggestedPlaylists(
+    savedTracks,
+    options
+  );
+
+  // Return Offset of last included Track
+  const trackCount = countTracks(suggestedPlaylists);
+  const newOffset = offset + trackCount;
+
+  debug('  TRACK COUNT:', trackCount);
+
   return {
-    suggestedPlaylists,
+    items: suggestedPlaylists,
+    limit,
+    offset: newOffset,
+    total: savedTracks.total,
   };
 }
