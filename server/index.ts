@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import { queryParser } from 'express-query-parser';
 import { SpotifyWebApi } from './spotify/spotify-web-api';
 import loadEnv from './env';
 import api from './api';
@@ -15,6 +16,16 @@ app.use((req, res, next) => {
   console.log(`[${req.method.toUpperCase()}] ${req.path}`);
   next();
 });
+
+// Query Param parsing
+app.use(
+  queryParser({
+    parseNull: true,
+    parseUndefined: true,
+    parseBoolean: true,
+    parseNumber: true,
+  })
+);
 
 // App API
 app.use('/api', api(spotifyWebApi));
