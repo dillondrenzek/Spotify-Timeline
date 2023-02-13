@@ -7,11 +7,15 @@ import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
 
 export function TimelineRoute() {
-  const { timeline, generateTimeline, isLoaded, isLoading } =
-    useTimelineStore();
+  const {
+    playlists: suggestedPlaylists,
+    generateTimeline,
+    isLoaded,
+    isLoading,
+    currentPage,
+    fetchNextPage,
+  } = useTimelineStore();
   const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
-
-  const { suggestedPlaylists } = timeline ?? {};
 
   useEffect(() => {
     pullUserPlaylists();
@@ -48,7 +52,7 @@ export function TimelineRoute() {
           </Paper>
 
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
-            <Stack direction="row">
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
               <Button color="success" onClick={generateTimeline}>
                 {'Generate Timeline'}
               </Button>
@@ -62,6 +66,13 @@ export function TimelineRoute() {
                   </Typography>
                 )}
               </Box>
+              <Button
+                disabled={currentPage && !currentPage.offset}
+                onClick={fetchNextPage}
+              >
+                Fetch next playlists
+              </Button>
+              <Typography>{suggestedPlaylists?.length ?? '0'} items</Typography>
             </Stack>
           </Paper>
 
@@ -70,6 +81,12 @@ export function TimelineRoute() {
               <TimelineSuggestedPlaylist playlist={playlist} />
             </Paper>
           ))}
+
+          {currentPage?.offset && suggestedPlaylists && (
+            <Paper>
+              <Button onClick={fetchNextPage}>Fetch next playlists</Button>
+            </Paper>
+          )}
         </Stack>
       </Stack>
     </BaseRoute>

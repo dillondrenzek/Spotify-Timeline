@@ -6,15 +6,25 @@ import { useUserStore } from './use-user-store';
 type TimelineStore = {
   timeline: ApiTypes.Timeline;
 
+  currentPage: ApiTypes.GetSuggestedPlaylistsResponse;
+
+  playlists: ApiTypes.SuggestedPlaylist[];
+
   isLoaded: boolean;
 
   isLoading: boolean;
 
   generateTimeline: () => void;
+
+  fetchNextPage: () => void;
 };
 
 export const useTimelineStore = create<TimelineStore>((set, get) => ({
   timeline: null,
+
+  currentPage: null,
+
+  playlists: [],
 
   isLoaded: false,
 
@@ -32,32 +42,80 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
   async generateTimeline() {
     set({ isLoading: true });
 
-    const timeline = await httpRequest('/api/timeline')
+    const response = await httpRequest('/api/suggested-playlists')
       .catch(useUserStore.getState().handleUnauthorized)
       .then(
         parseJson(
           function isValidResult(
             value: unknown
-          ): value is ApiTypes.GetTimelineResponse {
-            if (typeof value !== 'object') {
-              return false;
-            }
-
-            return 'suggestedPlaylists' in value;
+          ): value is ApiTypes.GetSuggestedPlaylistsResponse {
+            return (
+              typeof value === 'object' &&
+              'items' in value &&
+              'limit' in value &&
+              'offset' in value &&
+              'total' in value
+            );
           },
           function convert(
-            result: ApiTypes.GetTimelineResponse
-          ): ApiTypes.Timeline {
-            const playlists = Array.isArray(result?.suggestedPlaylists)
-              ? result.suggestedPlaylists
-              : [];
-            return {
-              suggestedPlaylists: playlists,
-            };
+            result: ApiTypes.GetSuggestedPlaylistsResponse
+          ): ApiTypes.GetSuggestedPlaylistsResponse {
+            return result;
           }
         )
       );
 
-    set({ timeline, isLoaded: true, isLoading: false });
+    set({
+      currentPage: response,
+      // TODO: merge response
+      playlists: [...response.items],
+      // TODO: remove
+      timeline: { suggestedPlaylists: response.items },
+      isLoaded: true,
+      isLoading: false,
+    });
+  },
+
+  async fetchNextPage() {
+    set({ isLoading: true });
+
+    const currentPage = get().currentPage;
+
+    const url = '/api/suggested-playlists';
+    const searchParams = new URLSearchParams();
+    searchParams.set('limit', currentPage.limit.toString());
+    searchParams.set('offset', currentPage.offset.toString());
+
+    const response = await httpRequest(
+      url.toString() + '?' + searchParams.toString()
+    )
+      .catch(useUserStore.getState().handleUnauthorized)
+      .then(
+        parseJson(
+          function isValidResult(
+            value: unknown
+          ): value is ApiTypes.GetSuggestedPlaylistsResponse {
+            return (
+              typeof value === 'object' &&
+              'items' in value &&
+              'limit' in value &&
+              'offset' in value &&
+              'total' in value
+            );
+          },
+          function convert(
+            result: ApiTypes.GetSuggestedPlaylistsResponse
+          ): ApiTypes.GetSuggestedPlaylistsResponse {
+            return result;
+          }
+        )
+      );
+
+    set((prev) => ({
+      ...prev,
+      currentPage: response,
+      playlists: [...prev.playlists, ...response.items],
+      isLoading: false,
+    }));
   },
 }));
