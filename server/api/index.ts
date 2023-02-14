@@ -35,10 +35,16 @@ function errorResponse(err: unknown, res: express.Response) {
     const { reason } = err;
 
     switch (reason) {
+      case 'UNAUTHORIZED':
+        responseJson = {
+          message: 'Authorization needs to be refreshed.',
+          reason: 'UNAUTHORIZED',
+        };
+        break;
       case 'NO_ACTIVE_DEVICE':
         responseJson = {
           message: err.message,
-          reason: err.reason,
+          reason: 'NO_ACTIVE_DEVICE',
         };
         break;
       default:
