@@ -89,10 +89,7 @@ export function getMinMaxDate(
 }
 
 /**
- *
- * @param tracks
- * @param options
- * @returns
+ * Groups an array of SavedTracks according to certain parameters
  */
 function groupTracks(
   tracks: SpotifyTypes.SavedTrack[],
@@ -142,18 +139,15 @@ function groupTracks(
   return groupedSavedTracks;
 }
 
-function savedTrackToSuggestedPlaylists(
-  savedTracks: ApiTypes.Paginated<SpotifyTypes.SavedTrack>,
+function savedTracksToSuggestedPlaylists(
+  savedTracks: SpotifyTypes.SavedTrack[],
   options: ApiTypes.GetSuggestedPlaylistsRequestParams
 ): ApiTypes.SuggestedPlaylist[] {
   // Number of Groups (Playlists)
   const { avg_length } = options;
-  const numPlaylists = max([
-    Math.ceil(savedTracks.items.length / avg_length),
-    1,
-  ]);
+  const numPlaylists = max([Math.ceil(savedTracks.length / avg_length), 1]);
 
-  const groupedTracks = groupTracks(savedTracks.items, {
+  const groupedTracks = groupTracks(savedTracks, {
     numPlaylists,
   });
 
@@ -191,8 +185,8 @@ export async function getSuggestedPlaylists(
   debug('  SAVED TRACKS:', savedTracks.items.length);
 
   // Convert Spotify responses to Suggested Playlists
-  const suggestedPlaylists = savedTrackToSuggestedPlaylists(
-    savedTracks,
+  const suggestedPlaylists = savedTracksToSuggestedPlaylists(
+    savedTracks.items,
     options
   );
 
