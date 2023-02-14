@@ -7,18 +7,35 @@ type EditSuggestedPlaylistState = {
 
 type StateType = EditSuggestedPlaylistState;
 
-type ActionType = { type: 'UPDATE_TITLE'; data: string };
+type ActionType =
+  | { type: 'UPDATE_TITLE'; data: string }
+  | { type: 'REMOVE_TRACK'; data: ApiTypes.SuggestedPlaylist['tracks'][0] };
 
 type ReducerType = Reducer<StateType, ActionType>;
 
-const reducer = (prevState: EditSuggestedPlaylistState, action: ActionType) => {
-  switch (action.type) {
+const reducer: ReducerType = (
+  prevState: EditSuggestedPlaylistState,
+  action: ActionType
+) => {
+  const { type, data } = action;
+  switch (type) {
     case 'UPDATE_TITLE':
       return {
         ...prevState,
         value: {
           ...prevState.value,
           title: action.data,
+        },
+      };
+
+    case 'REMOVE_TRACK':
+      return {
+        ...prevState,
+        value: {
+          ...prevState.value,
+          tracks: prevState.value.tracks.filter(
+            (track) => track.spotifyUri !== data.spotifyUri
+          ),
         },
       };
 
