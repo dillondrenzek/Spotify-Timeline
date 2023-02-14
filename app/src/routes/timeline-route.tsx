@@ -5,6 +5,7 @@ import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
+import { useInfiniteScroll } from '../hooks/use-infinite-scroll';
 
 export function TimelineRoute() {
   const {
@@ -20,6 +21,10 @@ export function TimelineRoute() {
   useEffect(() => {
     pullUserPlaylists();
   }, [pullUserPlaylists]);
+
+  const { ref: scrollRef, reset } = useInfiniteScroll(() =>
+    fetchNextPage().then(reset)
+  );
 
   return (
     <BaseRoute>
@@ -43,9 +48,11 @@ export function TimelineRoute() {
           </Paper>
         </Stack>
         <Stack
+          id="scroller"
           direction="column"
           sx={{ height: '100%', overflow: 'auto', flex: '5', py: 2 }}
           spacing={3}
+          ref={scrollRef}
         >
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Timeline</Typography>
@@ -83,8 +90,16 @@ export function TimelineRoute() {
           ))}
 
           {currentPage?.offset && suggestedPlaylists && (
-            <Paper>
-              <Button onClick={fetchNextPage}>Fetch next playlists</Button>
+            <Paper sx={{ p: 3 }}>
+              <Box display="flex" justifyContent="center" alignItems="center">
+                {currentPage?.offset >= currentPage?.total ? (
+                  <Typography>End of the list</Typography>
+                ) : (
+                  <Button disabled={isLoading} onClick={fetchNextPage}>
+                    {isLoading ? 'Fetching...' : 'Fetch next playlists'}
+                  </Button>
+                )}
+              </Box>
             </Paper>
           )}
         </Stack>

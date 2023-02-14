@@ -16,7 +16,7 @@ type TimelineStore = {
 
   generateTimeline: () => void;
 
-  fetchNextPage: () => void;
+  fetchNextPage: () => Promise<ApiTypes.GetSuggestedPlaylistsResponse>;
 };
 
 export const useTimelineStore = create<TimelineStore>((set, get) => ({
@@ -117,5 +117,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
       playlists: [...prev.playlists, ...response.items],
       isLoading: false,
     }));
+
+    return response;
   },
 }));
