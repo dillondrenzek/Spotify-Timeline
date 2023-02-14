@@ -10,3 +10,9 @@ export function getMinMaxDateTime(dates: DateTime[]): [DateTime, DateTime] {
 
   return [DateTime.min(...dates), DateTime.max(...dates)];
 }
+
+type DateFormat = 'yyyy LLL dd';
+
+export function formatDate(date: DateTime, format: DateFormat): string {
+  return date.toFormat(format);
+}
