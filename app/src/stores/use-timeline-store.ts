@@ -5,11 +5,6 @@ import { useUserStore } from './use-user-store';
 
 type TimelineStore = {
   /**
-   * @deprecated use `playlists` instead
-   */
-  timeline: ApiTypes.Timeline;
-
-  /**
    * List of Suggested Playlists updated by store methods
    */
   playlists: ApiTypes.SuggestedPlaylist[];
@@ -41,8 +36,6 @@ type TimelineStore = {
 };
 
 export const useTimelineStore = create<TimelineStore>((set, get) => ({
-  timeline: null,
-
   currentPage: null,
 
   playlists: [],
@@ -50,15 +43,6 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
   isLoaded: false,
 
   isLoading: false,
-
-  updateTimeline(newTimeline: ApiTypes.Timeline) {
-    const timeline: ApiTypes.Timeline = {
-      ...get().timeline,
-      ...newTimeline,
-    };
-
-    set({ timeline });
-  },
 
   async generateTimeline() {
     set({ isLoading: true });
@@ -88,10 +72,8 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
 
     set({
       currentPage: response,
-      // TODO: merge response
+      // TODO: merge response in a smart way
       playlists: [...response.items],
-      // TODO: remove
-      timeline: { suggestedPlaylists: response.items },
       isLoaded: true,
       isLoading: false,
     });
@@ -102,14 +84,18 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
 
     const currentPage = get().currentPage;
 
-    const url = '/api/suggested-playlists';
+    // Query params
     const searchParams = new URLSearchParams();
-    searchParams.set('limit', currentPage.limit.toString());
-    searchParams.set('offset', currentPage.offset.toString());
+    searchParams.set('limit', currentPage?.limit.toString());
+    searchParams.set('offset', currentPage?.offset.toString());
 
-    const response = await httpRequest(
-      url.toString() + '?' + searchParams.toString()
-    )
+    // Build URL
+    const url =
+      '/api/suggested-playlists' +
+      (currentPage ? '?' + searchParams.toString() : '');
+
+    // Make Request
+    const response = await httpRequest(url)
       .catch(useUserStore.getState().handleUnauthorized)
       .then(
         parseJson(
