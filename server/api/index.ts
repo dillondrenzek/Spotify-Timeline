@@ -1,4 +1,5 @@
 import express from 'express';
+import axios from 'axios';
 import cookieParser from 'cookie-parser';
 import { ApiTypes } from 'api-types';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
@@ -20,18 +21,39 @@ function getAccessToken(req: express.Request) {
 }
 
 function errorResponse(err: unknown, res: express.Response) {
-  const body: any = err;
+  let responseJson: ApiTypes.ApiError = {
+    reason: 'INTERNAL_SERVER_ERROR',
+    message: 'Something went wrong - we will take a look at what happened.',
+  };
   let status: number;
 
-  if (isSpotifyApiError(err)) {
+  if (axios.isAxiosError(err)) {
+    debug('  [ERR] Axios Error:', err);
+    status = err.response.status;
+  } else if (isSpotifyApiError(err)) {
+    debug('  [ERR] Spotify Error:', err);
+    const { reason } = err;
+
+    switch (reason) {
+      case 'NO_ACTIVE_DEVICE':
+        responseJson = {
+          message: err.message,
+          reason: err.reason,
+        };
+        break;
+      default:
+        break;
+    }
+
     status = err.response.status >= 200 ? err.response.status : 500;
   } else {
+    debug('  [ERR] Unhandled Error:', err);
     status = 500;
   }
 
-  debug('  [ERR] Status:', status, '- Error:', err);
+  debug('  [ERR] Response:', responseJson);
 
-  res.status(status).json(body);
+  res.status(status).json(responseJson);
 }
 
 export default function (spotifyWebApi: SpotifyWebApi) {
