@@ -1,4 +1,15 @@
 export namespace ApiTypes {
+  interface ApiError {
+    /**
+     * @example 'Player command failed: No active device found'
+     */
+    message: string;
+    /**
+     * @example 'NO_ACTIVE_DEVICE'
+     */
+    reason: string;
+  }
+
   /**
    * Top-level model for generated timelines
    */
