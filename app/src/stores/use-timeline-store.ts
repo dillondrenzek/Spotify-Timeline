@@ -4,18 +4,39 @@ import { ApiTypes } from 'api-types';
 import { useUserStore } from './use-user-store';
 
 type TimelineStore = {
+  /**
+   * @deprecated use `playlists` instead
+   */
   timeline: ApiTypes.Timeline;
 
-  currentPage: ApiTypes.GetSuggestedPlaylistsResponse;
-
+  /**
+   * List of Suggested Playlists updated by store methods
+   */
   playlists: ApiTypes.SuggestedPlaylist[];
 
+  /**
+   * Current paginated object
+   */
+  currentPage: ApiTypes.GetSuggestedPlaylistsResponse;
+
+  /**
+   * Initial loading has completed
+   */
   isLoaded: boolean;
 
+  /**
+   * True if a fetch is currently in progress
+   */
   isLoading: boolean;
 
+  /**
+   * Generates the initial timeline
+   */
   generateTimeline: () => void;
 
+  /**
+   * Increments the current page
+   */
   fetchNextPage: () => Promise<ApiTypes.GetSuggestedPlaylistsResponse>;
 };
 
