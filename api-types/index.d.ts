@@ -243,18 +243,11 @@ export namespace ApiTypes {
 
   type GetTracksForPlaylistResponse = Paginated<Track>;
 
+  // Get User's Playlists
+
   type GetUsersPlaylistsResponse = Paginated<CurrentUserPlaylist>;
 
-  type GetTimelineRequestParams = {
-    /**
-     * Average length of the playlists generated in the Timeline
-     *
-     * @default 10
-     */
-    average_length?: number;
-  };
-
-  type GetTimelineResponse = Timeline;
+  // Get Suggested Playlists
 
   type GetSuggestedPlaylistsRequestParams = {
     limit: number;
