@@ -1,11 +1,11 @@
 import * as SpotifyTypes from '../spotify/types';
 import { ckmeans } from 'simple-statistics';
 import { DateTime } from 'luxon';
-import { SpotifyConverter } from './spotify-converter';
 import { reduce, min, max } from 'lodash';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { ApiTypes } from 'api-types';
-import { getMinMaxDateTime } from '../lib/date-time';
+import { getMinMaxDateTime, formatDate } from '../lib/date-time';
+import { suggestedPlaylist, countTracks } from './suggested-playlist';
 
 const DEBUG_MODE = true;
 
@@ -17,37 +17,6 @@ function debug(...data: any[]) {
 
 interface GenerateTimelineOptions {
   numPlaylists: number;
-}
-
-function formatDate(date: DateTime): string {
-  const dateFormat = 'yyyy LLL dd';
-  return date.toFormat(dateFormat);
-}
-
-function suggestedPlaylist(
-  savedTracks: SpotifyTypes.SavedTrack[] = []
-): ApiTypes.SuggestedPlaylist {
-  const [minDate, maxDate] = getMinMaxDate(savedTracks);
-  const startDate = minDate?.toISODate() ?? null;
-  const endDate = maxDate?.toISODate() ?? null;
-
-  const title = [
-    'Liked Songs',
-    minDate && maxDate
-      ? `(${formatDate(minDate)} - ${formatDate(maxDate)})`
-      : null,
-  ]
-    .filter(Boolean)
-    .join(' - ');
-
-  const tracks = savedTracks.map((t) => SpotifyConverter.toTrack(t)).reverse();
-
-  return {
-    startDate,
-    endDate,
-    title,
-    tracks,
-  };
 }
 
 async function fetchSavedTracks(
@@ -111,7 +80,9 @@ function normalizeDate(
   return (subjectMs - minMs) / (maxMs - minMs);
 }
 
-function getMinMaxDate(data: SpotifyTypes.SavedTrack[]): [DateTime, DateTime] {
+export function getMinMaxDate(
+  data: SpotifyTypes.SavedTrack[]
+): [DateTime, DateTime] {
   const dates = data.map((d) => DateTime.fromISO(d.added_at));
 
   return getMinMaxDateTime(dates);
@@ -169,15 +140,6 @@ function groupTracks(
     });
 
   return groupedSavedTracks;
-}
-
-/**
- * Counts the number of Tracks in a group of items
- */
-function countTracks(input: ApiTypes.SuggestedPlaylist[]): number {
-  return input
-    .map((pl) => pl.tracks.length)
-    .reduce((prev, curr) => prev + curr, 0);
 }
 
 function savedTrackToSuggestedPlaylists(
