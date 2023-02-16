@@ -310,6 +310,30 @@ export class SpotifyWebApi {
       .then(() => null);
   }
 
+  /**
+   * Pause Playback
+   *
+   * Pause playback on the user's account.
+   *
+   * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/pause-a-users-playback)
+   */
+  async pausePlayback(deviceId: string): Promise<void> {
+    let url = SpotifyWebApi.url(`/me/player/pause`);
+
+    if (deviceId) {
+      url += '?device_id=' + deviceId;
+    }
+    return await axios
+      .put(url, null, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.requiredAccessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(() => null);
+  }
+
   public static url(path: string): string {
     return `https://api.spotify.com/v1${path}`;
   }

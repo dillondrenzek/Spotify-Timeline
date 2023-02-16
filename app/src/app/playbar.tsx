@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -8,6 +8,7 @@ import {
   Slider,
   IconButton,
 } from '@mui/material';
+import { PauseCircleOutline, PlayCircleOutline } from '@mui/icons-material';
 import { PlayerState } from '../hooks/use-player-state';
 import { green, grey, orange } from '@mui/material/colors';
 import { VolumeDown, VolumeUp, Sync } from '@mui/icons-material';
@@ -85,7 +86,7 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 }
 
 export function Playbar() {
-  const { pullPlayerState, player } = usePlayerStore();
+  const { pullPlayerState, player, pause, play } = usePlayerStore();
   const { pullDevices } = useDevicesStore();
   const { item, is_playing, device, repeat_state, shuffle_state, timestamp } =
     player ?? {};
@@ -99,6 +100,10 @@ export function Playbar() {
     pullPlayerState();
     pullDevices();
   }, [pullPlayerState, pullDevices]);
+
+  const handleClickPlay = useCallback(() => {
+    is_playing ? pause(device?.id) : play(item?.id);
+  }, [is_playing, pause, play, device?.id, item?.id]);
 
   return (
     <AppBar color="default" position="relative" sx={{ top: 'auto', bottom: 0 }}>
@@ -125,6 +130,9 @@ export function Playbar() {
               ) : null}
             </Stack>
             <CurrentItemDisplay item={item} />
+            <IconButton onClick={handleClickPlay}>
+              {is_playing ? <PauseCircleOutline /> : <PlayCircleOutline />}
+            </IconButton>
           </Stack>
 
           <Stack direction="row" spacing={2}>

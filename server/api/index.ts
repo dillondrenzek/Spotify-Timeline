@@ -181,6 +181,25 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
+  /**
+   * Pause Playback
+   */
+  api.put('/me/player/pause', async (req, res, next) => {
+    try {
+      // TODO: Type this properly
+      const queryParams = req.query as any;
+      const deviceId = queryParams.device_id;
+
+      debug('  QUERY:', queryParams);
+
+      await spotifyWebApi.pausePlayback(deviceId);
+
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  });
+
   api.get('/me/player/devices', async (req, res, next) => {
     try {
       const devices = await spotifyWebApi.getUsersDevices();

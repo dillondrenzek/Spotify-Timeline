@@ -15,6 +15,7 @@ type PlayerStore = {
     contextUri?: string,
     deviceId?: string
   ) => Promise<ApiTypes.PlayerState>;
+  pause: (deviceId: string) => Promise<ApiTypes.PlayerState>;
 };
 
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
@@ -66,6 +67,19 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
 
         // Validate Response and Type
         .then(parseJson(isValidResult, convert))
+
+        // Refresh Player state
+        .then(get().pullPlayerState)
+    );
+  },
+
+  pause: async (deviceId: string) => {
+    return (
+      httpRequest('/api/me/player/pause?device_id=' + deviceId, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .catch(useUserStore.getState().handleUnauthorized)
 
         // Refresh Player state
         .then(get().pullPlayerState)
