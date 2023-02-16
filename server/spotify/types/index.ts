@@ -484,3 +484,7 @@ export interface AddItemsToPlaylistRequest {
 export interface AddItemsToPlaylistResponse {
   snapshot_id: string;
 }
+
+export interface UserDevices {
+  devices: Device[];
+}
