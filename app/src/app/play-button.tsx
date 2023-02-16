@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { IconButton } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import { usePlayButton } from '../hooks/use-play-button';
 import { ErrorHandler } from '../lib/error';
 import { Toast, useErrorToast } from '../toast';
@@ -26,13 +27,16 @@ export function PlayButton(props: { uri: string; contextUri?: string }) {
     [showErrorToast]
   );
 
-  const clickPlay = usePlayButton(uri, contextUri, handleError);
+  const { play, isPlaying } = usePlayButton(uri, contextUri, handleError);
 
   return (
     <>
       <Toast {...toastProps} />
-      <IconButton size="small" onClick={clickPlay}>
-        <PlayCircleOutlineIcon />
+      <IconButton size="small" onClick={play}>
+        <PlayCircleOutlineIcon
+          sx={{ fontSize: '24px' }}
+          color={isPlaying ? 'success' : 'action'}
+        />
       </IconButton>
     </>
   );
