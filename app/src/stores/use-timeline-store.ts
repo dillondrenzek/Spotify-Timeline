@@ -3,56 +3,128 @@ import { httpRequest, parseJson } from '../lib/http';
 import { ApiTypes } from 'api-types';
 import { useUserStore } from './use-user-store';
 
-function isValidResult(value: unknown): value is ApiTypes.Timeline {
-  if (typeof value !== 'object') {
-    return false;
-  }
-
-  return 'suggestedPlaylists' in value;
-}
-
-function convert(result: any): ApiTypes.Timeline {
-  const playlists = Array.isArray(result?.suggestedPlaylists)
-    ? result.suggestedPlaylists
-    : [];
-  return {
-    suggestedPlaylists: playlists,
-  };
-}
-
 type TimelineStore = {
-  timeline: ApiTypes.Timeline;
+  /**
+   * List of Suggested Playlists updated by store methods
+   */
+  playlists: ApiTypes.SuggestedPlaylist[];
 
+  /**
+   * Current paginated object
+   */
+  currentPage: ApiTypes.GetSuggestedPlaylistsResponse;
+
+  /**
+   * Initial loading has completed
+   */
   isLoaded: boolean;
 
+  /**
+   * True if a fetch is currently in progress
+   */
   isLoading: boolean;
 
+  /**
+   * Generates the initial timeline
+   */
   generateTimeline: () => void;
+
+  /**
+   * Increments the current page
+   */
+  fetchNextPage: () => Promise<ApiTypes.GetSuggestedPlaylistsResponse>;
 };
 
 export const useTimelineStore = create<TimelineStore>((set, get) => ({
-  timeline: null,
+  currentPage: null,
+
+  playlists: [],
 
   isLoaded: false,
 
   isLoading: false,
 
-  updateTimeline(newTimeline: ApiTypes.Timeline) {
-    const timeline: ApiTypes.Timeline = {
-      ...get().timeline,
-      ...newTimeline,
-    };
-
-    set({ timeline });
-  },
-
   async generateTimeline() {
     set({ isLoading: true });
 
-    const timeline = await httpRequest('/api/timeline')
+    const response = await httpRequest('/api/suggested-playlists')
       .catch(useUserStore.getState().handleUnauthorized)
-      .then(parseJson(isValidResult, convert));
+      .then(
+        parseJson(
+          function isValidResult(
+            value: unknown
+          ): value is ApiTypes.GetSuggestedPlaylistsResponse {
+            return (
+              typeof value === 'object' &&
+              'items' in value &&
+              'limit' in value &&
+              'offset' in value &&
+              'total' in value
+            );
+          },
+          function convert(
+            result: ApiTypes.GetSuggestedPlaylistsResponse
+          ): ApiTypes.GetSuggestedPlaylistsResponse {
+            return result;
+          }
+        )
+      );
 
-    set({ timeline, isLoaded: true, isLoading: false });
+    set({
+      currentPage: response,
+      // TODO: merge response in a smart way
+      playlists: [...response.items],
+      isLoaded: true,
+      isLoading: false,
+    });
+  },
+
+  async fetchNextPage() {
+    set({ isLoading: true });
+
+    const currentPage = get().currentPage;
+
+    // Query params
+    const searchParams = new URLSearchParams();
+    searchParams.set('limit', currentPage?.limit.toString());
+    searchParams.set('offset', currentPage?.offset.toString());
+
+    // Build URL
+    const url =
+      '/api/suggested-playlists' +
+      (currentPage ? '?' + searchParams.toString() : '');
+
+    // Make Request
+    const response = await httpRequest(url)
+      .catch(useUserStore.getState().handleUnauthorized)
+      .then(
+        parseJson(
+          function isValidResult(
+            value: unknown
+          ): value is ApiTypes.GetSuggestedPlaylistsResponse {
+            return (
+              typeof value === 'object' &&
+              'items' in value &&
+              'limit' in value &&
+              'offset' in value &&
+              'total' in value
+            );
+          },
+          function convert(
+            result: ApiTypes.GetSuggestedPlaylistsResponse
+          ): ApiTypes.GetSuggestedPlaylistsResponse {
+            return result;
+          }
+        )
+      );
+
+    set((prev) => ({
+      ...prev,
+      currentPage: response,
+      playlists: [...prev.playlists, ...response.items],
+      isLoading: false,
+    }));
+
+    return response;
   },
 }));

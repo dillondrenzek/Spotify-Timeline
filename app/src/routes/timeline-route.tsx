@@ -5,24 +5,38 @@ import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
+import { useInfiniteScroll } from '../hooks/use-infinite-scroll';
 
 export function TimelineRoute() {
-  const { timeline, generateTimeline, isLoaded, isLoading } =
-    useTimelineStore();
+  const {
+    playlists: suggestedPlaylists,
+    generateTimeline,
+    isLoaded,
+    isLoading,
+    currentPage,
+    fetchNextPage,
+  } = useTimelineStore();
   const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
-
-  const { suggestedPlaylists } = timeline ?? {};
 
   useEffect(() => {
     pullUserPlaylists();
   }, [pullUserPlaylists]);
+
+  const { ref: scrollRef, reset } = useInfiniteScroll(() =>
+    fetchNextPage().then(reset)
+  );
 
   return (
     <BaseRoute>
       <Stack direction="row" spacing={3} sx={{ px: 3, height: '100%' }}>
         <Stack
           direction="column"
-          sx={{ height: '100%', overflow: 'auto', flex: '2', py: 2 }}
+          sx={{
+            height: '100%',
+            overflow: 'auto',
+            flex: '2',
+            py: 2,
+          }}
           spacing={3}
         >
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
@@ -39,16 +53,18 @@ export function TimelineRoute() {
           </Paper>
         </Stack>
         <Stack
+          id="scroller"
           direction="column"
           sx={{ height: '100%', overflow: 'auto', flex: '5', py: 2 }}
           spacing={3}
+          ref={scrollRef}
         >
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Timeline</Typography>
           </Paper>
 
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
-            <Stack direction="row">
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
               <Button color="success" onClick={generateTimeline}>
                 {'Generate Timeline'}
               </Button>
@@ -62,6 +78,13 @@ export function TimelineRoute() {
                   </Typography>
                 )}
               </Box>
+              <Button
+                disabled={currentPage && !currentPage.offset}
+                onClick={fetchNextPage}
+              >
+                Fetch next playlists
+              </Button>
+              <Typography>{suggestedPlaylists?.length ?? '0'} items</Typography>
             </Stack>
           </Paper>
 
@@ -70,6 +93,20 @@ export function TimelineRoute() {
               <TimelineSuggestedPlaylist playlist={playlist} />
             </Paper>
           ))}
+
+          {currentPage?.offset && suggestedPlaylists && (
+            <Paper sx={{ p: 3 }}>
+              <Box display="flex" justifyContent="center" alignItems="center">
+                {currentPage?.offset >= currentPage?.total ? (
+                  <Typography>End of the list</Typography>
+                ) : (
+                  <Button disabled={isLoading} onClick={fetchNextPage}>
+                    {isLoading ? 'Fetching...' : 'Fetch next playlists'}
+                  </Button>
+                )}
+              </Box>
+            </Paper>
+          )}
         </Stack>
       </Stack>
     </BaseRoute>

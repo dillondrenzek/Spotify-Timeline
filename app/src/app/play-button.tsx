@@ -26,13 +26,16 @@ export function PlayButton(props: { uri: string; contextUri?: string }) {
     [showErrorToast]
   );
 
-  const clickPlay = usePlayButton(uri, contextUri, handleError);
+  const { play, isPlaying } = usePlayButton(uri, contextUri, handleError);
 
   return (
     <>
       <Toast {...toastProps} />
-      <IconButton size="small" onClick={clickPlay}>
-        <PlayCircleOutlineIcon />
+      <IconButton size="small" onClick={play}>
+        <PlayCircleOutlineIcon
+          sx={{ fontSize: '24px' }}
+          color={isPlaying ? 'success' : 'action'}
+        />
       </IconButton>
     </>
   );

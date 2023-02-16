@@ -1,25 +1,65 @@
 import express from 'express';
+import axios from 'axios';
 import cookieParser from 'cookie-parser';
 import { ApiTypes } from 'api-types';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
-import { generateTimeline } from '../timeline/generate-timeline';
+import { getSuggestedPlaylists } from '../timeline/generate-timeline';
 import { isSpotifyApiError } from '../spotify/errors';
 import { CreatePlaylistRequest } from './models/playlists';
 
 const DEBUG_MODE = true;
+
+function debug(...data: any[]) {
+  if (DEBUG_MODE) {
+    console.log(...data);
+  }
+}
 
 function getAccessToken(req: express.Request) {
   return req.cookies.access_token;
 }
 
 function errorResponse(err: unknown, res: express.Response) {
-  if (isSpotifyApiError(err)) {
-    const status = err.response.status >= 200 ? err.response.status : 500;
-    res.status(status).json(err);
+  let responseJson: ApiTypes.ApiError = {
+    reason: 'INTERNAL_SERVER_ERROR',
+    message: 'Something went wrong - we will take a look at what happened.',
+  };
+  let status: number;
+
+  if (axios.isAxiosError(err)) {
+    debug('  [ERR] Axios Error:', err);
+    status = err.response.status;
+  } else if (isSpotifyApiError(err)) {
+    debug('  [ERR] Spotify Error:', err);
+    const { reason } = err;
+
+    switch (reason) {
+      case 'UNAUTHORIZED':
+        responseJson = {
+          message: 'Authorization needs to be refreshed.',
+          reason: 'UNAUTHORIZED',
+        };
+        break;
+      case 'NO_ACTIVE_DEVICE':
+        responseJson = {
+          message: err.message,
+          reason: 'NO_ACTIVE_DEVICE',
+        };
+        break;
+      default:
+        break;
+    }
+
+    status = err.response.status >= 200 ? err.response.status : 500;
   } else {
-    res.status(500).json(err);
+    debug('  [ERR] Unhandled Error:', err);
+    status = 500;
   }
+
+  debug('  [ERR] Response:', responseJson);
+
+  res.status(status).json(responseJson);
 }
 
 export default function (spotifyWebApi: SpotifyWebApi) {
@@ -36,19 +76,41 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     });
   }
 
-  api.get('/timeline', async (req, res) => {
+  api.get('/suggested-playlists', async (req, res) => {
     try {
-      const generatedTimeline = await generateTimeline(
-        spotifyWebApi,
-        getAccessToken(req),
-        {
-          numPlaylists: 10,
-        }
+      // TODO: Type this properly
+      const queryParams = req.query as any;
+
+      debug('  QUERY:', queryParams);
+
+      const params: ApiTypes.GetSuggestedPlaylistsRequestParams = {
+        limit: parseInt(queryParams.limit ?? '200', 10),
+        offset: parseInt(queryParams.offset ?? '0', 10),
+        avg_length: parseInt(queryParams.avg_length ?? '10', 10),
+      };
+
+      debug(
+        '  query params:'.toUpperCase(),
+        'limit=',
+        params.limit,
+        'offset=',
+        params.offset,
+        'avg_length',
+        params.avg_length
       );
 
-      const result: ApiTypes.Timeline = generatedTimeline;
+      const result: ApiTypes.GetSuggestedPlaylistsResponse =
+        await getSuggestedPlaylists(spotifyWebApi, getAccessToken(req), params);
 
-      res.status(200).json(result ?? { success: true });
+      debug(
+        '  response:'.toUpperCase(),
+        '(',
+        result.items.length,
+        'items',
+        ')'
+      );
+
+      res.status(200).json(result);
     } catch (err) {
       errorResponse(err, res);
     }

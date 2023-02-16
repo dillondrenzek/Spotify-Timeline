@@ -60,7 +60,7 @@ export function SinglePlaylistRoute() {
               )}
             </Stack>
           </Card>
-          <Card elevation={3} sx={{ pb: 8 }}>
+          <Card elevation={3} sx={{ pb: 8, overflow: 'visible' }}>
             <TracksTable tracks={tracks} contextUri={playlistUri} />
           </Card>
         </Stack>

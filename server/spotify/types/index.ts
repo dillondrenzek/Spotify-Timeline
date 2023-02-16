@@ -299,7 +299,7 @@ export interface PlayerState {
   /**
    * Item currently playing
    */
-  item: Record<string, unknown>;
+  item: Track;
 
   // object
   // currently_playing_type

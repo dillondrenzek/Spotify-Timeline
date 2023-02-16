@@ -25,6 +25,9 @@ export class ApiError extends Error {
   static fromAny = fromAny;
 }
 
+/**
+ * Type guard for `ApiError`
+ */
 export function isApiError(value: unknown): value is ApiError {
   if (!value) {
     return false;
@@ -35,10 +38,16 @@ export function isApiError(value: unknown): value is ApiError {
   );
 }
 
-export function fromError<T extends Error>(err: T): ApiError {
+/**
+ * Convert an `Error`-like object into an `ApiError`
+ */
+export function fromError<IError extends Error>(err: IError): ApiError {
   return new ApiError({ reason: err.name, message: err.message });
 }
 
+/**
+ * Convert any value to an `ApiError`
+ */
 export function fromAny(err: any): ApiError {
   if (err instanceof ApiError) {
     return err;

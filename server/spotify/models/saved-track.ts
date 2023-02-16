@@ -18,7 +18,11 @@ export const PaginatedSavedTrack: BaseResponse<
 
     const [firstItem] = items;
 
-    return 'added_at' in firstItem && 'track' in firstItem;
+    return (
+      typeof firstItem === 'object' &&
+      'added_at' in firstItem &&
+      'track' in firstItem
+    );
   },
 
   fromResponse(res): Types.Paginated<Types.SavedTrack> {

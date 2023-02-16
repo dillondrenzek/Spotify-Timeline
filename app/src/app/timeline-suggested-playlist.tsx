@@ -6,13 +6,13 @@ import {
   List,
   ListItemText,
   ListItem,
-  ListItemButton,
   Divider,
   Button,
   TextField,
   IconButton,
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ClearIcon from '@mui/icons-material/Clear';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { grey } from '@mui/material/colors';
 import { useToggle } from 'usehooks-ts';
@@ -47,6 +47,13 @@ export function TimelineSuggestedPlaylist(props: {
 
   // Update Suggested Playlist
   const [state, dispatch] = useEditSuggestedPlaylist(playlist);
+
+  const handleClickRemove = useCallback(
+    (track: ApiTypes.Track) => {
+      dispatch({ type: 'REMOVE_TRACK', data: track });
+    },
+    [dispatch]
+  );
 
   const handleClickSave = useCallback(() => {
     toggleModal();
@@ -147,10 +154,10 @@ export function TimelineSuggestedPlaylist(props: {
                 alignItems="flex-end"
               >
                 <Typography variant="caption">
-                  {playlist.tracks.length} tracks
+                  {state.value.tracks.length} tracks
                 </Typography>
                 <Typography variant="caption">
-                  {dateRangeDisplay(playlist.startDate, playlist.endDate)}
+                  {dateRangeDisplay(state.value.startDate, state.value.endDate)}
                 </Typography>
               </Stack>
               <Button
@@ -171,9 +178,9 @@ export function TimelineSuggestedPlaylist(props: {
         </ListItemText>
       </ListItem>
       <Divider />
-      {!!playlist.tracks?.length ? (
-        playlist.tracks.map((track, i) => (
-          <ListItemButton key={i.toString()}>
+      {!!state.value.tracks?.length ? (
+        state.value.tracks.map((track, i) => (
+          <ListItem key={i.toString()}>
             <Stack
               direction="row"
               justifyContent="space-between"
@@ -197,11 +204,22 @@ export function TimelineSuggestedPlaylist(props: {
                   </Stack>
                 </Stack>
               </Stack>
-              <Typography variant="caption">
-                {formatDate(track.addedAt)}
-              </Typography>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <Typography variant="caption">
+                  {formatDate(track.addedAt)}
+                </Typography>
+                <IconButton
+                  color="error"
+                  onClick={(ev) => {
+                    ev.preventDefault();
+                    handleClickRemove(track);
+                  }}
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              </Stack>
             </Stack>
-          </ListItemButton>
+          </ListItem>
         ))
       ) : (
         <ListItem>
