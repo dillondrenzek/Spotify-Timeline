@@ -139,19 +139,30 @@ function groupTracks(
   return groupedSavedTracks;
 }
 
-function savedTracksToSuggestedPlaylists(
+function createGenerateTimelineOptions(
   savedTracks: SpotifyTypes.SavedTrack[],
-  options: ApiTypes.GetSuggestedPlaylistsRequestParams
-): ApiTypes.SuggestedPlaylist[] {
+  params: ApiTypes.GetSuggestedPlaylistsRequestParams
+): GenerateTimelineOptions {
   // Number of Groups (Playlists)
-  const { avg_length } = options;
+  const { avg_length } = params;
   const numPlaylists = max([Math.ceil(savedTracks.length / avg_length), 1]);
 
-  const groupedTracks = groupTracks(savedTracks, {
+  return {
     numPlaylists,
-  });
+  };
+}
 
-  // Group Tracks into Suggested Playlists
+function savedTracksToSuggestedPlaylists(
+  savedTracks: SpotifyTypes.SavedTrack[],
+  params: ApiTypes.GetSuggestedPlaylistsRequestParams
+): ApiTypes.SuggestedPlaylist[] {
+  // Make Options
+  const options = createGenerateTimelineOptions(savedTracks, params);
+
+  // Group Tracks
+  const groupedTracks = groupTracks(savedTracks, options);
+
+  // Convert to Suggested Playlists
   const suggestedPlaylists: ApiTypes.SuggestedPlaylist[] = groupedTracks.map(
     (group, i) => suggestedPlaylist(group)
   );
