@@ -1,4 +1,5 @@
 import axios from 'axios';
+import express from 'express';
 import querystring from 'querystring';
 import { AppEnvironment } from '../env';
 import * as Types from './types';
@@ -17,12 +18,38 @@ import {
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
+  private accessToken: string = null;
 
   constructor(private env: AppEnvironment) {
     const { SPOTIFY_API_CLIENT_ID, SPOTIFY_API_CLIENT_SECRET } = this.env;
     const creds = `${SPOTIFY_API_CLIENT_ID}:${SPOTIFY_API_CLIENT_SECRET}`;
     this.authorizationHeader = `Basic ${Buffer.from(creds).toString('base64')}`;
   }
+
+  private get requiredAccessToken(): string {
+    if (!this.accessToken) {
+      throw new Error('UNAUTHORIZED');
+    }
+    return this.accessToken;
+  }
+
+  setAccessToken(accessToken: string) {
+    this.accessToken = accessToken;
+  }
+
+  clearAccessToken() {
+    this.accessToken = null;
+  }
+
+  accessTokenHandler: () => express.RequestHandler = () => (req, res, next) => {
+    const spotifyAccessToken = req.cookies.access_token;
+    if (spotifyAccessToken) {
+      this.setAccessToken(spotifyAccessToken);
+    } else {
+      this.clearAccessToken();
+    }
+    next();
+  };
 
   /**
    * Get access and refresh tokens
@@ -61,14 +88,13 @@ export class SpotifyWebApi {
 
   /**
    * Get Current User's Profile
-   * @param accessToken
    */
-  async getMe(accessToken: string): Promise<Types.CurrentUserProfile> {
+  async getMe(): Promise<Types.CurrentUserProfile> {
     try {
       const url = SpotifyWebApi.url('/me');
       const { data } = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       });
 
@@ -92,15 +118,14 @@ export class SpotifyWebApi {
 
   /**
    * The current state of playback in Spotify
-   * @param accessToken
    * @returns
    */
-  async getPlayerState(accessToken: string): Promise<Types.PlayerState> {
+  async getPlayerState(): Promise<Types.PlayerState> {
     const url = SpotifyWebApi.url('/me/player');
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       })
       .catch(handleAxiosError)
@@ -113,7 +138,6 @@ export class SpotifyWebApi {
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-users-saved-tracks)
    */
   async getUsersSavedTracks(
-    accessToken: string,
     params: Partial<Types.GetUserSavedTracksRequest> = {}
   ): Promise<Types.Paginated<Types.SavedTrack>> {
     params = params ?? { limit: '50', offset: '0' };
@@ -122,7 +146,7 @@ export class SpotifyWebApi {
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       })
       .catch(handleAxiosError)
@@ -134,14 +158,14 @@ export class SpotifyWebApi {
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-a-list-of-current-users-playlists)
    */
-  async getUsersPlaylists(
-    accessToken: string
-  ): Promise<Types.Paginated<Types.CurrentUserPlaylist>> {
+  async getUsersPlaylists(): Promise<
+    Types.Paginated<Types.CurrentUserPlaylist>
+  > {
     try {
       const url = SpotifyWebApi.url('/me/playlists');
       const { data } = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       });
 
@@ -157,14 +181,13 @@ export class SpotifyWebApi {
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-playlists-tracks)
    */
   async getPlaylistItems(
-    playlistId: string,
-    accessToken: string
+    playlistId: string
   ): Promise<Types.Paginated<Types.SavedTrack>> {
     try {
       const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
       const { data } = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       });
 
@@ -181,15 +204,14 @@ export class SpotifyWebApi {
    */
   async createPlaylist(
     data: Types.CreatePlaylistRequest,
-    userId: string,
-    accessToken: string
+    userId: string
   ): Promise<Types.CreatePlaylistResponse> {
     const url = SpotifyWebApi.url('/users/' + userId + '/playlists');
 
     return await axios
       .post(url, data, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       })
       .catch(handleAxiosError)
@@ -199,18 +221,14 @@ export class SpotifyWebApi {
   /**
    *
    * @param playlistId ID for the playlist to fetch
-   * @param accessToken user's access token
    */
-  async getPlaylist(
-    playlistId: string,
-    accessToken: string
-  ): Promise<Types.GetPlaylistResponse> {
+  async getPlaylist(playlistId: string): Promise<Types.GetPlaylistResponse> {
     const url = SpotifyWebApi.url('/playlists/' + playlistId);
 
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       })
       .catch(handleAxiosError)
@@ -221,20 +239,18 @@ export class SpotifyWebApi {
    * Add one or more items to a user's playlist.
    * @param data HTTP request body
    * @param playlistId ID for the playlist to add to
-   * @param accessToken user's access token
    * @returns
    */
   async addItemsToPlaylist(
     data: Types.AddItemsToPlaylistRequest,
-    playlistId: string,
-    accessToken: string
+    playlistId: string
   ): Promise<Types.AddItemsToPlaylistResponse> {
     const url = SpotifyWebApi.url('/playlists/' + playlistId + '/tracks');
 
     return await axios
       .post(url, data, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       })
       .catch(handleAxiosError)
@@ -250,8 +266,7 @@ export class SpotifyWebApi {
    */
   async startPlayback(
     playItemUri: string,
-    inContextUri: string,
-    accessToken: string
+    inContextUri: string
   ): Promise<void> {
     try {
       const url = SpotifyWebApi.url(`/me/player/play`);
@@ -264,7 +279,7 @@ export class SpotifyWebApi {
       const { data } = await axios.put(url, body, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${this.requiredAccessToken}`,
         },
       });
       return data;

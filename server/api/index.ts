@@ -17,10 +17,6 @@ function debug(...data: any[]) {
   }
 }
 
-function getAccessToken(req: express.Request) {
-  return req.cookies.access_token;
-}
-
 export default function (spotifyWebApi: SpotifyWebApi) {
   const api = express();
 
@@ -29,11 +25,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   api.use(express.json());
   api.use(rateLimit());
 
-  if (DEBUG_MODE) {
-    api.get('/test', async (req, res) => {
-      res.send('Ok');
-    });
-  }
+  // Spotify Access Token
+  api.use(spotifyWebApi.accessTokenHandler());
 
   api.get('/suggested-playlists', async (req, res, next) => {
     try {
@@ -59,7 +52,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       );
 
       const result: ApiTypes.GetSuggestedPlaylistsResponse =
-        await getSuggestedPlaylists(spotifyWebApi, getAccessToken(req), params);
+        await getSuggestedPlaylists(spotifyWebApi, params);
 
       debug(
         '  response:'.toUpperCase(),
@@ -78,7 +71,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   api.get('/player', async (req, res, next) => {
     try {
       const playerState: ApiTypes.PlayerState =
-        await spotifyWebApi.getPlayerState(getAccessToken(req));
+        await spotifyWebApi.getPlayerState();
 
       res.status(200).json(playerState);
     } catch (err) {
@@ -90,11 +83,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     try {
       const { body } = req;
 
-      await spotifyWebApi.startPlayback(
-        body.uri,
-        body.contextUri,
-        getAccessToken(req)
-      );
+      await spotifyWebApi.startPlayback(body.uri, body.contextUri);
       res.status(200).json(body);
     } catch (err) {
       next(err);
@@ -106,10 +95,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     const playlistId = params.id;
 
     try {
-      const items = await spotifyWebApi.getPlaylistItems(
-        playlistId,
-        getAccessToken(req)
-      );
+      const items = await spotifyWebApi.getPlaylistItems(playlistId);
 
       const result: ApiTypes.GetTracksForPlaylistResponse = {
         items: items.items.map((item) => ({
@@ -134,13 +120,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     try {
       const { user_id, name, track_uris } =
         CreatePlaylistRequest.fromRequest(req);
-      const accessToken = getAccessToken(req);
 
       // Create Playlist on Spotify
       const newPlaylist = await spotifyWebApi.createPlaylist(
         { description: '', name },
-        user_id,
-        accessToken
+        user_id
       );
 
       // Add Items to Created playlist
@@ -149,13 +133,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
           position: 0,
           uris: track_uris,
         },
-        newPlaylist.id,
-        accessToken
+        newPlaylist.id
       );
 
       const getPlaylistResponse = await spotifyWebApi.getPlaylist(
-        newPlaylist.id,
-        accessToken
+        newPlaylist.id
       );
 
       // Create Playlist Response
@@ -188,11 +170,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     try {
       const { body } = req;
 
-      await spotifyWebApi.startPlayback(
-        body.uri,
-        body.contextUri,
-        getAccessToken(req)
-      );
+      await spotifyWebApi.startPlayback(body.uri, body.contextUri);
       res.status(200).json(body);
     } catch (err) {
       next(err);
@@ -202,7 +180,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   api.get('/me/playlists', async (req, res, next) => {
     try {
       const playlists: ApiTypes.GetUsersPlaylistsResponse =
-        await spotifyWebApi.getUsersPlaylists(getAccessToken(req));
+        await spotifyWebApi.getUsersPlaylists();
       res.status(200).json(playlists);
     } catch (err) {
       next(err);
@@ -212,7 +190,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   api.get('/me/tracks', async (req, res, next) => {
     try {
       const user: ApiTypes.CurrentUserSavedSongs = await spotifyWebApi
-        .getUsersSavedTracks(getAccessToken(req))
+        .getUsersSavedTracks()
         .then((data) => {
           const result: ApiTypes.CurrentUserSavedSongs = {
             items: data.items.map((value) => ({
@@ -240,14 +218,18 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/me', async (req, res, next) => {
     try {
-      const user: ApiTypes.CurrentUserProfile = await spotifyWebApi.getMe(
-        getAccessToken(req)
-      );
+      const user: ApiTypes.CurrentUserProfile = await spotifyWebApi.getMe();
       res.status(200).json(user);
     } catch (err) {
       next(err);
     }
   });
+
+  if (DEBUG_MODE) {
+    api.get('/test', async (req, res) => {
+      res.send('Ok');
+    });
+  }
 
   api.get('/', (req, res, next) => {
     res.send('Ok');

@@ -21,8 +21,7 @@ interface GenerateTimelineOptions {
 
 async function fetchSavedTracks(
   params: ApiTypes.GetSuggestedPlaylistsRequestParams,
-  spotifyWebApi: SpotifyWebApi,
-  accessToken: string
+  spotifyWebApi: SpotifyWebApi
 ): Promise<ApiTypes.Paginated<SpotifyTypes.SavedTrack>> {
   // Result
   let result: SpotifyTypes.SavedTrack[] = [];
@@ -36,7 +35,7 @@ async function fetchSavedTracks(
     const spotifyLimit = 50;
     // Get Spotify Data
     const paginatedSavedTracks: SpotifyTypes.Paginated<SpotifyTypes.SavedTrack> =
-      await spotifyWebApi.getUsersSavedTracks(accessToken, {
+      await spotifyWebApi.getUsersSavedTracks({
         limit: min([params.limit, spotifyLimit]).toString(),
         offset: offset.toString(),
       });
@@ -180,18 +179,13 @@ function savedTracksToSuggestedPlaylists(
 
 export async function getSuggestedPlaylists(
   spotifyWebApi: SpotifyWebApi,
-  accessToken: string,
   options: ApiTypes.GetSuggestedPlaylistsRequestParams
 ): Promise<ApiTypes.GetSuggestedPlaylistsResponse> {
   // Timeline Options
   const { limit, offset } = options;
 
   // Call Spotify: All saved tracks needed
-  const savedTracks = await fetchSavedTracks(
-    options,
-    spotifyWebApi,
-    accessToken
-  );
+  const savedTracks = await fetchSavedTracks(options, spotifyWebApi);
 
   debug('  SAVED TRACKS:', savedTracks.items.length);
 
