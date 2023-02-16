@@ -35,7 +35,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
       debug('  QUERY:', queryParams);
 
-      const params: ApiTypes.GetSuggestedPlaylistsRequestParams = {
+      const params: ApiTypes.GetSuggestedPlaylistsQueryParams = {
         limit: parseInt(queryParams.limit ?? '200', 10),
         offset: parseInt(queryParams.offset ?? '0', 10),
         avg_length: parseInt(queryParams.avg_length ?? '10', 10),
@@ -160,11 +160,21 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
+  /**
+   * Start/Resume Playback
+   */
   api.put('/me/player/play', async (req, res, next) => {
     try {
       const { body } = req;
 
-      await spotifyWebApi.startPlayback(body.uri, body.contextUri);
+      debug('  BODY:', JSON.stringify(body));
+
+      // TODO: Validate Body
+      const { contextUri, uri, deviceId } =
+        body as ApiTypes.StartPlaybackRequestBody;
+
+      await spotifyWebApi.startPlayback(uri, contextUri, deviceId);
+
       res.status(200).json(body);
     } catch (err) {
       next(err);
@@ -230,7 +240,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   });
 
   // Error Handler
-  api.use(errorHandler);
+  api.use(errorHandler());
 
   return api;
 }

@@ -35,7 +35,7 @@ export interface StartPlaybackRequest {
   position_ms?: number;
 }
 
-export function startPlaybackRequest(
+export function buildPlaybackRequest(
   playItemUri: string,
   inContextUri: string
 ): StartPlaybackRequest {

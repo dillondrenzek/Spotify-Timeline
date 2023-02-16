@@ -20,7 +20,7 @@ interface GenerateTimelineOptions {
 }
 
 async function fetchSavedTracks(
-  params: ApiTypes.GetSuggestedPlaylistsRequestParams,
+  params: ApiTypes.GetSuggestedPlaylistsQueryParams,
   spotifyWebApi: SpotifyWebApi
 ): Promise<ApiTypes.Paginated<SpotifyTypes.SavedTrack>> {
   // Result
@@ -140,7 +140,7 @@ function groupTracks(
 
 function createGenerateTimelineOptions(
   savedTracks: SpotifyTypes.SavedTrack[],
-  params: ApiTypes.GetSuggestedPlaylistsRequestParams
+  params: ApiTypes.GetSuggestedPlaylistsQueryParams
 ): GenerateTimelineOptions {
   // Number of Groups (Playlists)
   const { avg_length } = params;
@@ -153,7 +153,7 @@ function createGenerateTimelineOptions(
 
 function savedTracksToSuggestedPlaylists(
   savedTracks: SpotifyTypes.SavedTrack[],
-  params: ApiTypes.GetSuggestedPlaylistsRequestParams
+  params: ApiTypes.GetSuggestedPlaylistsQueryParams
 ): ApiTypes.SuggestedPlaylist[] {
   // Make Options
   const options = createGenerateTimelineOptions(savedTracks, params);
@@ -179,7 +179,7 @@ function savedTracksToSuggestedPlaylists(
 
 export async function getSuggestedPlaylists(
   spotifyWebApi: SpotifyWebApi,
-  options: ApiTypes.GetSuggestedPlaylistsRequestParams
+  options: ApiTypes.GetSuggestedPlaylistsQueryParams
 ): Promise<ApiTypes.GetSuggestedPlaylistsResponse> {
   // Timeline Options
   const { limit, offset } = options;

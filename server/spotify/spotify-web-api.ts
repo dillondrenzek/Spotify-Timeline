@@ -7,7 +7,7 @@ import { handleAxiosError } from './errors';
 import { PaginatedSavedTrack } from './models/saved-track';
 import { PlayerState } from './models/player-state';
 import {
-  startPlaybackRequest,
+  buildPlaybackRequest,
   StartPlaybackRequest,
 } from './models/request/start-playback-request';
 import {
@@ -185,13 +185,19 @@ export class SpotifyWebApi {
   ): Promise<Types.Paginated<Types.SavedTrack>> {
     try {
       const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
-      const { data } = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
-        },
-      });
+      const response = await axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${this.requiredAccessToken}`,
+          },
+        })
+        .catch(handleAxiosError);
 
-      return data;
+      if (!response) {
+        return;
+      }
+
+      return response.data;
     } catch (error) {
       handleAxiosError(error);
     }
@@ -266,26 +272,29 @@ export class SpotifyWebApi {
    */
   async startPlayback(
     playItemUri: string,
-    inContextUri: string
+    inContextUri: string,
+    deviceId?: string
   ): Promise<void> {
-    try {
-      const url = SpotifyWebApi.url(`/me/player/play`);
+    let url = SpotifyWebApi.url(`/me/player/play`);
 
-      const body: StartPlaybackRequest = startPlaybackRequest(
-        playItemUri,
-        inContextUri
-      );
+    if (deviceId) {
+      url += '?device_id=' + deviceId;
+    }
 
-      const { data } = await axios.put(url, body, {
+    const body: StartPlaybackRequest = buildPlaybackRequest(
+      playItemUri,
+      inContextUri
+    );
+
+    return await axios
+      .put(url, body, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.requiredAccessToken}`,
         },
-      });
-      return data;
-    } catch (error) {
-      handleAxiosError(error);
-    }
+      })
+      .catch(handleAxiosError)
+      .then(() => null);
   }
 
   public static url(path: string): string {

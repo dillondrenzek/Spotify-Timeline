@@ -41,10 +41,10 @@ export enum SpotifyErrorCode {
 
 interface SpotifyErrorData {
   error:
-    | { status: 401; message: 'The access token expired' }
+    | { status: 401; message: string }
     | {
         status: 404;
-        message: 'Player command failed: No active device found';
+        message: string;
         reason: 'NO_ACTIVE_DEVICE';
       };
 }
@@ -64,6 +64,7 @@ export type SpotifyApiError = ApiError & {
     config: AxiosResponse<any>['config'];
     data: AxiosResponse<any>['data'];
   };
+  data?: SpotifyErrorData;
 };
 
 export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
@@ -72,13 +73,14 @@ export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
 
 function toSpotifyApiError(err: AxiosError): SpotifyApiError {
   const { response: spotifyResponse } = err;
-  const { data } = spotifyResponse;
 
   const response: SpotifyApiError['response'] = {
     config: spotifyResponse.config,
     data: spotifyResponse.data,
     status: spotifyResponse.status,
   };
+
+  const data: SpotifyApiError['data'] = spotifyResponse.data;
 
   if (!data) {
     return {
@@ -94,6 +96,7 @@ function toSpotifyApiError(err: AxiosError): SpotifyApiError {
       reason: 'UNAUTHORIZED',
       message: null,
       response,
+      data,
     };
   }
 
@@ -106,6 +109,7 @@ function toSpotifyApiError(err: AxiosError): SpotifyApiError {
       reason: 'UNKNOWN_ERROR',
       message: null,
       response,
+      data,
     };
   }
 
@@ -113,6 +117,7 @@ function toSpotifyApiError(err: AxiosError): SpotifyApiError {
     reason: error.reason,
     message: error.message,
     response,
+    data,
   };
 }
 
@@ -131,9 +136,5 @@ export function handleAxiosError(err: unknown) {
   // Convert to common API error
   const apiError = toSpotifyApiError(err);
 
-  // Log
-  console.error('[ERROR] Api Error: ', apiError.reason);
-
-  // return apiError;
   throw apiError;
 }
