@@ -16,20 +16,32 @@ function convert(result: ApiTypes.PlayerState): ApiTypes.PlayerState {
 
 type PlayerStore = {
   player: ApiTypes.PlayerState;
+  playingSpotifyUri: string;
   isLoaded: boolean;
-  pullPlayerState: () => void;
+  isLoading: boolean;
+  pullPlayerState: () => Promise<ApiTypes.PlayerState>;
 };
 
 export const usePlayerStore = create<PlayerStore>((set, get) => ({
   player: null,
-
+  playingSpotifyUri: null,
+  isLoading: false,
   isLoaded: false,
 
   async pullPlayerState() {
+    set({ isLoading: false });
+
     const playerState = await httpRequest('/api/player')
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
-    set({ player: { ...playerState }, isLoaded: true });
+    set({
+      player: { ...playerState },
+      playingSpotifyUri: playerState?.item?.uri,
+      isLoading: false,
+      isLoaded: true,
+    });
+
+    return playerState;
   },
 }));

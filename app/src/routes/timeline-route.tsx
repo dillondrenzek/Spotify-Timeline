@@ -31,7 +31,12 @@ export function TimelineRoute() {
       <Stack direction="row" spacing={3} sx={{ px: 3, height: '100%' }}>
         <Stack
           direction="column"
-          sx={{ height: '100%', overflow: 'auto', flex: '2', py: 2 }}
+          sx={{
+            height: '100%',
+            overflow: 'auto',
+            flex: '2',
+            py: 2,
+          }}
           spacing={3}
         >
           <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>

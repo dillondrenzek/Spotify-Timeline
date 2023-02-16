@@ -79,6 +79,82 @@ export namespace ApiTypes {
     playlist: Playlist;
   }
 
+  export interface SimplifiedAlbum {
+    artists: SimplifiedArtist[];
+    href: string;
+    id: string;
+    images: Image[];
+    name: string;
+    type: 'album';
+    uri: string;
+  }
+
+  export interface SimplifiedArtist {
+    //   external_urls: {
+    //     spotify: 'https://open.spotify.com/artist/3rWZHrfrsPBxVy692yAIxF';
+    //   };
+    external_urls: {
+      spotify: string;
+    };
+    //   href: 'https://api.spotify.com/v1/artists/3rWZHrfrsPBxVy692yAIxF';
+    href: string;
+    //   id: '3rWZHrfrsPBxVy692yAIxF';
+    id: string;
+    //   name: 'WILLOW';
+    name: string;
+    //   type: 'artist';
+    type: 'artist';
+    //   uri: 'spotify:artist:3rWZHrfrsPBxVy692yAIxF';
+    uri: string;
+  }
+
+  interface PlayingTrack {
+    album: SimplifiedAlbum;
+
+    artists: SimplifiedArtist[];
+
+    /**
+     * Array of two-character country codes
+     */
+    available_markets: string[];
+
+    external_urls: {
+      spotify: string;
+    };
+
+    //   "href": "https://api.spotify.com/v1/tracks/11dFghVXANMlKmJXsNCbNl",
+    href: string;
+
+    //   "id": "11dFghVXANMlKmJXsNCbNl",
+    id: string;
+
+    images: Image[];
+
+    name: string;
+
+    //   "disc_number": 1,
+    //   "duration_ms": 207959,
+    //   "explicit": false,
+    //   "external_ids": {
+    //     "isrc": "USUM71703861"
+    //   },
+    //   "is_local": false,
+    //   "name": "Cut To The Feeling",
+    //   "popularity": 63,
+    //   "preview_url": "https://p.scdn.co/mp3-preview/3eb16018c2a700240e9dfb8817b6f2d041f15eb1?cid=774b29d4f13844c495f206cafdad9c86",
+    //   "track_number": 1,
+    //   "type": "track",
+    //   "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl"
+    uri: string;
+    // }
+  }
+
+  export interface Image {
+    height: number;
+    url: string;
+    width: number;
+  }
+
   interface PlayerState {
     // device
     // object
@@ -119,7 +195,7 @@ export namespace ApiTypes {
     /**
      * Item currently playing
      */
-    item: Record<string, unknown>;
+    item: PlayingTrack;
 
     // object
     // currently_playing_type
