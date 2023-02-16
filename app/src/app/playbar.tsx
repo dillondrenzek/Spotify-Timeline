@@ -12,6 +12,7 @@ import { PlayerState } from '../hooks/use-player-state';
 import { green, grey, orange } from '@mui/material/colors';
 import { VolumeDown, VolumeUp, Sync } from '@mui/icons-material';
 import { usePlayerStore } from '../stores/use-player-store';
+import { useDevicesStore } from '../stores/use-devices-store';
 
 function DeviceDisplay(props: {
   device: PlayerState['device'];
@@ -85,6 +86,7 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 
 export function Playbar() {
   const { pullPlayerState, player } = usePlayerStore();
+  const { pullDevices } = useDevicesStore();
   const { item, is_playing, device, repeat_state, shuffle_state, timestamp } =
     player ?? {};
 
@@ -95,7 +97,8 @@ export function Playbar() {
 
   useEffect(() => {
     pullPlayerState();
-  }, [pullPlayerState]);
+    pullDevices();
+  }, [pullPlayerState, pullDevices]);
 
   return (
     <AppBar color="default" position="relative" sx={{ top: 'auto', bottom: 0 }}>

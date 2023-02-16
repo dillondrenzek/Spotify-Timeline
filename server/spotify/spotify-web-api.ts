@@ -15,6 +15,7 @@ import {
   CreatePlaylistResponse,
   GetPlaylistResponse,
 } from './models/playlist';
+import { UserDevices } from './models/user-devices';
 
 export class SpotifyWebApi {
   private authorizationHeader: string;
@@ -173,6 +174,18 @@ export class SpotifyWebApi {
     } catch (error) {
       handleAxiosError(error);
     }
+  }
+
+  async getUsersDevices(): Promise<Types.UserDevices> {
+    const url = SpotifyWebApi.url('/me/player/devices');
+    return await axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${this.requiredAccessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(UserDevices.fromResponse);
   }
 
   /**

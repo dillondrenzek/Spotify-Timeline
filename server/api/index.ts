@@ -181,6 +181,17 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
+  api.get('/me/player/devices', async (req, res, next) => {
+    try {
+      const devices = await spotifyWebApi.getUsersDevices();
+      const response: ApiTypes.GetUsersDevicesResponse = devices.devices;
+
+      res.status(200).json(response);
+    } catch (err) {
+      next(err);
+    }
+  });
+
   api.get('/me/playlists', async (req, res, next) => {
     try {
       const playlists: ApiTypes.GetUsersPlaylistsResponse =

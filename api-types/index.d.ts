@@ -340,4 +340,8 @@ export namespace ApiTypes {
     contextUri?: string;
     deviceId?: string;
   };
+
+  // Devices
+
+  type GetUsersDevicesResponse = Device[];
 }
