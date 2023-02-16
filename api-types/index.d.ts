@@ -325,11 +325,19 @@ export namespace ApiTypes {
 
   // Get Suggested Playlists
 
-  type GetSuggestedPlaylistsRequestParams = {
+  type GetSuggestedPlaylistsQueryParams = {
     limit: number;
     offset: number;
     avg_length: number;
   };
 
   type GetSuggestedPlaylistsResponse = Paginated<SuggestedPlaylist>;
+
+  // Playback
+
+  type StartPlaybackRequestBody = {
+    uri: string;
+    contextUri?: string;
+    deviceId?: string;
+  };
 }
