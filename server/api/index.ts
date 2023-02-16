@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { ApiTypes } from 'api-types';
 import { SpotifyWebApi } from '../spotify/spotify-web-api';
 import { rateLimit } from '../middleware/rate-limit';
+import { errorHandler } from '../middleware/error-handler';
 import { getSuggestedPlaylists } from '../timeline/generate-timeline';
 import { isSpotifyApiError } from '../spotify/errors';
 import { CreatePlaylistRequest } from './models/playlists';
@@ -20,48 +21,6 @@ function getAccessToken(req: express.Request) {
   return req.cookies.access_token;
 }
 
-function errorResponse(err: unknown, res: express.Response) {
-  let responseJson: ApiTypes.ApiError = {
-    reason: 'INTERNAL_SERVER_ERROR',
-    message: 'Something went wrong - we will take a look at what happened.',
-  };
-  let status: number;
-
-  if (axios.isAxiosError(err)) {
-    debug('  [ERR] Axios Error:', err);
-    status = err.response.status;
-  } else if (isSpotifyApiError(err)) {
-    debug('  [ERR] Spotify Error:', err);
-    const { reason } = err;
-
-    switch (reason) {
-      case 'UNAUTHORIZED':
-        responseJson = {
-          message: 'Authorization needs to be refreshed.',
-          reason: 'UNAUTHORIZED',
-        };
-        break;
-      case 'NO_ACTIVE_DEVICE':
-        responseJson = {
-          message: err.message,
-          reason: 'NO_ACTIVE_DEVICE',
-        };
-        break;
-      default:
-        break;
-    }
-
-    status = err.response.status >= 200 ? err.response.status : 500;
-  } else {
-    debug('  [ERR] Unhandled Error:', err);
-    status = 500;
-  }
-
-  debug('  [ERR] Response:', responseJson);
-
-  res.status(status).json(responseJson);
-}
-
 export default function (spotifyWebApi: SpotifyWebApi) {
   const api = express();
 
@@ -76,7 +35,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     });
   }
 
-  api.get('/suggested-playlists', async (req, res) => {
+  api.get('/suggested-playlists', async (req, res, next) => {
     try {
       // TODO: Type this properly
       const queryParams = req.query as any;
@@ -112,22 +71,22 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
       res.status(200).json(result);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.get('/player', async (req, res) => {
+  api.get('/player', async (req, res, next) => {
     try {
       const playerState: ApiTypes.PlayerState =
         await spotifyWebApi.getPlayerState(getAccessToken(req));
 
       res.status(200).json(playerState);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.put('/player/play', async (req, res) => {
+  api.put('/player/play', async (req, res, next) => {
     try {
       const { body } = req;
 
@@ -138,11 +97,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       );
       res.status(200).json(body);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.get('/playlists/:id/tracks', async (req, res) => {
+  api.get('/playlists/:id/tracks', async (req, res, next) => {
     const { params } = req;
     const playlistId = params.id;
 
@@ -167,11 +126,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       res.status(200).json(result);
     } catch (err) {
       console.error(err);
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.post('/playlists', async (req, res) => {
+  api.post('/playlists', async (req, res, next) => {
     try {
       const { user_id, name, track_uris } =
         CreatePlaylistRequest.fromRequest(req);
@@ -221,11 +180,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       // Respond
       res.status(200).json(response);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.put('/me/player/play', async (req, res) => {
+  api.put('/me/player/play', async (req, res, next) => {
     try {
       const { body } = req;
 
@@ -236,21 +195,21 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       );
       res.status(200).json(body);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.get('/me/playlists', async (req, res) => {
+  api.get('/me/playlists', async (req, res, next) => {
     try {
       const playlists: ApiTypes.GetUsersPlaylistsResponse =
         await spotifyWebApi.getUsersPlaylists(getAccessToken(req));
       res.status(200).json(playlists);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.get('/me/tracks', async (req, res) => {
+  api.get('/me/tracks', async (req, res, next) => {
     try {
       const user: ApiTypes.CurrentUserSavedSongs = await spotifyWebApi
         .getUsersSavedTracks(getAccessToken(req))
@@ -275,24 +234,27 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         });
       res.status(200).json(user);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.get('/me', async (req, res) => {
+  api.get('/me', async (req, res, next) => {
     try {
       const user: ApiTypes.CurrentUserProfile = await spotifyWebApi.getMe(
         getAccessToken(req)
       );
       res.status(200).json(user);
     } catch (err) {
-      errorResponse(err, res);
+      next(err);
     }
   });
 
-  api.get('/', (req, res) => {
+  api.get('/', (req, res, next) => {
     res.send('Ok');
   });
+
+  // Error Handler
+  api.use(errorHandler);
 
   return api;
 }
