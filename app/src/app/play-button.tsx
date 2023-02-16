@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { IconButton } from '@mui/material';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import { usePlayButton } from '../hooks/use-play-button';
 import { ErrorHandler } from '../lib/error';
 import { Toast, useErrorToast } from '../toast';
