@@ -54,13 +54,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       const result: ApiTypes.GetSuggestedPlaylistsResponse =
         await getSuggestedPlaylists(spotifyWebApi, params);
 
-      debug(
-        '  response:'.toUpperCase(),
-        '(',
-        result.items.length,
-        'items',
-        ')'
-      );
+      debug('  response:'.toUpperCase(), result.items.length, 'items');
 
       res.status(200).json(result);
     } catch (err) {
