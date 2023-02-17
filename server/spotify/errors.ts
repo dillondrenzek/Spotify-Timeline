@@ -112,11 +112,5 @@ export enum SpotifyErrorCode {
 }
 
 interface SpotifyErrorData {
-  error:
-    | { status: 401; message: string }
-    | {
-        status: 404;
-        message: string;
-        reason: 'NO_ACTIVE_DEVICE';
-      };
+  error: { status: SpotifyErrorCode; reason?: string; message: string };
 }
