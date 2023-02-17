@@ -69,4 +69,18 @@ export class PlayerController {
       next(err);
     }
   };
+
+  /**
+   * Get Devices
+   */
+  getDevices: express.RequestHandler = async (req, res, next) => {
+    try {
+      const devices = await this.spotifyWebApi.getUsersDevices();
+      const response: ApiTypes.GetUsersDevicesResponse = devices.devices;
+
+      res.status(200).json(response);
+    } catch (err) {
+      next(err);
+    }
+  };
 }
