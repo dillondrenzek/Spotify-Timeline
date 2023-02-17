@@ -3,24 +3,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { httpRequest, parseJson } from '../lib/http';
 import { useUserStore } from '../stores/use-user-store';
 
-function isValidResult(
-  value: unknown
-): value is ApiTypes.CurrentUserSavedSongs {
-  return (
-    typeof value === 'object' &&
-    'items' in value &&
-    'limit' in value &&
-    'offset' in value &&
-    'total' in value
-  );
-}
-
-function convert(
-  result: ApiTypes.CurrentUserSavedSongs
-): ApiTypes.CurrentUserSavedSongs {
-  return result;
-}
-
 export function useUserSavedTracks() {
   const { handleUnauthorized, isLoaded } = useUserStore();
 
@@ -42,4 +24,22 @@ export function useUserSavedTracks() {
   return {
     savedTracks,
   };
+}
+
+function isValidResult(
+  value: unknown
+): value is ApiTypes.CurrentUserSavedSongs {
+  return (
+    typeof value === 'object' &&
+    'items' in value &&
+    'limit' in value &&
+    'offset' in value &&
+    'total' in value
+  );
+}
+
+function convert(
+  result: ApiTypes.CurrentUserSavedSongs
+): ApiTypes.CurrentUserSavedSongs {
+  return result;
 }
