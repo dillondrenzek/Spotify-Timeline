@@ -9,6 +9,7 @@ import { getSuggestedPlaylists } from '../timeline/generate-timeline';
 import { isSpotifyApiError } from '../spotify/errors';
 import { CreatePlaylistRequest } from './models/playlists';
 import { PlayerController } from './controllers/player-controller';
+import { PlaylistController } from './controllers/playlist-controller';
 
 const DEBUG_MODE = true;
 
@@ -21,6 +22,7 @@ function debug(...data: any[]) {
 export default function (spotifyWebApi: SpotifyWebApi) {
   const api = express();
   const playerController = new PlayerController(spotifyWebApi);
+  const playlistController = new PlaylistController(spotifyWebApi);
 
   // middleware
   api.use(cookieParser());
@@ -64,92 +66,15 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
-  api.get('/playlists/:id/tracks', async (req, res, next) => {
-    const { params } = req;
-    const playlistId = params.id;
-
-    try {
-      const items = await spotifyWebApi.getPlaylistItems(playlistId);
-
-      const result: ApiTypes.GetTracksForPlaylistResponse = {
-        items: items.items.map((item) => ({
-          addedAt: item.added_at,
-          title: item.track.name,
-          spotifyUri: item.track.uri,
-          artists: item.track.artists.map((artist) => ({ name: artist.name })),
-        })),
-        limit: items.limit,
-        offset: items.offset,
-        total: items.total,
-      };
-
-      res.status(200).json(result);
-    } catch (err) {
-      console.error(err);
-      next(err);
-    }
-  });
-
-  api.post('/playlists', async (req, res, next) => {
-    try {
-      const { user_id, name, track_uris } =
-        CreatePlaylistRequest.fromRequest(req);
-
-      // Create Playlist on Spotify
-      const newPlaylist = await spotifyWebApi.createPlaylist(
-        { description: '', name },
-        user_id
-      );
-
-      // Add Items to Created playlist
-      const addItemsResponse = await spotifyWebApi.addItemsToPlaylist(
-        {
-          position: 0,
-          uris: track_uris,
-        },
-        newPlaylist.id
-      );
-
-      const getPlaylistResponse = await spotifyWebApi.getPlaylist(
-        newPlaylist.id
-      );
-
-      // Create Playlist Response
-      const response: ApiTypes.CreatePlaylistResponse = {
-        snapshot_id: addItemsResponse.snapshot_id,
-        playlist: {
-          spotifyUri: getPlaylistResponse.uri,
-          title: getPlaylistResponse.name,
-          tracks: getPlaylistResponse.tracks.items.map((track) => ({
-            // addedAt: track.
-            addedAt: null,
-            artists: track.artists.map((artist) => ({ name: artist.name })),
-            title: track.name,
-            spotifyUri: track.uri,
-          })),
-          // spotifyUri:
-          // title:
-          // tracks:
-        },
-      };
-
-      // Respond
-      res.status(200).json(response);
-    } catch (err) {
-      next(err);
-    }
-  });
+  api.get('/playlists/:id/tracks', playlistController.getTracksForPlaylist);
+  api.get('/playlists', playlistController.getPlaylists);
+  api.get('/me/playlists', playlistController.getPlaylists);
+  api.post('/playlists', playlistController.createPlaylist);
 
   api.get('/player', playerController.getPlayerState);
   api.put('/player/play', playerController.startPlayback);
   api.put('/player/pause', playerController.pausePlayback);
-  /**
-   * @deprecated Use `/player/play` instead
-   */
   api.put('/me/player/play', playerController.startPlayback);
-  /**
-   * @deprecated Use `/player/pause` instead
-   */
   api.put('/me/player/pause', playerController.pausePlayback);
 
   api.get('/me/player/devices', async (req, res, next) => {
@@ -158,16 +83,6 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       const response: ApiTypes.GetUsersDevicesResponse = devices.devices;
 
       res.status(200).json(response);
-    } catch (err) {
-      next(err);
-    }
-  });
-
-  api.get('/me/playlists', async (req, res, next) => {
-    try {
-      const playlists: ApiTypes.GetUsersPlaylistsResponse =
-        await spotifyWebApi.getUsersPlaylists();
-      res.status(200).json(playlists);
     } catch (err) {
       next(err);
     }
