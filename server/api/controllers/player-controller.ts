@@ -37,7 +37,7 @@ export class PlayerController {
     try {
       const { body } = req;
 
-      debug('- Body:', JSON.stringify(body));
+      debug('- Body:', JSON.parse(JSON.stringify(body)));
 
       // TODO: Validate Body
       const { contextUri, uri, deviceId } =
