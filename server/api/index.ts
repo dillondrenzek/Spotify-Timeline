@@ -37,7 +37,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       // TODO: Type this properly
       const queryParams = req.query as any;
 
-      debug('- Query:', queryParams);
+      debug('- Query Params:', queryParams);
 
       const params: ApiTypes.GetSuggestedPlaylistsQueryParams = {
         limit: parseInt(queryParams.limit ?? '200', 10),
@@ -45,15 +45,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
         avg_length: parseInt(queryParams.avg_length ?? '10', 10),
       };
 
-      debug(
-        '  query params:'.toUpperCase(),
-        'limit=',
-        params.limit,
-        'offset=',
-        params.offset,
-        'avg_length',
-        params.avg_length
-      );
+      debug('- Params:', params);
 
       const result: ApiTypes.GetSuggestedPlaylistsResponse =
         await getSuggestedPlaylists(spotifyWebApi, params);
