@@ -7,11 +7,8 @@ export const ApiUrls = {
   player: '/api/player',
   playerPlay: '/api/player/play',
   playerPause: '/api/player/pause',
+  playerDevices: '/api/player/devices',
 
-  mePlayerPlay: '/api/me/player/play',
-  mePlayerPause: '/api/me/player/pause',
-  mePlayerDevices: '/api/me/player/devices',
-  mePlaylists: '/api/me/playlists',
   meTracks: '/api/me/tracks',
   me: '/api/me',
 };

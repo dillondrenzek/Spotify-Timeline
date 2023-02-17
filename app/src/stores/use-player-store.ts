@@ -59,7 +59,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     };
 
     return (
-      httpRequest(ApiUrls.mePlayerPlay, {
+      httpRequest(ApiUrls.playerPlay, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -75,7 +75,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   },
 
   pause: async (deviceId: string) => {
-    const url = withParams(ApiUrls.mePlayerPause, { device_id: deviceId });
+    const url = withParams(ApiUrls.playerPause, { device_id: deviceId });
 
     return (
       httpRequest(url, {

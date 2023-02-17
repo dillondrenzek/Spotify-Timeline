@@ -10,6 +10,7 @@ import { isSpotifyApiError } from '../spotify/errors';
 import { CreatePlaylistRequest } from './models/playlists';
 import { PlayerController } from './controllers/player-controller';
 import { PlaylistController } from './controllers/playlist-controller';
+import { GetSuggestedPlaylistsQueryParams } from './models/suggested-playlists';
 
 const DEBUG_MODE = true;
 
@@ -34,16 +35,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/suggested-playlists', async (req, res, next) => {
     try {
-      // TODO: Type this properly
-      const queryParams = req.query as any;
-
-      debug('- Query Params:', queryParams);
-
-      const params: ApiTypes.GetSuggestedPlaylistsQueryParams = {
-        limit: parseInt(queryParams.limit ?? '200', 10),
-        offset: parseInt(queryParams.offset ?? '0', 10),
-        avg_length: parseInt(queryParams.avg_length ?? '10', 10),
-      };
+      const params = GetSuggestedPlaylistsQueryParams.fromRequest(req);
 
       debug('- Params:', params);
 
@@ -60,15 +52,11 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
   api.get('/playlists/:id/tracks', playlistController.getTracksForPlaylist);
   api.get('/playlists', playlistController.getPlaylists);
-  api.get('/me/playlists', playlistController.getPlaylists);
   api.post('/playlists', playlistController.createPlaylist);
 
   api.put('/player/play', playerController.startPlayback);
-  api.put('/me/player/play', playerController.startPlayback);
   api.put('/player/pause', playerController.pausePlayback);
-  api.put('/me/player/pause', playerController.pausePlayback);
   api.get('/player/devices', playerController.getDevices);
-  api.get('/me/player/devices', playerController.getDevices);
   api.get('/player', playerController.getPlayerState);
 
   api.get('/me/tracks', async (req, res, next) => {

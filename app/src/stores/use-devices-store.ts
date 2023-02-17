@@ -24,7 +24,7 @@ export const useDevicesStore = create<DevicesStore>((set, get) => ({
   pullDevices: async () => {
     set({ isLoading: true });
 
-    const devices = await httpRequest(ApiUrls.mePlayerDevices)
+    const devices = await httpRequest(ApiUrls.playerDevices)
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 

@@ -51,7 +51,7 @@ export const useUserPlaylistsStore = create<UserPlaylistsStore>((set, get) => ({
   },
 
   async pullUserPlaylists() {
-    const paginatedSongs = await httpRequest(ApiUrls.mePlaylists)
+    const paginatedSongs = await httpRequest(ApiUrls.playlists)
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
