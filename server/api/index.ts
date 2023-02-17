@@ -8,6 +8,7 @@ import { errorHandler } from '../middleware/error-handler';
 import { getSuggestedPlaylists } from '../timeline/generate-timeline';
 import { isSpotifyApiError } from '../spotify/errors';
 import { CreatePlaylistRequest } from './models/playlists';
+import { PlayerController } from './controllers/player-controller';
 
 const DEBUG_MODE = true;
 
@@ -19,6 +20,7 @@ function debug(...data: any[]) {
 
 export default function (spotifyWebApi: SpotifyWebApi) {
   const api = express();
+  const playerController = new PlayerController(spotifyWebApi);
 
   // middleware
   api.use(cookieParser());
@@ -33,7 +35,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       // TODO: Type this properly
       const queryParams = req.query as any;
 
-      debug('  QUERY:', queryParams);
+      debug('- Query:', queryParams);
 
       const params: ApiTypes.GetSuggestedPlaylistsQueryParams = {
         limit: parseInt(queryParams.limit ?? '200', 10),
@@ -54,7 +56,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       const result: ApiTypes.GetSuggestedPlaylistsResponse =
         await getSuggestedPlaylists(spotifyWebApi, params);
 
-      debug('  response:'.toUpperCase(), result.items.length, 'items');
+      debug('- Response:', result.items.length, 'items');
 
       res.status(200).json(result);
     } catch (err) {
@@ -138,67 +140,17 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
-  api.get('/player', async (req, res, next) => {
-    try {
-      const playerState: ApiTypes.PlayerState =
-        await spotifyWebApi.getPlayerState();
-
-      res.status(200).json(playerState);
-    } catch (err) {
-      next(err);
-    }
-  });
-
-  api.put('/player/play', async (req, res, next) => {
-    try {
-      const { body } = req;
-
-      await spotifyWebApi.startPlayback(body.uri, body.contextUri);
-      res.status(200).json(body);
-    } catch (err) {
-      next(err);
-    }
-  });
-
+  api.get('/player', playerController.getPlayerState);
+  api.put('/player/play', playerController.startPlayback);
+  api.put('/player/pause', playerController.pausePlayback);
   /**
-   * Start/Resume Playback
+   * @deprecated Use `/player/play` instead
    */
-  api.put('/me/player/play', async (req, res, next) => {
-    try {
-      const { body } = req;
-
-      debug('  BODY:', JSON.stringify(body));
-
-      // TODO: Validate Body
-      const { contextUri, uri, deviceId } =
-        body as ApiTypes.StartPlaybackRequestBody;
-
-      await spotifyWebApi.startPlayback(uri, contextUri, deviceId);
-
-      res.status(200).json(body);
-    } catch (err) {
-      next(err);
-    }
-  });
-
+  api.put('/me/player/play', playerController.startPlayback);
   /**
-   * Pause Playback
+   * @deprecated Use `/player/pause` instead
    */
-  api.put('/me/player/pause', async (req, res, next) => {
-    try {
-      // TODO: Type this properly
-      const queryParams = req.query as any;
-      const deviceId = queryParams.device_id;
-
-      debug('  QUERY:', queryParams);
-
-      await spotifyWebApi.pausePlayback(deviceId);
-
-      res.status(204).send();
-    } catch (err) {
-      next(err);
-    }
-  });
+  api.put('/me/player/pause', playerController.pausePlayback);
 
   api.get('/me/player/devices', async (req, res, next) => {
     try {
