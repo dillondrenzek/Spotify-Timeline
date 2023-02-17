@@ -63,22 +63,13 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   api.get('/me/playlists', playlistController.getPlaylists);
   api.post('/playlists', playlistController.createPlaylist);
 
-  api.get('/player', playerController.getPlayerState);
   api.put('/player/play', playerController.startPlayback);
-  api.put('/player/pause', playerController.pausePlayback);
   api.put('/me/player/play', playerController.startPlayback);
+  api.put('/player/pause', playerController.pausePlayback);
   api.put('/me/player/pause', playerController.pausePlayback);
-
-  api.get('/me/player/devices', async (req, res, next) => {
-    try {
-      const devices = await spotifyWebApi.getUsersDevices();
-      const response: ApiTypes.GetUsersDevicesResponse = devices.devices;
-
-      res.status(200).json(response);
-    } catch (err) {
-      next(err);
-    }
-  });
+  api.get('/player/devices', playerController.getDevices);
+  api.get('/me/player/devices', playerController.getDevices);
+  api.get('/player', playerController.getPlayerState);
 
   api.get('/me/tracks', async (req, res, next) => {
     try {
