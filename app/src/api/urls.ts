@@ -20,9 +20,9 @@ export function withParams(
   baseUrl: string,
   params: Record<string, string> = {}
 ) {
-  const searchParams = new URLSearchParams(params);
-  return (
-    baseUrl +
-    (searchParams.entries.length > 0 ? '?' + searchParams.toString() : null)
-  );
+  let searchParams = new URLSearchParams(params).toString();
+
+  searchParams = searchParams ? '?' + searchParams : '';
+
+  return `${baseUrl}${searchParams}`;
 }

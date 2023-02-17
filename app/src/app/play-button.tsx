@@ -33,11 +33,11 @@ export function PlayButton(props: {
     [showErrorToast]
   );
 
-  const { play, isPlaying } = usePlayButton(uri, contextUri, deviceId);
+  const { playToggle, isPlaying } = usePlayButton(uri, contextUri, deviceId);
 
   const handleClick = useCallback(() => {
-    play().catch(handleError);
-  }, [play, handleError]);
+    playToggle().catch(handleError);
+  }, [playToggle, handleError]);
 
   const iconSize = useMemo(() => {
     switch (size) {
