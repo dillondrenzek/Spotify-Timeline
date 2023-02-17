@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { httpRequest, parseJson } from '../lib/http';
 import { ApiTypes } from 'api-types';
 import { useUserStore } from './use-user-store';
+import { ApiUrls } from '../api/urls';
 
 function isValidResult(
   value: unknown
@@ -31,7 +32,7 @@ export const useUserPlaylistsStore = create<UserPlaylistsStore>((set, get) => ({
   isLoaded: false,
 
   async createPlaylist(requestBody: ApiTypes.CreatePlaylistRequest) {
-    const response = await httpRequest('/api/playlists', {
+    const response = await httpRequest(ApiUrls.playlists, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
@@ -50,7 +51,7 @@ export const useUserPlaylistsStore = create<UserPlaylistsStore>((set, get) => ({
   },
 
   async pullUserPlaylists() {
-    const paginatedSongs = await httpRequest('/api/me/playlists')
+    const paginatedSongs = await httpRequest(ApiUrls.mePlaylists)
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 

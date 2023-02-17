@@ -62,28 +62,6 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     }
   });
 
-  api.get('/player', async (req, res, next) => {
-    try {
-      const playerState: ApiTypes.PlayerState =
-        await spotifyWebApi.getPlayerState();
-
-      res.status(200).json(playerState);
-    } catch (err) {
-      next(err);
-    }
-  });
-
-  api.put('/player/play', async (req, res, next) => {
-    try {
-      const { body } = req;
-
-      await spotifyWebApi.startPlayback(body.uri, body.contextUri);
-      res.status(200).json(body);
-    } catch (err) {
-      next(err);
-    }
-  });
-
   api.get('/playlists/:id/tracks', async (req, res, next) => {
     const { params } = req;
     const playlistId = params.id;
@@ -155,6 +133,28 @@ export default function (spotifyWebApi: SpotifyWebApi) {
 
       // Respond
       res.status(200).json(response);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  api.get('/player', async (req, res, next) => {
+    try {
+      const playerState: ApiTypes.PlayerState =
+        await spotifyWebApi.getPlayerState();
+
+      res.status(200).json(playerState);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  api.put('/player/play', async (req, res, next) => {
+    try {
+      const { body } = req;
+
+      await spotifyWebApi.startPlayback(body.uri, body.contextUri);
+      res.status(200).json(body);
     } catch (err) {
       next(err);
     }

@@ -14,6 +14,7 @@ import { green, grey, orange } from '@mui/material/colors';
 import { VolumeDown, VolumeUp, Sync } from '@mui/icons-material';
 import { usePlayerStore } from '../stores/use-player-store';
 import { useDevicesStore } from '../stores/use-devices-store';
+import { PlayButton } from './play-button';
 
 function DeviceDisplay(props: {
   device: PlayerState['device'];
@@ -129,10 +130,11 @@ export function Playbar() {
                 </Typography>
               ) : null}
             </Stack>
+          </Stack>
+
+          <Stack direction="row" spacing={4}>
+            <PlayButton uri={item?.uri} size="large" color="secondary" />
             <CurrentItemDisplay item={item} />
-            <IconButton onClick={handleClickPlay}>
-              {is_playing ? <PauseCircleOutline /> : <PlayCircleOutline />}
-            </IconButton>
           </Stack>
 
           <Stack direction="row" spacing={2}>

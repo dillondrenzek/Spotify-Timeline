@@ -1,6 +1,78 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
 /**
+ * Handles errors thrown from an Axios API call
+ *
+ * @throws `SpotifyApiError` when handling a known Axios error
+ * @throws Re-throws a non-Axios error
+ */
+export function handleAxiosError(err: unknown) {
+  // Only handle axios errors
+  if (!axios.isAxiosError(err)) {
+    throw err;
+  }
+
+  // Convert to common API error
+  const apiError = toSpotifyApiError(err);
+
+  throw apiError;
+}
+
+export interface SpotifyApiError {
+  reason: string;
+  message?: string;
+  response: {
+    status: AxiosResponse<any>['status'];
+    config: AxiosResponse<any>['config'];
+    data: AxiosResponse<any>['data'];
+  };
+  data?: SpotifyErrorData;
+}
+
+export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
+  return typeof value === 'object' && 'reason' in value && 'response' in value;
+}
+
+function toSpotifyApiError(err: AxiosError): SpotifyApiError {
+  const { response: spotifyResponse } = err;
+
+  const response: SpotifyApiError['response'] = {
+    config: spotifyResponse.config,
+    data: spotifyResponse.data,
+    status: spotifyResponse.status,
+  };
+
+  const data: SpotifyApiError['data'] = spotifyResponse.data;
+
+  if (!data) {
+    return {
+      reason: 'UNKNOWN_ERROR',
+      message: null,
+      response,
+    };
+  }
+
+  // Handle Specific API errors
+  if (spotifyResponse.status === 401) {
+    return {
+      reason: 'UNAUTHORIZED',
+      message: null,
+      response,
+      data,
+    };
+  }
+
+  const { error } = data;
+
+  return {
+    reason: error.reason,
+    message: error.message,
+    response,
+    data,
+  };
+}
+
+/**
  *
  * Error codes
  *
@@ -47,94 +119,4 @@ interface SpotifyErrorData {
         message: string;
         reason: 'NO_ACTIVE_DEVICE';
       };
-}
-
-export type ApiError = {
-  reason: string;
-  message?: string;
-};
-
-export function isApiError(value: unknown): value is ApiError {
-  return typeof value === 'object' && 'reason' in value;
-}
-
-export type SpotifyApiError = ApiError & {
-  response: {
-    status: AxiosResponse<any>['status'];
-    config: AxiosResponse<any>['config'];
-    data: AxiosResponse<any>['data'];
-  };
-  data?: SpotifyErrorData;
-};
-
-export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
-  return typeof value === 'object' && 'reason' in value && 'response' in value;
-}
-
-function toSpotifyApiError(err: AxiosError): SpotifyApiError {
-  const { response: spotifyResponse } = err;
-
-  const response: SpotifyApiError['response'] = {
-    config: spotifyResponse.config,
-    data: spotifyResponse.data,
-    status: spotifyResponse.status,
-  };
-
-  const data: SpotifyApiError['data'] = spotifyResponse.data;
-
-  if (!data) {
-    return {
-      reason: 'UNKNOWN_ERROR',
-      message: null,
-      response,
-    };
-  }
-
-  // Handle Specific API errors
-  if (spotifyResponse.status === 401) {
-    return {
-      reason: 'UNAUTHORIZED',
-      message: null,
-      response,
-      data,
-    };
-  }
-
-  const { error } = data;
-
-  // Check ApiError
-  if (!isApiError(error)) {
-    console.error('error data:', error);
-    return {
-      reason: 'UNKNOWN_ERROR',
-      message: null,
-      response,
-      data,
-    };
-  }
-
-  return {
-    reason: error.reason,
-    message: error.message,
-    response,
-    data,
-  };
-}
-
-/**
- * Handles errors thrown from an Axios API call
- *
- * @throws `SpotifyApiError` when handling a known Axios error
- * @throws Re-throws a non-Axios error
- */
-export function handleAxiosError(err: unknown) {
-  // Only handle axios errors
-  if (!axios.isAxiosError(err)) {
-    throw err;
-  }
-
-  // Convert to common API error
-  const apiError = toSpotifyApiError(err);
-
-  throw apiError;
 }

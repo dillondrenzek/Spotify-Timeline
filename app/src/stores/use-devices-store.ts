@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { ApiTypes } from 'api-types';
 import { httpRequest, parseJson } from '../lib/http';
 import { useUserStore } from './use-user-store';
+import { ApiUrls } from '../api/urls';
 
 type DevicesStore = {
   devices: ApiTypes.Device[];
@@ -23,7 +24,7 @@ export const useDevicesStore = create<DevicesStore>((set, get) => ({
   pullDevices: async () => {
     set({ isLoading: true });
 
-    const devices = await httpRequest('/api/me/player/devices')
+    const devices = await httpRequest(ApiUrls.mePlayerDevices)
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { ApiTypes } from 'api-types';
 import { httpRequest, parseJson } from '../lib/http';
 import { useUserStore } from './use-user-store';
+import { ApiUrls, withParams } from '../api/urls';
 
 type PlayerStore = {
   player: ApiTypes.PlayerState;
@@ -28,7 +29,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   pullPlayerState: async () => {
     set({ isLoading: false });
 
-    const playerState = await httpRequest('/api/player')
+    const playerState = await httpRequest(ApiUrls.player)
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
@@ -58,7 +59,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     };
 
     return (
-      httpRequest('/api/me/player/play', {
+      httpRequest(ApiUrls.mePlayerPlay, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -74,8 +75,10 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   },
 
   pause: async (deviceId: string) => {
+    const url = withParams(ApiUrls.mePlayerPause, { device_id: deviceId });
+
     return (
-      httpRequest('/api/me/player/pause?device_id=' + deviceId, {
+      httpRequest(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       })

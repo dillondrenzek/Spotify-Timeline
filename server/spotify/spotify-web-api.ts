@@ -18,6 +18,13 @@ import {
 import { UserDevices } from './models/user-devices';
 
 export class SpotifyWebApi {
+  /**
+   * Base API Url
+   */
+  public static url(path: string): string {
+    return `https://api.spotify.com/v1${path}`;
+  }
+
   private authorizationHeader: string;
   private accessToken: string = null;
 
@@ -196,24 +203,20 @@ export class SpotifyWebApi {
   async getPlaylistItems(
     playlistId: string
   ): Promise<Types.Paginated<Types.SavedTrack>> {
-    try {
-      const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
-      const response = await axios
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${this.requiredAccessToken}`,
-          },
-        })
-        .catch(handleAxiosError);
+    const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
+    const response = await axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${this.requiredAccessToken}`,
+        },
+      })
+      .catch(handleAxiosError);
 
-      if (!response) {
-        return;
-      }
-
-      return response.data;
-    } catch (error) {
-      handleAxiosError(error);
+    if (!response) {
+      return;
     }
+
+    return response.data;
   }
 
   /**
@@ -332,9 +335,5 @@ export class SpotifyWebApi {
       })
       .catch(handleAxiosError)
       .then(() => null);
-  }
-
-  public static url(path: string): string {
-    return `https://api.spotify.com/v1${path}`;
   }
 }

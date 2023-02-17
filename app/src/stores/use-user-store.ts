@@ -1,5 +1,6 @@
 import { ApiTypes } from 'api-types';
 import { create } from 'zustand';
+import { ApiUrls } from '../api/urls';
 import { ApiError } from '../lib/api-error';
 import { AuthLinks } from '../lib/auth';
 import { clearAuthCookie, getAuthCookie } from '../lib/auth-cookie';
@@ -66,7 +67,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
    * Fetch and set the current user
    */
   async pullCurrentUser() {
-    const currentUser = await httpRequest('/api/me')
+    const currentUser = await httpRequest(ApiUrls.me)
       .catch(get().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
