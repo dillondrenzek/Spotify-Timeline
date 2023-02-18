@@ -23,14 +23,11 @@ import { useUserStore } from '../stores/use-user-store';
 import { useEditSuggestedPlaylist } from '../hooks/use-edit-suggested-playlist';
 import { FormikHelpers, useFormik } from 'formik';
 import { SavePlaylistConfirmationDialog } from './save-playlist-confirmation-dialog';
+import { formatDate } from '../lib/formatters';
 
 type EditTitleForm = {
   title: string;
 };
-
-function formatDate(value: string): string {
-  return new Date(Date.parse(value)).toLocaleDateString();
-}
 
 function dateRangeDisplay(startDate: string, endDate: string): string {
   return `${formatDate(startDate)} to ${formatDate(endDate)}`;
