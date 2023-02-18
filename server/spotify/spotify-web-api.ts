@@ -7,7 +7,7 @@ import { handleAxiosError } from './errors';
 import { PaginatedSavedTrack } from './models/saved-track';
 import { PlayerState } from './models/player-state';
 import {
-  startPlaybackRequest,
+  buildPlaybackRequest,
   StartPlaybackRequest,
 } from './models/request/start-playback-request';
 import {
@@ -15,8 +15,16 @@ import {
   CreatePlaylistResponse,
   GetPlaylistResponse,
 } from './models/playlist';
+import { UserDevices } from './models/user-devices';
 
 export class SpotifyWebApi {
+  /**
+   * Base API Url
+   */
+  public static url(path: string): string {
+    return `https://api.spotify.com/v1${path}`;
+  }
+
   private authorizationHeader: string;
   private accessToken: string = null;
 
@@ -175,6 +183,18 @@ export class SpotifyWebApi {
     }
   }
 
+  async getUsersDevices(): Promise<Types.UserDevices> {
+    const url = SpotifyWebApi.url('/me/player/devices');
+    return await axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${this.requiredAccessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(UserDevices.fromResponse);
+  }
+
   /**
    * Get Playlist Items
    *
@@ -183,18 +203,20 @@ export class SpotifyWebApi {
   async getPlaylistItems(
     playlistId: string
   ): Promise<Types.Paginated<Types.SavedTrack>> {
-    try {
-      const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
-      const { data } = await axios.get(url, {
+    const url = SpotifyWebApi.url(`/playlists/${playlistId}/tracks`);
+    const response = await axios
+      .get(url, {
         headers: {
           Authorization: `Bearer ${this.requiredAccessToken}`,
         },
-      });
+      })
+      .catch(handleAxiosError);
 
-      return data;
-    } catch (error) {
-      handleAxiosError(error);
+    if (!response) {
+      return;
     }
+
+    return response.data;
   }
 
   /**
@@ -266,29 +288,52 @@ export class SpotifyWebApi {
    */
   async startPlayback(
     playItemUri: string,
-    inContextUri: string
+    inContextUri: string,
+    deviceId?: string
   ): Promise<void> {
-    try {
-      const url = SpotifyWebApi.url(`/me/player/play`);
+    let url = SpotifyWebApi.url(`/me/player/play`);
 
-      const body: StartPlaybackRequest = startPlaybackRequest(
-        playItemUri,
-        inContextUri
-      );
+    if (deviceId) {
+      url += '?device_id=' + deviceId;
+    }
 
-      const { data } = await axios.put(url, body, {
+    const body: StartPlaybackRequest = buildPlaybackRequest(
+      playItemUri,
+      inContextUri
+    );
+
+    return await axios
+      .put(url, body, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${this.requiredAccessToken}`,
         },
-      });
-      return data;
-    } catch (error) {
-      handleAxiosError(error);
-    }
+      })
+      .catch(handleAxiosError)
+      .then(() => null);
   }
 
-  public static url(path: string): string {
-    return `https://api.spotify.com/v1${path}`;
+  /**
+   * Pause Playback
+   *
+   * Pause playback on the user's account.
+   *
+   * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/pause-a-users-playback)
+   */
+  async pausePlayback(deviceId: string): Promise<void> {
+    let url = SpotifyWebApi.url(`/me/player/pause`);
+
+    if (deviceId) {
+      url += '?device_id=' + deviceId;
+    }
+    return await axios
+      .put(url, null, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.requiredAccessToken}`,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(() => null);
   }
 }

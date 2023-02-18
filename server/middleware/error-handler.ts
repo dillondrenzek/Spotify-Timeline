@@ -56,6 +56,7 @@ function errorResponse(err: unknown, res: express.Response) {
 /**
  * Application Error Handler
  */
-export const errorHandler: express.ErrorRequestHandler = (err, req, res) => {
-  errorResponse(err, res);
-};
+export const errorHandler: () => express.ErrorRequestHandler =
+  () => (err, req, res, next) => {
+    errorResponse(err, res);
+  };

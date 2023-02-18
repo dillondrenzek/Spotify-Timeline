@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { httpRequest, parseJson } from '../lib/http';
 import { ApiTypes } from 'api-types';
 import { useUserStore } from './use-user-store';
+import { ApiUrls, withParams } from '../api/urls';
 
 type TimelineStore = {
   /**
@@ -47,7 +48,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
   async generateTimeline() {
     set({ isLoading: true });
 
-    const response = await httpRequest('/api/suggested-playlists')
+    const response = await httpRequest(ApiUrls.suggestedPlaylists)
       .catch(useUserStore.getState().handleUnauthorized)
       .then(
         parseJson(
@@ -90,9 +91,10 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
     searchParams.set('offset', currentPage?.offset.toString());
 
     // Build URL
-    const url =
-      '/api/suggested-playlists' +
-      (currentPage ? '?' + searchParams.toString() : '');
+    const url = withParams(ApiUrls.suggestedPlaylists, {
+      limit: currentPage?.limit.toString(),
+      offset: currentPage?.offset.toString(),
+    });
 
     // Make Request
     const response = await httpRequest(url)

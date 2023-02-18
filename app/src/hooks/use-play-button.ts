@@ -1,55 +1,42 @@
 import { useCallback } from 'react';
-import { ErrorHandler } from '../lib/error';
-import { httpRequest, parseJson } from '../lib/http';
+import { useDevicesStore } from '../stores/use-devices-store';
 import { usePlayerStore } from '../stores/use-player-store';
 import { useUserStore } from '../stores/use-user-store';
-
-interface PlayResult {
-  uri: string;
-}
-
-function isValidResult(value: unknown): value is PlayResult {
-  // TODO: figure this out
-  return true;
-}
-
-function convert(result: PlayResult): PlayResult {
-  return result;
-}
 
 export function usePlayButton(
   uri: string,
   contextUri?: string,
-  handleError?: ErrorHandler
+  deviceId?: string
 ) {
   const { isAuthenticated } = useUserStore();
-  const { pullPlayerState, player } = usePlayerStore();
+  const { devices } = useDevicesStore();
+  const { player, play, pause, pullPlayerState } = usePlayerStore();
+  const calcDeviceId = deviceId ?? player?.device?.id ?? devices[0]?.id ?? null;
+  const isActive = player?.item?.uri === uri;
+  const isPlaying = isActive && player?.is_playing;
 
-  const play = useCallback(() => {
+  const playToggle = useCallback(() => {
     if (!isAuthenticated) {
-      return;
+      return null;
     }
 
-    const body = {
-      ...(uri && { uri: uri }),
-      ...(contextUri && { contextUri: contextUri }),
-    };
-
-    httpRequest('/api/me/player/play', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-      .catch(useUserStore.getState().handleUnauthorized)
-      .then(parseJson(isValidResult, convert))
-      .catch((err) => {
-        handleError?.(err);
-      })
-      .then(() => pullPlayerState());
-  }, [isAuthenticated, handleError, pullPlayerState, uri, contextUri]);
+    return isPlaying
+      ? pause(calcDeviceId).then(pullPlayerState)
+      : play(uri, contextUri, calcDeviceId).then(pullPlayerState);
+  }, [
+    isAuthenticated,
+    calcDeviceId,
+    pause,
+    play,
+    uri,
+    contextUri,
+    isPlaying,
+    pullPlayerState,
+  ]);
 
   return {
-    play,
-    isPlaying: player?.item?.uri === uri,
+    playToggle,
+    isPlaying,
+    isActive,
   };
 }

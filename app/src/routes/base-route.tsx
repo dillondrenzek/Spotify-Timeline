@@ -1,11 +1,11 @@
-import React, { PropsWithChildren } from 'react';
-import { CssBaseline, Stack, Box } from '@mui/material';
+import React, { PropsWithChildren, useEffect } from 'react';
+import { CssBaseline, Box } from '@mui/material';
 import { Nav } from '../app/Nav';
 import { grey } from '@mui/material/colors';
 import { Playbar } from '../app/playbar';
-import { useAuthToken } from '../hooks/use-auth-token';
 import { usePlayerStore } from '../stores/use-player-store';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { useUserStore } from '../stores/use-user-store';
 
 const theme = createTheme();
 
@@ -24,10 +24,14 @@ type BaseRouteProps = PropsWithChildren<{
 export function BaseRoute(props: BaseRouteProps) {
   const { children, hideNav, hidePlaybar } = props;
 
-  const { authToken } = useAuthToken();
-  const { player } = usePlayerStore();
+  const { isAuthenticated } = useUserStore();
+  const { player, pullPlayerState } = usePlayerStore();
 
-  const showPlaybar = !hidePlaybar && authToken && !!player;
+  const showPlaybar = !hidePlaybar && isAuthenticated && !!player;
+
+  useEffect(() => {
+    pullPlayerState();
+  }, [pullPlayerState]);
 
   return (
     <ThemeProvider theme={theme}>

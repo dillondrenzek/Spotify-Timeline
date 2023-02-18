@@ -5,16 +5,17 @@ import {
   Stack,
   Typography,
   Box,
-  Slider,
   IconButton,
 } from '@mui/material';
-import { PlayerState } from '../hooks/use-player-state';
+import { ApiTypes } from 'api-types';
 import { green, grey, orange } from '@mui/material/colors';
-import { VolumeDown, VolumeUp, Sync } from '@mui/icons-material';
+import { Sync } from '@mui/icons-material';
 import { usePlayerStore } from '../stores/use-player-store';
+import { useDevicesStore } from '../stores/use-devices-store';
+import { PlayButton } from './play-button';
 
 function DeviceDisplay(props: {
-  device: PlayerState['device'];
+  device: ApiTypes.PlayerState['device'];
   isPlaying: boolean;
 }) {
   const { device, isPlaying } = props;
@@ -37,30 +38,7 @@ function DeviceDisplay(props: {
   );
 }
 
-function VolumeDisplay(props: { volumePercent: number }) {
-  const { volumePercent } = props;
-
-  return (
-    <Stack
-      spacing={1}
-      direction="row"
-      sx={{ mb: 1, minWidth: '150px' }}
-      alignItems="center"
-    >
-      <VolumeDown fontSize="small" />
-      <Slider
-        aria-label="Volume"
-        disabled
-        size="small"
-        defaultValue={volumePercent}
-        valueLabelDisplay="auto"
-      />
-      <VolumeUp fontSize="small" />
-    </Stack>
-  );
-}
-
-function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
+function CurrentItemDisplay(props: { item: ApiTypes.PlayerState['item'] }) {
   const { item } = props;
 
   return item ? (
@@ -85,8 +63,8 @@ function CurrentItemDisplay(props: { item: PlayerState['item'] }) {
 
 export function Playbar() {
   const { pullPlayerState, player } = usePlayerStore();
-  const { item, is_playing, device, repeat_state, shuffle_state, timestamp } =
-    player ?? {};
+  const { pullDevices } = useDevicesStore();
+  const { item, is_playing, device, timestamp } = player ?? {};
 
   const renderedTimestamp = useMemo(() => {
     const date = timestamp ? new Date(timestamp) : new Date();
@@ -95,7 +73,8 @@ export function Playbar() {
 
   useEffect(() => {
     pullPlayerState();
-  }, [pullPlayerState]);
+    pullDevices();
+  }, [pullPlayerState, pullDevices]);
 
   return (
     <AppBar color="default" position="relative" sx={{ top: 'auto', bottom: 0 }}>
@@ -121,21 +100,14 @@ export function Playbar() {
                 </Typography>
               ) : null}
             </Stack>
+          </Stack>
+
+          <Stack direction="row" spacing={4}>
+            <PlayButton uri={item?.uri} size="large" color="secondary" />
             <CurrentItemDisplay item={item} />
           </Stack>
 
           <Stack direction="row" spacing={2}>
-            {/* {repeat_state != null && shuffle_state != null && (
-              <Stack direction="column">
-                <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
-                  Repeat: {repeat_state}
-                </Typography>
-                <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
-                  Shuffle: {shuffle_state ? 'on' : 'off'}
-                </Typography>
-              </Stack>
-            )} */}
-            {/* {device && <VolumeDisplay volumePercent={device?.volume_percent} />} */}
             <DeviceDisplay device={device} isPlaying={is_playing} />
           </Stack>
         </Stack>
