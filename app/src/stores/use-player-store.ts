@@ -26,6 +26,10 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   isLoading: false,
   isLoaded: false,
 
+  /**
+   * Fetch and set state
+   * @returns
+   */
   pullPlayerState: async () => {
     set({ isLoading: false });
 
@@ -44,6 +48,14 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     return playerState;
   },
 
+  /**
+   * Start Playback
+   *
+   * @param uri
+   * @param contextUri
+   * @param deviceId
+   * @returns
+   */
   play: async (uri: string, contextUri?: string, deviceId?: string) => {
     const { isAuthenticated } = useUserStore.getState();
     if (!isAuthenticated) {
@@ -51,42 +63,43 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     }
 
     // TODO Validate request body
-
     const body: ApiTypes.StartPlaybackRequestBody = {
       uri,
       contextUri,
       deviceId,
     };
 
-    return (
-      httpRequest(ApiUrls.playerPlay, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      })
-        .catch(useUserStore.getState().handleUnauthorized)
+    return await httpRequest(ApiUrls.playerPlay, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+      .catch(useUserStore.getState().handleUnauthorized)
 
-        // Validate Response and Type
-        .then(parseJson(isValidResult, convert))
+      // Validate Response and Type
+      .then(parseJson(isValidResult, convert))
 
-        // Refresh Player state
-        .then(get().pullPlayerState)
-    );
+      // Refresh Player state
+      .then(get().pullPlayerState);
   },
 
+  /**
+   * Pause Playback
+   *
+   * @param deviceId
+   * @returns
+   */
   pause: async (deviceId: string) => {
     const url = withParams(ApiUrls.playerPause, { device_id: deviceId });
 
-    return (
-      httpRequest(url, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-      })
-        .catch(useUserStore.getState().handleUnauthorized)
+    return await httpRequest(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .catch(useUserStore.getState().handleUnauthorized)
 
-        // Refresh Player state
-        .then(get().pullPlayerState)
-    );
+      // Refresh Player state
+      .then(get().pullPlayerState);
   },
 }));
 
