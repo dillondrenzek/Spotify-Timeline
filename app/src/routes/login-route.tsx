@@ -1,14 +1,14 @@
 import React from 'react';
 import { Typography, Stack, Card, Container, Button } from '@mui/material';
 import { BaseRoute } from './base-route';
-import { useAuthToken } from '../hooks/use-auth-token';
 import { AuthLinks } from '../lib/auth';
+import { useUserStore } from '../stores/use-user-store';
 
 export function LoginRoute() {
-  const { authToken } = useAuthToken();
+  const { isAuthenticated } = useUserStore();
 
   return (
-    <BaseRoute hidePlaybar={!authToken} hideNav={!authToken}>
+    <BaseRoute hidePlaybar={!isAuthenticated} hideNav={!isAuthenticated}>
       <Container fixed>
         <Card sx={{ my: 3, p: 3 }}>
           <Stack

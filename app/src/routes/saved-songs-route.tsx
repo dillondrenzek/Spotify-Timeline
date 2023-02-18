@@ -4,19 +4,18 @@ import { SavedTracksTable } from '../app/saved-tracks-table';
 import { PlaylistList } from '../app/playlist-list';
 import { BaseRoute } from './base-route';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
-import { useAuthToken } from '../hooks/use-auth-token';
+import { useUserStore } from '../stores/use-user-store';
 
 export function SavedSongsRoute() {
   const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
-
-  const { authToken } = useAuthToken();
+  const { isAuthenticated } = useUserStore();
 
   useEffect(() => {
     pullUserPlaylists();
   }, [pullUserPlaylists]);
 
   return (
-    <BaseRoute hidePlaybar={!authToken} hideNav={!authToken}>
+    <BaseRoute hidePlaybar={!isAuthenticated} hideNav={!isAuthenticated}>
       <Stack direction="row" spacing={3} sx={{ px: 3, height: '100%' }}>
         <Stack
           spacing={3}

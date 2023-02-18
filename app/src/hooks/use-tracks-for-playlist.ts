@@ -3,14 +3,13 @@ import { useState, useEffect } from 'react';
 import { ApiUrls } from '../api/urls';
 import { httpRequest, parseJson } from '../lib/http';
 import { useUserStore } from '../stores/use-user-store';
-import { useAuthToken } from './use-auth-token';
 
 export function useTracksForPlaylist(playlistId: string) {
-  const { authToken, clearAuthToken } = useAuthToken();
+  const { isAuthenticated } = useUserStore();
   const [tracks, setTracks] = useState<ApiTypes.Track[]>([]);
 
   useEffect(() => {
-    if (!authToken) {
+    if (!isAuthenticated) {
       return;
     }
 
@@ -21,7 +20,7 @@ export function useTracksForPlaylist(playlistId: string) {
       .then((response: ApiTypes.GetTracksForPlaylistResponse) => {
         setTracks(response.items);
       });
-  }, [authToken, clearAuthToken, playlistId]);
+  }, [isAuthenticated, playlistId]);
 
   return {
     tracks,
