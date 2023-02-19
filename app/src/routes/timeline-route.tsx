@@ -88,7 +88,7 @@ export function TimelineRoute() {
                 color="success"
                 onClick={generateTimeline}
               >
-                {'Generate Timeline'}
+                Generate Timeline
               </Button>
               <Box>
                 {isLoading && (
@@ -104,7 +104,7 @@ export function TimelineRoute() {
                 disabled={currentPage && !currentPage.offset}
                 onClick={fetchNextTimelinePage}
               >
-                Fetch next playlists
+                Fetch next timeline page
               </Button>
               <Typography>{suggestedPlaylists?.length ?? '0'} items</Typography>
             </Stack>
