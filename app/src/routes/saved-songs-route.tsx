@@ -6,6 +6,8 @@ import { BaseRoute } from './base-route';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { useUserStore } from '../stores/use-user-store';
 
+const elevation = 1;
+
 export function SavedSongsRoute() {
   const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
   const { isAuthenticated } = useUserStore();
@@ -22,10 +24,10 @@ export function SavedSongsRoute() {
           direction={'column'}
           sx={{ height: '100%', overflow: 'auto', flex: '2', py: 2 }}
         >
-          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Playlists</Typography>
           </Paper>
-          <Paper elevation={3}>
+          <Paper elevation={elevation}>
             <PlaylistList playlists={playlists} />
           </Paper>
         </Stack>
@@ -34,10 +36,10 @@ export function SavedSongsRoute() {
           spacing={3}
           sx={{ height: '100%', overflow: 'auto', flex: '5', py: 2 }}
         >
-          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Saved Songs</Typography>
           </Paper>
-          <Paper elevation={3}>
+          <Paper elevation={elevation}>
             <SavedTracksTable />
           </Paper>
         </Stack>

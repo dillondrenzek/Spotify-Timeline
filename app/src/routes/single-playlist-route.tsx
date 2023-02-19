@@ -7,6 +7,8 @@ import { BaseRoute } from './base-route';
 import { TracksTable } from '../app/tracks-table';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 
+const elevation = 1;
+
 export function SinglePlaylistRoute() {
   const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
 
@@ -36,10 +38,10 @@ export function SinglePlaylistRoute() {
           direction={'column'}
           sx={{ height: '100%', overflow: 'auto', flex: '2', py: 2 }}
         >
-          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Playlists</Typography>
           </Paper>
-          <Paper elevation={3}>
+          <Paper elevation={elevation}>
             <PlaylistList playlists={playlists} />
           </Paper>
         </Stack>
@@ -48,7 +50,7 @@ export function SinglePlaylistRoute() {
           spacing={3}
           sx={{ height: '100%', overflow: 'auto', flex: '5', py: 2 }}
         >
-          <Card elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+          <Card elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Stack direction="column" spacing={3}>
               {currentPlaylist?.name && (
                 <Typography variant="h4">{currentPlaylist?.name}</Typography>
@@ -60,7 +62,7 @@ export function SinglePlaylistRoute() {
               )}
             </Stack>
           </Card>
-          <Card elevation={3} sx={{ pb: 8, overflow: 'visible' }}>
+          <Card elevation={elevation} sx={{ pb: 8, overflow: 'visible' }}>
             <TracksTable tracks={tracks} contextUri={playlistUri} />
           </Card>
         </Stack>

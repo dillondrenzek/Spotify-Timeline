@@ -7,6 +7,8 @@ import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
 import { useInfiniteScroll } from '../hooks/use-infinite-scroll';
 
+const elevation = 1;
+
 export function TimelineRoute() {
   const {
     playlists: suggestedPlaylists,
@@ -39,7 +41,7 @@ export function TimelineRoute() {
           }}
           spacing={3}
         >
-          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4" mb={2}>
               Playlists
             </Typography>
@@ -48,7 +50,7 @@ export function TimelineRoute() {
               Spotify app.
             </Typography>
           </Paper>
-          <Paper elevation={3}>
+          <Paper elevation={elevation}>
             <PlaylistList playlists={playlists} />
           </Paper>
         </Stack>
@@ -59,11 +61,11 @@ export function TimelineRoute() {
           spacing={3}
           ref={scrollRef}
         >
-          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Timeline</Typography>
           </Paper>
 
-          <Paper elevation={3} sx={{ p: 3, overflow: 'visible' }}>
+          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
               <Button color="success" onClick={generateTimeline}>
                 {'Generate Timeline'}
@@ -89,7 +91,7 @@ export function TimelineRoute() {
           </Paper>
 
           {suggestedPlaylists?.map((playlist, j) => (
-            <Paper elevation={3} key={j.toString()}>
+            <Paper elevation={elevation} key={j.toString()}>
               <TimelineSuggestedPlaylist playlist={playlist} />
             </Paper>
           ))}
