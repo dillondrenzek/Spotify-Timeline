@@ -1,4 +1,7 @@
 export namespace ApiTypes {
+  /**
+   * API Error interface
+   */
   interface ApiError {
     /**
      * @example 'Player command failed: No active device found'
@@ -8,6 +11,37 @@ export namespace ApiTypes {
      * @example 'NO_ACTIVE_DEVICE'
      */
     reason: string;
+  }
+
+  /**
+   * General Paginated model
+   */
+  interface Paginated<T> {
+    /**
+     * Array of result objects
+     */
+    items: T[];
+
+    /**
+     * Maximum number of results
+     *
+     * @example 20
+     */
+    limit: number;
+
+    /**
+     * Index to begin results
+     *
+     * @example 0
+     */
+    offset: number;
+
+    /**
+     * Total number of results to be iterated through
+     *
+     * @example 4
+     */
+    total: number;
   }
 
   /**
@@ -63,20 +97,6 @@ export namespace ApiTypes {
     title: string;
 
     tracks: Track[];
-  }
-
-  interface CreatePlaylistRequest {
-    user_id: string;
-
-    name: string;
-
-    track_uris: string[];
-  }
-
-  interface CreatePlaylistResponse {
-    snapshot_id: string;
-
-    playlist: Playlist;
   }
 
   export interface SimplifiedAlbum {
@@ -262,41 +282,32 @@ export namespace ApiTypes {
     uri: string;
   }
 
-  interface Paginated<T> {
-    // "href": "https://api.spotify.com/v1/me/shows?offset=0&limit=20\n",
-    // href: string;
-
-    // "items": [
-    //   {}
-    // ],
-    items: T[];
-
-    // "limit": 20,
-    limit: number;
-
-    // "next": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
-    // next: string;
-
-    // "offset": 0,
-    offset: number;
-
-    // "previous": "https://api.spotify.com/v1/me/shows?offset=1&limit=1",
-    // previous: string;
-
-    // "total": 4
-    total: number;
-  }
-
   interface SavedSong {
     added_at: string; // Date
     track: Track;
+  }
+
+  // Create Playlist
+
+  interface CreatePlaylistRequest {
+    user_id: string;
+
+    name: string;
+
+    track_uris: string[];
+  }
+
+  interface CreatePlaylistResponse {
+    snapshot_id: string;
+
+    playlist: Playlist;
   }
 
   type CurrentUserSavedSongs = Paginated<SavedSong>;
 
   interface CurrentUserPlaylist {
     // collaborative: false
-    collaborative: boolean;
+    // collaborative: boolean;
     // description: ""
     description: string;
     // external_urls: {spotify: "https://open.spotify.com/playlist/5AhTQlpEpW7eSYc37v8zs2"}
@@ -317,9 +328,16 @@ export namespace ApiTypes {
     uri: string;
   }
 
+  // Get Tracks for Playlist
+
   type GetTracksForPlaylistResponse = Paginated<Track>;
 
   // Get User's Playlists
+
+  type GetUsersPlaylistsQueryParams = {
+    limit: number;
+    offset: number;
+  };
 
   type GetUsersPlaylistsResponse = Paginated<CurrentUserPlaylist>;
 
