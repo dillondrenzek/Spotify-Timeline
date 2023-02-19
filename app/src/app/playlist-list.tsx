@@ -1,5 +1,11 @@
 import React, { useCallback } from 'react';
-import { List, ListItem, ListItemText, ListItemButton } from '@mui/material';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton,
+  Typography,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ApiTypes } from 'api-types';
 
@@ -32,5 +38,7 @@ export function PlaylistList(props: {
         <PlaylistListItem key={playlist.id} playlist={playlist} />
       ))}
     </List>
-  ) : null;
+  ) : (
+    <Typography>No Playlists loaded.</Typography>
+  );
 }

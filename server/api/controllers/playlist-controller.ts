@@ -18,9 +18,9 @@ export class PlaylistController {
   constructor(private spotifyWebApi: SpotifyWebApi) {}
 
   /**
-   * Get Playlists
+   * Get User's Playlists
    */
-  getPlaylists: express.RequestHandler = async (req, res, next) => {
+  getUsersPlaylists: express.RequestHandler = async (req, res, next) => {
     try {
       const playlists: ApiTypes.GetUsersPlaylistsResponse =
         await this.spotifyWebApi.getUsersPlaylists();

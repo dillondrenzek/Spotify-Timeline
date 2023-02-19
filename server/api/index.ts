@@ -51,7 +51,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   });
 
   api.get('/playlists/:id/tracks', playlistController.getTracksForPlaylist);
-  api.get('/playlists', playlistController.getPlaylists);
+  api.get('/playlists', playlistController.getUsersPlaylists);
   api.post('/playlists', playlistController.createPlaylist);
 
   api.put('/player/play', playerController.startPlayback);

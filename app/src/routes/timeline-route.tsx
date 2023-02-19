@@ -16,17 +16,25 @@ export function TimelineRoute() {
     isLoaded,
     isLoading,
     currentPage,
-    fetchNextPage,
+    fetchNextPage: fetchNextTimelinePage,
   } = useTimelineStore();
-  const { playlists, pullUserPlaylists } = useUserPlaylistsStore();
+
+  const {
+    playlists: userPlaylists,
+    pullUserPlaylists,
+    fetchNextUserPlaylists,
+  } = useUserPlaylistsStore();
 
   useEffect(() => {
+    generateTimeline();
     pullUserPlaylists();
-  }, [pullUserPlaylists]);
+  }, [pullUserPlaylists, generateTimeline]);
 
-  const { ref: scrollRef, reset } = useInfiniteScroll(() =>
-    fetchNextPage().then(reset)
-  );
+  const { ref: playlistsScrollRef, reset: resetPlaylistScroll } =
+    useInfiniteScroll(() => fetchNextUserPlaylists().then(resetPlaylistScroll));
+
+  const { ref: timelineScrollRef, reset: resetTimelineScroll } =
+    useInfiniteScroll(() => fetchNextTimelinePage().then(resetTimelineScroll));
 
   return (
     <BaseRoute>
@@ -40,26 +48,34 @@ export function TimelineRoute() {
             py: 2,
           }}
           spacing={3}
+          ref={playlistsScrollRef}
         >
           <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
-            <Typography variant="h4" mb={2}>
-              Playlists
-            </Typography>
-            <Typography variant="caption">
-              To delete a playlist you've created, you must delete in the
-              Spotify app.
-            </Typography>
+            <Stack direction="column" spacing={2}>
+              <Typography variant="h4" mb={2}>
+                Playlists
+              </Typography>
+              <Typography variant="caption">
+                To delete a playlist you've created, you must delete in the
+                Spotify app.
+              </Typography>
+              <Typography variant="caption">
+                {userPlaylists?.length ?? '0'} playlists
+              </Typography>
+              <Button onClick={fetchNextUserPlaylists}>
+                Fetch Next Playlists
+              </Button>
+            </Stack>
           </Paper>
           <Paper elevation={elevation}>
-            <PlaylistList playlists={playlists} />
+            <PlaylistList playlists={userPlaylists} />
           </Paper>
         </Stack>
         <Stack
-          id="scroller"
           direction="column"
           sx={{ height: '100%', overflow: 'auto', flex: '5', py: 2 }}
           spacing={3}
-          ref={scrollRef}
+          ref={timelineScrollRef}
         >
           <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Typography variant="h4">Timeline</Typography>
@@ -67,7 +83,11 @@ export function TimelineRoute() {
 
           <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
             <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-              <Button color="success" onClick={generateTimeline}>
+              <Button
+                variant="outlined"
+                color="success"
+                onClick={generateTimeline}
+              >
                 {'Generate Timeline'}
               </Button>
               <Box>
@@ -82,7 +102,7 @@ export function TimelineRoute() {
               </Box>
               <Button
                 disabled={currentPage && !currentPage.offset}
-                onClick={fetchNextPage}
+                onClick={fetchNextTimelinePage}
               >
                 Fetch next playlists
               </Button>
@@ -102,13 +122,21 @@ export function TimelineRoute() {
                 {currentPage?.offset >= currentPage?.total ? (
                   <Typography>End of the list</Typography>
                 ) : (
-                  <Button disabled={isLoading} onClick={fetchNextPage}>
+                  <Button disabled={isLoading} onClick={fetchNextTimelinePage}>
                     {isLoading ? 'Fetching...' : 'Fetch next playlists'}
                   </Button>
                 )}
               </Box>
             </Paper>
           )}
+        </Stack>
+
+        <Stack
+          direction="column"
+          sx={{ height: '100%', overflow: 'auto', flex: '1', py: 2 }}
+          spacing={3}
+        >
+          Dates
         </Stack>
       </Stack>
     </BaseRoute>
