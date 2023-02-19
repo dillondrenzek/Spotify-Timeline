@@ -37,6 +37,20 @@ export namespace ApiTypes {
     offset: number;
 
     /**
+     * Convenience index for the next set of results
+     *
+     * @example 20
+     */
+    next: number;
+
+    /**
+     * Convenience index for the previous set of results
+     *
+     * @example null
+     */
+    prev: number;
+
+    /**
      * Total number of results to be iterated through
      *
      * @example 4

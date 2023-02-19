@@ -29,11 +29,10 @@ export class PlaylistController {
 
       debug('- Query:', queryParams);
 
-      const usersPlaylists: ApiTypes.GetUsersPlaylistsResponse =
-        await this.spotifyWebApi.getUsersPlaylists({
-          limit: queryParams.limit.toString(),
-          offset: queryParams.offset.toString(),
-        });
+      const usersPlaylists = await this.spotifyWebApi.getUsersPlaylists({
+        limit: queryParams.limit.toString(),
+        offset: queryParams.offset.toString(),
+      });
 
       debug('- Response:', usersPlaylists.items.length, 'items');
 
@@ -41,6 +40,10 @@ export class PlaylistController {
         items: usersPlaylists.items,
         limit: usersPlaylists.limit,
         offset: usersPlaylists.offset,
+        prev: usersPlaylists.offset
+          ? usersPlaylists.offset - usersPlaylists.limit
+          : null,
+        next: usersPlaylists.offset + usersPlaylists.limit,
         total: usersPlaylists.total,
       };
 
@@ -112,6 +115,8 @@ export class PlaylistController {
         })),
         limit: items.limit,
         offset: items.offset,
+        prev: items.offset ? items.offset - items.limit : null,
+        next: items.offset + items.limit,
         total: items.total,
       };
 

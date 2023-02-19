@@ -62,7 +62,14 @@ async function fetchSavedTracks(
     offset = null;
   }
 
-  return { items: result, limit: params.limit, total, offset };
+  return {
+    items: result,
+    limit: params.limit,
+    total,
+    offset,
+    next: offset + params.limit,
+    prev: offset ? offset - params.limit : null,
+  };
 }
 
 function normalizeDate(
@@ -205,7 +212,9 @@ export async function getSuggestedPlaylists(
   return {
     items: suggestedPlaylists,
     limit,
-    offset: newOffset,
+    offset,
+    prev: offset === 0 ? null : offset - limit,
+    next: newOffset,
     total: savedTracks.total,
   };
 }

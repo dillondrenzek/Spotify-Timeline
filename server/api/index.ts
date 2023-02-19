@@ -78,6 +78,8 @@ export default function (spotifyWebApi: SpotifyWebApi) {
             })),
             limit: data.limit,
             offset: data.offset,
+            prev: data.offset ? data.offset - data.limit : null,
+            next: data.offset + data.limit,
             total: data.total,
           };
           return result;

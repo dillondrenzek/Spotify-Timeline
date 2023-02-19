@@ -88,7 +88,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
     // Build URL
     const url = withParams(ApiUrls.suggestedPlaylists, {
       limit: currentPage?.limit.toString(),
-      offset: currentPage?.offset.toString(),
+      offset: currentPage?.next.toString(),
     });
 
     // Make Request
