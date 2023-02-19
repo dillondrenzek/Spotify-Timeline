@@ -76,15 +76,12 @@ export const useUserPlaylistsStore = create<UserPlaylistsStore>((set, get) => ({
 
     const currentPage = get().currentPage;
 
-    // Query params
-    const searchParams = new URLSearchParams();
-    searchParams.set('limit', currentPage?.limit.toString());
-    searchParams.set('offset', currentPage?.offset.toString());
-
     // Build URL
-    const url = withParams(ApiUrls.suggestedPlaylists, {
-      limit: currentPage?.limit.toString(),
-      offset: currentPage?.offset.toString(),
+    const limit = currentPage?.limit ?? 50;
+    const offset = currentPage ? currentPage.offset + currentPage.limit : 0;
+    const url = withParams(ApiUrls.playlists, {
+      limit: limit.toString(),
+      offset: offset.toString(),
     });
 
     // Make Request
