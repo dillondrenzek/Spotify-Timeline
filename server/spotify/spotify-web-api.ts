@@ -43,6 +43,13 @@ export class SpotifyWebApi {
     return this.accessToken;
   }
 
+  private get requiredAuthorization(): { Authorization: string } {
+    if (!this.accessToken) {
+      throw new Error('UNAUTHORIZED');
+    }
+    return { Authorization: `Bearer ${this.accessToken}` };
+  }
+
   setAccessToken(accessToken: string) {
     this.accessToken = accessToken;
   }
@@ -178,11 +185,29 @@ export class SpotifyWebApi {
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
       .then(GetCurrentUsersPlaylistsResponse.fromResponse);
+  }
+
+  /**
+   * Delete User Playlist
+   *
+   * @reference https://developer.spotify.com/documentation/web-api/reference/#/operations/unfollow-playlist
+   */
+  async deleteUserPlaylist(playlistId: string): Promise<void> {
+    const url = SpotifyWebApi.url(`/playlists/${playlistId}/followers`);
+
+    return await axios
+      .delete(url, {
+        headers: {
+          ...this.requiredAuthorization,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(() => null);
   }
 
   /**

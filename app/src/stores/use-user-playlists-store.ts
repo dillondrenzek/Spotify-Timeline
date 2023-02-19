@@ -27,6 +27,8 @@ type UserPlaylistsStore = {
 
   createPlaylist: (requestBody: ApiTypes.CreatePlaylistRequest) => void;
 
+  deletePlaylist: (playlistId: string) => Promise<void>;
+
   pullUserPlaylists: () => void;
 
   fetchNextUserPlaylists: () => Promise<ApiTypes.GetUsersPlaylistsResponse>;
@@ -55,6 +57,16 @@ export const useUserPlaylistsStore = create<UserPlaylistsStore>((set, get) => ({
     console.log('create playlist', response);
 
     useUserPlaylistsStore.getState().pullUserPlaylists();
+  },
+
+  async deletePlaylist(playlistId: string): Promise<void> {
+    const response = await httpRequest(ApiUrls.playlistById(playlistId), {
+      method: 'DELETE',
+    })
+      .catch(useUserStore.getState().handleUnauthorized)
+      .then(() => null);
+
+    return response;
   },
 
   async pullUserPlaylists() {

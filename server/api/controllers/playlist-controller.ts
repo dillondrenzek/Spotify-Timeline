@@ -99,6 +99,20 @@ export class PlaylistController {
     }
   };
 
+  deletePlaylist: express.RequestHandler = async (req, res, next) => {
+    try {
+      const params = req.params;
+
+      // Delete Playlist on Spotify
+      await this.spotifyWebApi.deleteUserPlaylist(params.id);
+
+      // Respond
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  };
+
   getTracksForPlaylist: express.RequestHandler = async (req, res, next) => {
     const { params } = req;
     const playlistId = params.id;

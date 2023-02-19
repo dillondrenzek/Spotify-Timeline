@@ -2,6 +2,7 @@ export const ApiUrls = {
   suggestedPlaylists: '/api/suggested-playlists',
 
   tracksForPlaylistById: (id: string) => `/api/playlists/${id}/tracks`,
+  playlistById: (id: string) => `/api/playlists/${id}`,
   playlists: '/api/playlists',
 
   player: '/api/player',
