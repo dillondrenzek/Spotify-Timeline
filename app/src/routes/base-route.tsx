@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useEffect } from 'react';
 import { Box } from '@mui/material';
-import { Nav } from '../app/Nav';
+import { Nav } from '../app/nav';
 import { grey } from '@mui/material/colors';
 import { Playbar } from '../app/playbar';
 import { usePlayerStore } from '../stores/use-player-store';
