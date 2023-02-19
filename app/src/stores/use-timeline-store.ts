@@ -85,11 +85,6 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
 
     const currentPage = get().currentPage;
 
-    // Query params
-    const searchParams = new URLSearchParams();
-    searchParams.set('limit', currentPage?.limit.toString());
-    searchParams.set('offset', currentPage?.offset.toString());
-
     // Build URL
     const url = withParams(ApiUrls.suggestedPlaylists, {
       limit: currentPage?.limit.toString(),
