@@ -63,9 +63,9 @@ export class PlaylistController {
           title: getPlaylistResponse.name,
           tracks: getPlaylistResponse.tracks.items.map((track) => ({
             addedAt: null,
-            artists: track.artists.map((artist) => ({ name: artist.name })),
-            title: track.name,
-            spotifyUri: track.uri,
+            artists: track?.artists?.map((artist) => ({ name: artist?.name })),
+            title: track?.name,
+            spotifyUri: track?.uri,
           })),
         },
       };
