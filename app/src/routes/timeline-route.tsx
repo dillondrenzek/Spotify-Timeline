@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Typography, Stack, Paper, Box, Button } from '@mui/material';
+import { Typography, Stack, Paper, Box, Button, Link } from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
 import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
 import { useInfiniteScroll } from '../hooks/use-infinite-scroll';
+import { formatDate } from '../lib/formatters';
 
 const elevation = 1;
 
@@ -101,7 +102,7 @@ export function TimelineRoute() {
                 )}
               </Box>
               <Button
-                disabled={currentPage && !currentPage.offset}
+                disabled={currentPage && !currentPage.next}
                 onClick={fetchNextTimelinePage}
               >
                 Fetch next timeline page
@@ -136,7 +137,16 @@ export function TimelineRoute() {
           sx={{ height: '100%', overflow: 'auto', flex: '1', py: 2 }}
           spacing={3}
         >
-          Dates
+          {suggestedPlaylists?.map((playlist) => (
+            <Link
+              component="button"
+              variant="body2"
+              color="secondary"
+              underline="hover"
+            >
+              {formatDate(playlist?.startDate)}
+            </Link>
+          ))}
         </Stack>
       </Stack>
     </BaseRoute>
