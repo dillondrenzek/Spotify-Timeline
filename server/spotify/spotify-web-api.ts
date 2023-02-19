@@ -13,6 +13,8 @@ import {
 import {
   AddItemsToPlaylistResponse,
   CreatePlaylistResponse,
+  GetCurrentUsersPlaylistsQueryParams,
+  GetCurrentUsersPlaylistsResponse,
   GetPlaylistResponse,
 } from './models/playlist';
 import { UserDevices } from './models/user-devices';
@@ -166,23 +168,28 @@ export class SpotifyWebApi {
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-a-list-of-current-users-playlists)
    */
-  async getUsersPlaylists(): Promise<
-    Types.Paginated<Types.CurrentUserPlaylist>
-  > {
-    try {
-      const url = SpotifyWebApi.url('/me/playlists');
-      const { data } = await axios.get(url, {
+  async getUsersPlaylists(
+    queryParams: GetCurrentUsersPlaylistsQueryParams
+  ): Promise<GetCurrentUsersPlaylistsResponse> {
+    queryParams = { limit: '50', offset: '0', ...queryParams };
+
+    const queryString = new URLSearchParams({ ...queryParams }).toString();
+    const url = SpotifyWebApi.url('/me/playlists?' + queryString);
+    return await axios
+      .get(url, {
         headers: {
           Authorization: `Bearer ${this.requiredAccessToken}`,
         },
-      });
-
-      return data;
-    } catch (error) {
-      handleAxiosError(error);
-    }
+      })
+      .catch(handleAxiosError)
+      .then(GetCurrentUsersPlaylistsResponse.fromResponse);
   }
 
+  /**
+   * Get Current User's Devices
+   *
+   * @returns
+   */
   async getUsersDevices(): Promise<Types.UserDevices> {
     const url = SpotifyWebApi.url('/me/player/devices');
     return await axios
