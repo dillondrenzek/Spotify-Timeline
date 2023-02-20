@@ -10,7 +10,6 @@ import {
   Stepper,
   Step,
   StepLabel,
-  StepIcon,
 } from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
