@@ -373,6 +373,10 @@ export namespace ApiTypes {
     deviceId?: string;
   };
 
+  type StartPlaybackResponse = PlayerState;
+
+  type PausePlaybackResponse = PlayerState;
+
   // Devices
 
   type GetUsersDevicesResponse = Device[];

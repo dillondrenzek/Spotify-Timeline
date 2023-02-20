@@ -45,7 +45,10 @@ export class PlayerController {
 
       await this.spotifyWebApi.startPlayback(uri, contextUri, deviceId);
 
-      res.status(200).json(body);
+      const response: ApiTypes.StartPlaybackResponse =
+        await this.spotifyWebApi.getPlayerState();
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }
@@ -64,7 +67,10 @@ export class PlayerController {
 
       await this.spotifyWebApi.pausePlayback(deviceId);
 
-      res.status(204).send();
+      const response: ApiTypes.StartPlaybackResponse =
+        await this.spotifyWebApi.getPlayerState();
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }

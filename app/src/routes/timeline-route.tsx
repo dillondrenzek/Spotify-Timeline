@@ -1,5 +1,13 @@
 import React, { useEffect } from 'react';
-import { Typography, Stack, Paper, Box, Button, Link } from '@mui/material';
+import {
+  Typography,
+  Stack,
+  Paper,
+  Box,
+  Button,
+  Link,
+  CircularProgress,
+} from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
@@ -56,16 +64,18 @@ export function TimelineRoute() {
               <Typography variant="h4" mb={2}>
                 Playlists
               </Typography>
-              <Typography variant="caption">
-                To delete a playlist you've created, you must delete in the
-                Spotify app.
-              </Typography>
-              <Typography variant="caption">
-                {userPlaylists?.length ?? '0'} playlists
-              </Typography>
-              <Button onClick={fetchNextUserPlaylists}>
-                Fetch Next Playlists
-              </Button>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-around"
+              >
+                <Typography variant="body1">
+                  {userPlaylists?.length ?? '0'} playlists
+                </Typography>
+                <Button onClick={fetchNextUserPlaylists}>
+                  Fetch Next Playlists
+                </Button>
+              </Stack>
             </Stack>
           </Paper>
           <Paper elevation={elevation}>
@@ -87,14 +97,16 @@ export function TimelineRoute() {
               <Button
                 variant="outlined"
                 color="success"
+                sx={{ minWidth: '160px' }}
                 onClick={generateTimeline}
               >
-                Generate Timeline
+                {isLoading ? (
+                  <CircularProgress size={24} color="success" />
+                ) : (
+                  'Generate Timeline'
+                )}
               </Button>
               <Box>
-                {isLoading && (
-                  <Typography variant="h6">Generating timeline</Typography>
-                )}
                 {isLoaded && !suggestedPlaylists?.length && (
                   <Typography variant="h6">
                     No timeline was generated
@@ -107,7 +119,9 @@ export function TimelineRoute() {
               >
                 Fetch next timeline page
               </Button>
-              <Typography>{suggestedPlaylists?.length ?? '0'} items</Typography>
+              <Typography variant="body1">
+                {suggestedPlaylists?.length ?? '0'} items
+              </Typography>
             </Stack>
           </Paper>
 
