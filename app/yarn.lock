@@ -9623,6 +9623,11 @@ urix@^0.1.0:
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
 
+use-scroll-position@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/use-scroll-position/-/use-scroll-position-0.0.4.tgz#60b15bcee69a1596b04be1fc7da1a71778500e04"
+  integrity sha512-niACVxsyo26TOR4F6MxipXULZE8W/HyB7SBkXnax1XrbuohLU2tZbMGySHBctgGH2E55gM+wGyCcFvueeWmbQA==
+
 use-sync-external-store@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"

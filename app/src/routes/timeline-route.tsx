@@ -7,6 +7,10 @@ import {
   Button,
   Link,
   CircularProgress,
+  Stepper,
+  Step,
+  StepLabel,
+  StepIcon,
 } from '@mui/material';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
@@ -151,16 +155,22 @@ export function TimelineRoute() {
           sx={{ height: '100%', overflow: 'auto', flex: '1', py: 2 }}
           spacing={3}
         >
-          {suggestedPlaylists?.map((playlist) => (
-            <Link
-              component="button"
-              variant="body2"
-              color="secondary"
-              underline="hover"
-            >
-              {formatDate(playlist?.startDate)}
-            </Link>
-          ))}
+          <Stepper orientation="vertical">
+            {suggestedPlaylists?.map((playlist) => (
+              <Step>
+                <StepLabel>
+                  <Link
+                    component="button"
+                    variant="body2"
+                    color="secondary"
+                    underline="hover"
+                  >
+                    {formatDate(playlist?.startDate)}
+                  </Link>
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
         </Stack>
       </Stack>
     </BaseRoute>
