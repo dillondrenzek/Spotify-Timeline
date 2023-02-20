@@ -17,18 +17,22 @@ import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
 import { useInfiniteScroll } from '../hooks/use-infinite-scroll';
 import { SuggestedPlaylistStepper } from '../app/suggested-playlist-stepper';
+import { useTimeline } from '../hooks/use-temporary-timeline';
 
 const elevation = 1;
 
 export function TimelineRoute() {
   const {
-    playlists: suggestedPlaylists,
+    playlists: timelineSuggestedPlaylists,
     generateTimeline,
     isLoaded,
     isLoading,
     currentPage,
     fetchNextPage: fetchNextTimelinePage,
   } = useTimelineStore();
+
+  const [state, dispatch] = useTimeline(timelineSuggestedPlaylists);
+  const { suggestedPlaylists } = state;
 
   const {
     playlists: userPlaylists,
@@ -39,9 +43,18 @@ export function TimelineRoute() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    generateTimeline();
+    generateTimeline().then((pl) =>
+      dispatch({ type: 'SET_SUGGESTED_PLAYLISTS', data: pl.items })
+    );
     pullUserPlaylists();
-  }, [pullUserPlaylists, generateTimeline]);
+  }, [pullUserPlaylists, generateTimeline, dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_SUGGESTED_PLAYLISTS',
+      data: timelineSuggestedPlaylists,
+    });
+  }, [timelineSuggestedPlaylists, dispatch]);
 
   const { ref: playlistsScrollRef, reset: resetPlaylistScroll } =
     useInfiniteScroll(() => fetchNextUserPlaylists().then(resetPlaylistScroll));
@@ -63,8 +76,6 @@ export function TimelineRoute() {
     100,
     timelineScrollRef
   );
-
-  console.log('scroll position', scrollPosition);
 
   return (
     <BaseRoute>
@@ -132,13 +143,6 @@ export function TimelineRoute() {
                     'Generate Timeline'
                   )}
                 </Button>
-                <Box>
-                  {isLoaded && !suggestedPlaylists?.length && (
-                    <Typography variant="h6">
-                      No timeline was generated
-                    </Typography>
-                  )}
-                </Box>
                 <Button
                   disabled={currentPage && !currentPage.next}
                   onClick={fetchNextTimelinePage}
@@ -152,18 +156,30 @@ export function TimelineRoute() {
             </Stack>
           </Paper>
 
+          {isLoaded && !suggestedPlaylists?.length && (
+            <Paper elevation={elevation} sx={{ p: 3 }}>
+              <Stack sx={{ alignItems: 'center' }}>
+                {isLoading && <CircularProgress size={24} color="success" />}
+                {!isLoading && isLoaded && !suggestedPlaylists?.length && (
+                  <Typography
+                    variant="caption"
+                    sx={{ textTransform: 'uppercase' }}
+                  >
+                    No timeline was generated
+                  </Typography>
+                )}
+              </Stack>
+            </Paper>
+          )}
+
           {suggestedPlaylists?.map((playlist, j) => (
             <Paper elevation={elevation} key={playlist.startDate}>
-              <ScreenDetector
-                onEnterScreen={() => {
-                  setCurrentIndex(j);
-                }}
-              />
+              <ScreenDetector onEnterScreen={() => setCurrentIndex(j)} />
               <TimelineSuggestedPlaylist playlist={playlist} />
             </Paper>
           ))}
 
-          {currentPage?.offset && suggestedPlaylists && (
+          {!!currentPage?.offset && suggestedPlaylists && (
             <Paper sx={{ p: 3 }}>
               <Box display="flex" justifyContent="center" alignItems="center">
                 {currentPage?.offset >= currentPage?.total ? (

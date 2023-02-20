@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Stepper, Step, StepLabel } from '@mui/material';
+import { Link, Stepper, Step, StepLabel, Typography } from '@mui/material';
 import { ApiTypes } from 'api-types';
 
 export interface SuggestedPlaylistStepperProps {
@@ -19,14 +19,7 @@ export function SuggestedPlaylistStepper(props: SuggestedPlaylistStepperProps) {
           completed={false}
         >
           <StepLabel>
-            <Link
-              component="button"
-              variant="body2"
-              color="secondary"
-              underline="hover"
-            >
-              {playlist.title}
-            </Link>
+            <Typography variant="body2">{playlist.title}</Typography>
           </StepLabel>
         </Step>
       ))}
