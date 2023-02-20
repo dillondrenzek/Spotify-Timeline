@@ -64,10 +64,10 @@ export function PlaylistList(props: {
     setRemovePlaylistId(null);
   }, []);
 
-  const handleConfirmRemove = useCallback(() => {
-    deletePlaylist(removePlaylistId)
+  const handleConfirmRemove = useCallback(async () => {
+    await deletePlaylist(removePlaylistId)
       .then(() => setRemovePlaylistId(null))
-      .then(() => pullUserPlaylists());
+      .then(pullUserPlaylists);
   }, [deletePlaylist, removePlaylistId, pullUserPlaylists]);
 
   return (
