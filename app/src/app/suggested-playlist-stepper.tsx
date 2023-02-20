@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, Stepper, Step, StepLabel } from '@mui/material';
-import { formatDate } from '../lib/formatters';
 import { ApiTypes } from 'api-types';
 
 export interface SuggestedPlaylistStepperProps {
@@ -26,7 +25,7 @@ export function SuggestedPlaylistStepper(props: SuggestedPlaylistStepperProps) {
               color="secondary"
               underline="hover"
             >
-              {formatDate(playlist?.startDate)}
+              {playlist.title}
             </Link>
           </StepLabel>
         </Step>
