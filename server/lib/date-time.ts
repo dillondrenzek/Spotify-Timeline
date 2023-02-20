@@ -11,7 +11,7 @@ export function getMinMaxDateTime(dates: DateTime[]): [DateTime, DateTime] {
   return [DateTime.min(...dates), DateTime.max(...dates)];
 }
 
-type DateFormat = 'yyyy LLL dd';
+type DateFormat = 'yyyy LLL dd' | 'LLL dd yyyy';
 
 export function formatDate(date: DateTime, format: DateFormat): string {
   return date.toFormat(format);

@@ -23,9 +23,9 @@ export function suggestedPlaylist(
   const title = [
     'Liked Songs',
     minDate && maxDate
-      ? `(${formatDate(minDate, 'yyyy LLL dd')} - ${formatDate(
+      ? `(${formatDate(minDate, 'LLL dd yyyy')} - ${formatDate(
           maxDate,
-          'yyyy LLL dd'
+          'LLL dd yyyy'
         )})`
       : null,
   ]
