@@ -39,7 +39,6 @@ function useOnScreen<T extends Element>(
 
 export function ScreenDetector(props: {
   children?: ReactNode;
-  scrollTo;
   onEnterScreen?: () => void;
   onExitScreen?: () => void;
 }) {
