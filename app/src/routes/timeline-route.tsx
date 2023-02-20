@@ -16,7 +16,7 @@ import { useUserPlaylistsStore } from '../stores/use-user-playlists-store';
 import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
 import { useInfiniteScroll } from '../hooks/use-infinite-scroll';
 import { SuggestedPlaylistStepper } from '../app/suggested-playlist-stepper';
-import { useTimeline } from '../hooks/use-temporary-timeline';
+import { useTimeline } from '../hooks/use-timeline';
 
 const elevation = 1;
 
