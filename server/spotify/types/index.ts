@@ -1,3 +1,5 @@
+import { Playlist } from '../models/playlist';
+
 export interface CurrentUserProfile {
   // "country": "SE",
   country: string;
@@ -34,28 +36,7 @@ export interface CurrentUserProfile {
   uri: string;
 }
 
-export interface CurrentUserPlaylist {
-  // collaborative: false
-  collaborative: boolean;
-  // description: ""
-  description: string;
-  // external_urls: {spotify: "https://open.spotify.com/playlist/5AhTQlpEpW7eSYc37v8zs2"}
-  // href: "https://api.spotify.com/v1/playlists/5AhTQlpEpW7eSYc37v8zs2"
-  // id: "5AhTQlpEpW7eSYc37v8zs2"
-  id: string;
-  // images: [{height: 640, url: "https://i.scdn.co/image/ab67616d0000b2736ee651e65c3766d80e7fcab7", width: 640}]
-  // name: "Hi & Slo"
-  name: string;
-  // owner: {display_name: "Dillon Drenzek", external_urls: {spotify: "https://open.spotify.com/user/121028591"},…}
-  // primary_color: null
-  // public: true
-  // snapshot_id: "NCxiN2JlNmJmMzUyYjhlNDI2ZWUxNTE4YjI5NGJmNDY1YTI0N2E4NzU1"
-  // tracks: {href: "https://api.spotify.com/v1/playlists/5AhTQlpEpW7eSYc37v8zs2/tracks", total: 3}
-  // type: "playlist";
-  type: 'playlist';
-  // uri: "spotify:playlist:5AhTQlpEpW7eSYc37v8zs2"
-  uri: string;
-}
+export type CurrentUserPlaylist = Playlist;
 
 export interface SavedTrack {
   /**
@@ -172,18 +153,6 @@ export interface Track {
 
   name: string;
 
-  //   "disc_number": 1,
-  //   "duration_ms": 207959,
-  //   "explicit": false,
-  //   "external_ids": {
-  //     "isrc": "USUM71703861"
-  //   },
-  //   "is_local": false,
-  //   "name": "Cut To The Feeling",
-  //   "popularity": 63,
-  //   "preview_url": "https://p.scdn.co/mp3-preview/3eb16018c2a700240e9dfb8817b6f2d041f15eb1?cid=774b29d4f13844c495f206cafdad9c86",
-  //   "track_number": 1,
-  //   "type": "track",
   //   "uri": "spotify:track:11dFghVXANMlKmJXsNCbNl"
   uri: string;
   // }
@@ -354,103 +323,15 @@ export interface CreatePlaylistRequest {
 }
 
 export interface CreatePlaylistResponse {
-  // true if the owner allows other users to modify the playlist
-  // collaborative: boolean;
-
-  // The playlist description. Only returned for modified, verified playlists, otherwise null.
-  // description: string | null;
-
-  // object
-  // Known external URLs for this playlist.
-  // external_urls: Record<string, unknown>;
-
-  // spotify: string;
-  // The Spotify URL for the object.
-
-  // followers: Record<string, unknown>;
-  // Information about the followers of the playlist.
-
-  // href
-  // string
-  // This will always be set to null, as the Web API does not support it at the moment.
-
-  // total
-  // integer
-  // The total number of followers.
-
-  // href
-  // string
-  // A link to the Web API endpoint providing full details of the playlist.
-
   /**
    * The Spotify ID for the playlist.
    */
   id: string;
 
-  // images
-  // array of objects
-  // Images for the playlist. The array may be empty or contain up to three images. The images are returned by size in descending order. See Working with Playlists. Note: If returned, the source URL for the image (url) is temporary and will expire in less than a day.
-
-  // url
-  // string
-  // required
-  // The source URL of the image.
-
-  // height
-  // integer
-  // required
-  // The image height in pixels.
-
-  // width
-  // integer
-  // required
-  // The image width in pixels.
-
   // name
   // string
   // The name of the playlist.
   name: string;
-
-  // owner
-  // allOf
-  // The user who owns the playlist
-
-  // object
-  // external_urls
-  // object
-  // Known public external URLs for this user.
-
-  // followers
-  // object
-  // Information about the followers of this user.
-
-  // href
-  // string
-  // A link to the Web API endpoint for this user.
-
-  // id
-  // string
-  // The Spotify user ID for this user.
-
-  // type
-  // string
-  // The object type.
-
-  // Allowed value:
-  // "user"
-  // uri
-  // string
-  // The Spotify URI for this user.
-  // uri: string;
-
-  // object
-  // display_name
-  // string
-  // The name displayed on the user's profile. null if not available.
-
-  // public
-  // boolean
-  // The playlist's public/private status: true the playlist is public, false the playlist is private, null the playlist status is not relevant. For more about public/private status, see Working with Playlists
 
   /**
    * The version identifier for the current playlist. Can be supplied in other requests to target a specific playlist version

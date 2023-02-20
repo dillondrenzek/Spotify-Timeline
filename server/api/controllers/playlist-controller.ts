@@ -1,7 +1,10 @@
 import { ApiTypes } from 'api-types';
 import express from 'express';
 import { SpotifyWebApi } from '../../spotify/spotify-web-api';
-import { CreatePlaylistRequest } from '../models/playlists';
+import {
+  CreatePlaylistRequest,
+  GetUserPlaylistsQueryParams,
+} from '../models/playlists';
 
 const DEBUG_MODE = true;
 
@@ -18,14 +21,33 @@ export class PlaylistController {
   constructor(private spotifyWebApi: SpotifyWebApi) {}
 
   /**
-   * Get Playlists
+   * Get User's Playlists
    */
-  getPlaylists: express.RequestHandler = async (req, res, next) => {
+  getUsersPlaylists: express.RequestHandler = async (req, res, next) => {
     try {
-      const playlists: ApiTypes.GetUsersPlaylistsResponse =
-        await this.spotifyWebApi.getUsersPlaylists();
+      const queryParams = GetUserPlaylistsQueryParams.fromRequest(req);
 
-      res.status(200).json(playlists);
+      debug('- Query:', queryParams);
+
+      const usersPlaylists = await this.spotifyWebApi.getUsersPlaylists({
+        limit: queryParams.limit.toString(),
+        offset: queryParams.offset.toString(),
+      });
+
+      debug('- Response:', usersPlaylists.items.length, 'items');
+
+      const response: ApiTypes.GetUsersPlaylistsResponse = {
+        items: usersPlaylists.items,
+        limit: usersPlaylists.limit,
+        offset: usersPlaylists.offset,
+        prev: usersPlaylists.offset
+          ? usersPlaylists.offset - usersPlaylists.limit
+          : null,
+        next: usersPlaylists.offset + usersPlaylists.limit,
+        total: usersPlaylists.total,
+      };
+
+      res.status(200).json(response);
     } catch (err) {
       next(err);
     }
@@ -77,6 +99,20 @@ export class PlaylistController {
     }
   };
 
+  deletePlaylist: express.RequestHandler = async (req, res, next) => {
+    try {
+      const params = req.params;
+
+      // Delete Playlist on Spotify
+      await this.spotifyWebApi.deleteUserPlaylist(params.id);
+
+      // Respond
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  };
+
   getTracksForPlaylist: express.RequestHandler = async (req, res, next) => {
     const { params } = req;
     const playlistId = params.id;
@@ -93,6 +129,8 @@ export class PlaylistController {
         })),
         limit: items.limit,
         offset: items.offset,
+        prev: items.offset ? items.offset - items.limit : null,
+        next: items.offset + items.limit,
         total: items.total,
       };
 

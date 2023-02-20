@@ -10,7 +10,7 @@ export function usePlayButton(
 ) {
   const { isAuthenticated } = useUserStore();
   const { devices } = useDevicesStore();
-  const { player, play, pause, pullPlayerState } = usePlayerStore();
+  const { player, play, pause } = usePlayerStore();
   const calcDeviceId = deviceId ?? player?.device?.id ?? devices[0]?.id ?? null;
   const isActive = player?.item?.uri === uri;
   const isPlaying = isActive && player?.is_playing;
@@ -21,18 +21,9 @@ export function usePlayButton(
     }
 
     return isPlaying
-      ? pause(calcDeviceId).then(pullPlayerState)
-      : play(uri, contextUri, calcDeviceId).then(pullPlayerState);
-  }, [
-    isAuthenticated,
-    calcDeviceId,
-    pause,
-    play,
-    uri,
-    contextUri,
-    isPlaying,
-    pullPlayerState,
-  ]);
+      ? pause(calcDeviceId)
+      : play(uri, contextUri, calcDeviceId);
+  }, [isAuthenticated, calcDeviceId, pause, play, uri, contextUri, isPlaying]);
 
   return {
     playToggle,

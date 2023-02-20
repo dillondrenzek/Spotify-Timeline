@@ -13,6 +13,8 @@ import {
 import {
   AddItemsToPlaylistResponse,
   CreatePlaylistResponse,
+  GetCurrentUsersPlaylistsQueryParams,
+  GetCurrentUsersPlaylistsResponse,
   GetPlaylistResponse,
 } from './models/playlist';
 import { UserDevices } from './models/user-devices';
@@ -39,6 +41,13 @@ export class SpotifyWebApi {
       throw new Error('UNAUTHORIZED');
     }
     return this.accessToken;
+  }
+
+  private get requiredAuthorization(): { Authorization: string } {
+    if (!this.accessToken) {
+      throw new Error('UNAUTHORIZED');
+    }
+    return { Authorization: `Bearer ${this.accessToken}` };
   }
 
   setAccessToken(accessToken: string) {
@@ -166,23 +175,46 @@ export class SpotifyWebApi {
    *
    * @reference [Spotify API Docs](https://developer.spotify.com/documentation/web-api/reference/#/operations/get-a-list-of-current-users-playlists)
    */
-  async getUsersPlaylists(): Promise<
-    Types.Paginated<Types.CurrentUserPlaylist>
-  > {
-    try {
-      const url = SpotifyWebApi.url('/me/playlists');
-      const { data } = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
-        },
-      });
+  async getUsersPlaylists(
+    queryParams: GetCurrentUsersPlaylistsQueryParams
+  ): Promise<GetCurrentUsersPlaylistsResponse> {
+    queryParams = { limit: '50', offset: '0', ...queryParams };
 
-      return data;
-    } catch (error) {
-      handleAxiosError(error);
-    }
+    const queryString = new URLSearchParams({ ...queryParams }).toString();
+    const url = SpotifyWebApi.url('/me/playlists?' + queryString);
+    return await axios
+      .get(url, {
+        headers: {
+          ...this.requiredAuthorization,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(GetCurrentUsersPlaylistsResponse.fromResponse);
   }
 
+  /**
+   * Delete User Playlist
+   *
+   * @reference https://developer.spotify.com/documentation/web-api/reference/#/operations/unfollow-playlist
+   */
+  async deleteUserPlaylist(playlistId: string): Promise<void> {
+    const url = SpotifyWebApi.url(`/playlists/${playlistId}/followers`);
+
+    return await axios
+      .delete(url, {
+        headers: {
+          ...this.requiredAuthorization,
+        },
+      })
+      .catch(handleAxiosError)
+      .then(() => null);
+  }
+
+  /**
+   * Get Current User's Devices
+   *
+   * @returns
+   */
   async getUsersDevices(): Promise<Types.UserDevices> {
     const url = SpotifyWebApi.url('/me/player/devices');
     return await axios

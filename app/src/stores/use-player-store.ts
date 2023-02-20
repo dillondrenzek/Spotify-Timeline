@@ -56,7 +56,11 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
    * @param deviceId
    * @returns
    */
-  play: async (uri: string, contextUri?: string, deviceId?: string) => {
+  play: async (
+    uri: string,
+    contextUri?: string,
+    deviceId?: string
+  ): Promise<ApiTypes.StartPlaybackResponse> => {
     const { isAuthenticated } = useUserStore.getState();
     if (!isAuthenticated) {
       return;
@@ -79,8 +83,11 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
       // Validate Response and Type
       .then(parseJson(isValidResult, convert))
 
-      // Refresh Player state
-      .then(get().pullPlayerState);
+      // Set player state
+      .then((playerState) => {
+        set({ player: playerState });
+        return playerState;
+      });
   },
 
   /**
@@ -89,7 +96,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
    * @param deviceId
    * @returns
    */
-  pause: async (deviceId: string) => {
+  pause: async (deviceId: string): Promise<ApiTypes.PausePlaybackResponse> => {
     const url = withParams(ApiUrls.playerPause, { device_id: deviceId });
 
     return await httpRequest(url, {
@@ -98,8 +105,14 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     })
       .catch(useUserStore.getState().handleUnauthorized)
 
-      // Refresh Player state
-      .then(get().pullPlayerState);
+      // Validate Response and Type
+      .then(parseJson(isValidResult, convert))
+
+      // Set player state
+      .then((playerState) => {
+        set({ player: playerState });
+        return playerState;
+      });
   },
 }));
 

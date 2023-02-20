@@ -1,5 +1,24 @@
 import { BaseResponse } from './base-model';
 import * as Types from '../types';
+import { Paginated } from './paginated';
+
+export interface Playlist {
+  description: string | null;
+  /**
+   * Spotify ID
+   */
+  id: string;
+
+  images: Types.Image[];
+
+  name: string;
+
+  tracks: Types.Paginated<Types.SavedTrack>;
+
+  type: 'playlist';
+
+  uri: string;
+}
 
 /**
  * The response from the Spotify Web API
@@ -71,5 +90,50 @@ export const AddItemsToPlaylistResponse: BaseResponse<Types.AddItemsToPlaylistRe
       }
 
       return null;
+    },
+  };
+
+/**
+ * Get Current User's Playlists Query Params
+ *
+ * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-a-list-of-current-users-playlists
+ */
+export interface GetCurrentUsersPlaylistsQueryParams {
+  /**
+   * @type integer
+   */
+  limit: string;
+
+  /**
+   * @type integer
+   */
+  offset: string;
+}
+
+/**
+ * Get Current User's Playlists Response
+ *
+ * @see https://developer.spotify.com/documentation/web-api/reference/#/operations/get-a-list-of-current-users-playlists
+ */
+export type GetCurrentUsersPlaylistsResponse = Types.Paginated<Playlist>;
+
+export const GetCurrentUsersPlaylistsResponse: BaseResponse<GetCurrentUsersPlaylistsResponse> =
+  {
+    fromResponse(res): GetCurrentUsersPlaylistsResponse {
+      const { data } = res;
+
+      return {
+        href: data.href,
+        items: data.items,
+        limit: data.limit,
+        next: data.next,
+        offset: data.offset,
+        previous: data.previous,
+        total: data.total,
+      };
+    },
+
+    isValid(value): value is GetCurrentUsersPlaylistsResponse {
+      return Paginated.isValid(value);
     },
   };

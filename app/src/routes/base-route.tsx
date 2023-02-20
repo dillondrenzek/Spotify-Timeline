@@ -1,13 +1,11 @@
 import React, { PropsWithChildren, useEffect } from 'react';
-import { CssBaseline, Box } from '@mui/material';
-import { Nav } from '../app/Nav';
+import { Box } from '@mui/material';
+import { Nav } from '../app/nav';
 import { grey } from '@mui/material/colors';
 import { Playbar } from '../app/playbar';
 import { usePlayerStore } from '../stores/use-player-store';
-import { createTheme, ThemeProvider } from '@mui/material';
 import { useUserStore } from '../stores/use-user-store';
-
-const theme = createTheme();
+import { AppThemeProvider } from '../theme/app-theme';
 
 type BaseRouteProps = PropsWithChildren<{
   /**
@@ -34,8 +32,7 @@ export function BaseRoute(props: BaseRouteProps) {
   }, [pullPlayerState]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <AppThemeProvider>
       <Box
         display="grid"
         gridTemplateRows={showPlaybar ? '64px 1fr 64px' : '64px 1fr'}
@@ -45,6 +42,6 @@ export function BaseRoute(props: BaseRouteProps) {
         <Box sx={{ overflow: 'auto' }}>{children}</Box>
         <Box>{showPlaybar && <Playbar />}</Box>
       </Box>
-    </ThemeProvider>
+    </AppThemeProvider>
   );
 }
