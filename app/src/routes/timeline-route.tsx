@@ -9,7 +9,6 @@ import {
   Divider,
 } from '@mui/material';
 import { ScreenDetector } from '../app/screen-detector';
-import { useScrollPosition } from '@n8tb1t/use-scroll-position';
 import { BaseRoute } from './base-route';
 import { useTimelineStore } from '../stores/use-timeline-store';
 import { PlaylistList } from '../app/playlist-list';
@@ -63,19 +62,6 @@ export function TimelineRoute() {
     useInfiniteScroll(() => fetchNextTimelinePage().then(resetTimelineScroll));
 
   const timelineTitleRef = useRef<HTMLDivElement>(null);
-
-  const scrollPosition = useScrollPosition(
-    (params) => {
-      const { scrollTop, scrollHeight } = timelineScrollRef.current;
-      console.log('scroll effect', params);
-      console.log('scroll info:', scrollTop, scrollHeight);
-    },
-    [],
-    timelineTitleRef,
-    false,
-    100,
-    timelineScrollRef
-  );
 
   return (
     <BaseRoute>
