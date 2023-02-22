@@ -3,7 +3,7 @@ import express from 'express';
 import querystring from 'querystring';
 import { AppEnvironment } from '../env';
 import * as Types from './types';
-import { handleAxiosError } from './errors';
+import { handleAxiosError, SpotifyApiError } from './errors';
 import { PaginatedSavedTrack } from './models/saved-track';
 import { PlayerState } from './models/player-state';
 import {
@@ -36,16 +36,15 @@ export class SpotifyWebApi {
     this.authorizationHeader = `Basic ${Buffer.from(creds).toString('base64')}`;
   }
 
-  private get requiredAccessToken(): string {
-    if (!this.accessToken) {
-      throw new Error('UNAUTHORIZED');
-    }
-    return this.accessToken;
-  }
-
+  /**
+   * @throws SpotifyApiError `UNAUTHORIZED`
+   */
   private get requiredAuthorization(): { Authorization: string } {
     if (!this.accessToken) {
-      throw new Error('UNAUTHORIZED');
+      throw {
+        reason: 'UNAUTHORIZED',
+        message: 'No access token present.',
+      } as SpotifyApiError;
     }
     return { Authorization: `Bearer ${this.accessToken}` };
   }
@@ -111,7 +110,7 @@ export class SpotifyWebApi {
       const url = SpotifyWebApi.url('/me');
       const { data } = await axios.get(url, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       });
 
@@ -142,7 +141,7 @@ export class SpotifyWebApi {
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
@@ -163,7 +162,7 @@ export class SpotifyWebApi {
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
@@ -220,7 +219,7 @@ export class SpotifyWebApi {
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
@@ -239,7 +238,7 @@ export class SpotifyWebApi {
     const response = await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError);
@@ -265,7 +264,7 @@ export class SpotifyWebApi {
     return await axios
       .post(url, data, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
@@ -282,7 +281,7 @@ export class SpotifyWebApi {
     return await axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
@@ -304,7 +303,7 @@ export class SpotifyWebApi {
     return await axios
       .post(url, data, {
         headers: {
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
@@ -338,7 +337,7 @@ export class SpotifyWebApi {
       .put(url, body, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)
@@ -362,7 +361,7 @@ export class SpotifyWebApi {
       .put(url, null, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.requiredAccessToken}`,
+          ...this.requiredAuthorization,
         },
       })
       .catch(handleAxiosError)

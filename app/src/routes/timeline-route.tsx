@@ -165,7 +165,7 @@ export function TimelineRoute() {
             </Paper>
           ))}
 
-          {!!currentPage?.offset && suggestedPlaylists && (
+          {suggestedPlaylists?.length && (
             <Paper sx={{ p: 3 }}>
               <Box display="flex" justifyContent="center" alignItems="center">
                 {currentPage?.offset >= currentPage?.total ? (
@@ -189,6 +189,9 @@ export function TimelineRoute() {
             activePlaylist={suggestedPlaylists[currentIndex] ?? null}
             suggestedPlaylists={suggestedPlaylists}
           />
+          <Button disabled={isLoading} onClick={fetchNextTimelinePage}>
+            Load More
+          </Button>
         </Stack>
       </Stack>
     </BaseRoute>
