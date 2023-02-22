@@ -22,16 +22,16 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route
+        {/* <Route
           path="/"
           element={
             <RequireAuth>
               <SavedSongsRoute />
             </RequireAuth>
           }
-        />
+        /> */}
         <Route
-          path="timeline"
+          path="/"
           element={
             <RequireAuth>
               <TimelineRoute />

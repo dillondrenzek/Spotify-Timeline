@@ -1,75 +1,16 @@
-import React, { useEffect, useMemo } from 'react';
-import {
-  AppBar,
-  Toolbar,
-  Stack,
-  Typography,
-  Box,
-  IconButton,
-} from '@mui/material';
-import { ApiTypes } from 'api-types';
-import { green, grey, orange } from '@mui/material/colors';
-import { Sync } from '@mui/icons-material';
+import React, { useEffect } from 'react';
+import { AppBar, Toolbar, Stack, Typography, Box } from '@mui/material';
 import { usePlayerStore } from '../stores/use-player-store';
 import { useDevicesStore } from '../stores/use-devices-store';
 import { PlayButton } from './play-button';
-
-function DeviceDisplay(props: {
-  device: ApiTypes.PlayerState['device'];
-  isPlaying: boolean;
-}) {
-  const { device, isPlaying } = props;
-
-  if (!device) {
-    return null;
-  }
-
-  return (
-    <Stack direction="column">
-      <Typography
-        variant="caption"
-        fontWeight="bold"
-        color={isPlaying ? green[400] : orange[700]}
-      >
-        {isPlaying ? 'Playing' : 'Paused'} on
-      </Typography>
-      <Typography variant="caption">{device?.name}</Typography>
-    </Stack>
-  );
-}
-
-function CurrentItemDisplay(props: { item: ApiTypes.PlayerState['item'] }) {
-  const { item } = props;
-
-  return item ? (
-    <Stack direction="column">
-      <Typography fontWeight={500}>{item?.name || ''}</Typography>
-      <Box>
-        {Array.isArray(item?.artists)
-          ? item?.artists.map((item, i) => (
-              <Typography
-                variant="caption"
-                key={i}
-                sx={{ color: grey[400], mr: 1, fontWeight: 400 }}
-              >
-                {item?.name}
-              </Typography>
-            ))
-          : ''}
-      </Box>
-    </Stack>
-  ) : null;
-}
+import { SyncButton } from './playbar/sync-button';
+import { CurrentItemDisplay } from './playbar/current-item-display';
+import { DeviceDisplay } from './playbar/device-display';
 
 export function Playbar() {
   const { pullPlayerState, player } = usePlayerStore();
   const { pullDevices } = useDevicesStore();
   const { item, is_playing, device, timestamp } = player ?? {};
-
-  const renderedTimestamp = useMemo(() => {
-    const date = timestamp ? new Date(timestamp) : new Date();
-    return date.toLocaleTimeString() + ' ' + date.toLocaleDateString();
-  }, [timestamp]);
 
   useEffect(() => {
     pullPlayerState();
@@ -86,20 +27,13 @@ export function Playbar() {
           justifyContent="space-between"
           sx={{ width: '100%' }}
         >
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <IconButton size="small" onClick={pullPlayerState}>
-              <Sync color="primary" />
-            </IconButton>
+          <Stack direction="row" alignItems="center" spacing={3}>
             <Stack direction="column">
               <Typography variant="h6" noWrap component="div">
-                Player
+                Spotify Timeline
               </Typography>
-              {renderedTimestamp ? (
-                <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
-                  {renderedTimestamp}
-                </Typography>
-              ) : null}
             </Stack>
+            <DeviceDisplay device={device} isPlaying={is_playing} />
           </Stack>
 
           <Stack direction="row" spacing={4}>
@@ -107,9 +41,9 @@ export function Playbar() {
             <CurrentItemDisplay item={item} />
           </Stack>
 
-          <Stack direction="row" spacing={2}>
-            <DeviceDisplay device={device} isPlaying={is_playing} />
-          </Stack>
+          <Box>
+            <SyncButton timestamp={timestamp} onClick={pullPlayerState} />
+          </Box>
         </Stack>
       </Toolbar>
     </AppBar>

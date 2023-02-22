@@ -18,11 +18,13 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Button,
+  ButtonProps,
+  Tooltip,
 } from '@mui/material';
 import { AuthLinks } from '../lib/auth';
 import { useUserStore } from '../stores/use-user-store';
 import { ApiTypes } from 'api-types';
-import { useToggle } from 'usehooks-ts';
 
 export function Nav() {
   const { currentUser, isAuthenticated, isLoaded, pullCurrentUser, logout } =
@@ -38,18 +40,25 @@ export function Nav() {
     <AppBar color="default" position="relative">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Stack direction="row" spacing={3} alignItems="center">
-          <Typography variant="h6" noWrap component="div">
+          {/* <NavLink variant="title" color="success" href="/"> */}
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            fontWeight={700}
+            textTransform="capitalize"
+          >
             Spotify Timeline
           </Typography>
-          <NavLink href="/">Home</NavLink>
-          {currentUser ? <NavLink href="/timeline">Timeline</NavLink> : null}
+          {/* </NavLink> */}
+          {/* <Stack direction="row" spacing={1} alignItems="center">
+            <NavLink href="/">Home</NavLink>
+            {currentUser ? <NavLink href="/timeline">Timeline</NavLink> : null}
+          </Stack> */}
         </Stack>
         {currentUser ? (
           <NavProfileDisplay user={currentUser} />
         ) : (
-          // <Stack direction="row" spacing={3} alignItems="center">
-          //   <NavLink onClick={logout}>Logout</NavLink>
-          // </Stack>
           <NavLink href={AuthLinks.login}>Login</NavLink>
         )}
       </Toolbar>
@@ -95,13 +104,24 @@ function NavProfileDisplay(
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       <Box sx={{ flexGrow: 0 }}>
-        <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-          <Avatar
-            variant="rounded"
-            sx={{ width: '50px', height: '50px' }}
-            {...avatarProps}
-          />
-        </IconButton>
+        <Tooltip
+          title={
+            <Typography color="inherit">
+              Hey there!{' '}
+              <Typography color="inherit" fontWeight={500}>
+                {user.display_name}
+              </Typography>
+            </Typography>
+          }
+        >
+          <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
+            <Avatar
+              variant="rounded"
+              sx={{ width: '50px', height: '50px' }}
+              {...avatarProps}
+            />
+          </IconButton>
+        </Tooltip>
 
         <Menu
           sx={{ mt: '45px' }}
@@ -137,13 +157,25 @@ function NavProfileDisplay(
   );
 }
 
-function NavLink(props: LinkProps) {
-  const { children, ...passthrough } = props;
+type NavLinkProps = Omit<ButtonProps, 'variant'> & {
+  /**
+   * Custom variant
+   */
+  variant?: 'title' | 'nav';
+};
+
+function NavLink(props: NavLinkProps) {
+  const { children, href, variant = 'nav', ...passthrough } = props;
   return (
     <Box>
-      <Link color="inherit" {...passthrough}>
+      <Button
+        size={variant === 'nav' ? 'medium' : 'large'}
+        color="inherit"
+        href={href}
+        {...passthrough}
+      >
         {children}
-      </Link>
+      </Button>
     </Box>
   );
 }

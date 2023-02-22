@@ -165,7 +165,7 @@ export function TimelineRoute() {
             </Paper>
           ))}
 
-          {suggestedPlaylists?.length && (
+          {suggestedPlaylists?.length > 0 && (
             <Paper sx={{ p: 3 }}>
               <Box display="flex" justifyContent="center" alignItems="center">
                 {currentPage?.offset >= currentPage?.total ? (
