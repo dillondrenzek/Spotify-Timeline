@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import {
   Box,
   Typography,
@@ -10,11 +10,14 @@ import {
   Button,
   TextField,
   IconButton,
+  BoxProps,
+  ButtonGroup,
+  Card,
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { grey } from '@mui/material/colors';
+import { green, grey } from '@mui/material/colors';
 import { useToggle } from 'usehooks-ts';
 import { PlayButton } from '../app/play-button';
 import { ApiTypes } from 'api-types';
@@ -100,6 +103,8 @@ export function TimelineSuggestedPlaylist(props: {
     setIsTextField(false);
   }, [handleReset, state.value]);
 
+  const handleClickSplit = useCallback(() => {}, []);
+
   return (
     <List>
       <ListItem>
@@ -177,46 +182,58 @@ export function TimelineSuggestedPlaylist(props: {
       <Divider />
       {!!state.value.tracks?.length ? (
         state.value.tracks.map((track, i) => (
-          <ListItem key={i.toString()}>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-              sx={{ width: '100%' }}
-            >
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <PlayButton uri={track?.spotifyUri} />
-                <Stack direction="column">
-                  <Typography>{track?.title || 'Untitled'}</Typography>
-                  <Stack direction="row" spacing={1}>
-                    {track?.artists.map((artist, i) => (
-                      <Typography
-                        variant="caption"
-                        key={i}
-                        sx={{ color: grey[400] }}
-                      >
-                        {artist.name}
-                      </Typography>
-                    ))}
+          <>
+            <ListItem key={i.toString()}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ width: '100%' }}
+              >
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <PlayButton uri={track?.spotifyUri} />
+                  <Stack direction="column">
+                    <Typography>{track?.title || 'Untitled'}</Typography>
+                    <Stack direction="row" spacing={1}>
+                      {track?.artists.map((artist, i) => (
+                        <Typography
+                          variant="caption"
+                          key={i}
+                          sx={{ color: grey[400] }}
+                        >
+                          {artist.name}
+                        </Typography>
+                      ))}
+                    </Stack>
                   </Stack>
                 </Stack>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <Typography variant="caption">
+                    {formatDate(track.addedAt)}
+                  </Typography>
+                  <IconButton
+                    color="error"
+                    onClick={(ev) => {
+                      ev.preventDefault();
+                      handleClickRemove(track);
+                    }}
+                  >
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
               </Stack>
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Typography variant="caption">
-                  {formatDate(track.addedAt)}
-                </Typography>
-                <IconButton
-                  color="error"
-                  onClick={(ev) => {
-                    ev.preventDefault();
-                    handleClickRemove(track);
-                  }}
+              <InterItemDisplay>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="inherit"
+                  onClick={handleClickSplit}
                 >
-                  <ClearIcon fontSize="small" />
-                </IconButton>
-              </Stack>
-            </Stack>
-          </ListItem>
+                  Split
+                </Button>
+              </InterItemDisplay>
+            </ListItem>
+          </>
         ))
       ) : (
         <ListItem>
@@ -224,5 +241,47 @@ export function TimelineSuggestedPlaylist(props: {
         </ListItem>
       )}
     </List>
+  );
+}
+
+function InterItemDisplay(props: { sx?: BoxProps['sx']; children: ReactNode }) {
+  const { sx, children } = props;
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0,
+        transform: 'translateY(50%)',
+        height: '20px',
+        width: '100%',
+        cursor: 'pointer',
+        zIndex: 100,
+        opacity: 0,
+        '&:hover': {
+          // backgroundColor: grey[100],
+          opacity: 1,
+        },
+        ...sx,
+      }}
+    >
+      <Card
+        elevation={1}
+        sx={{ position: 'relative', backgroundColor: 'white', zIndex: 105 }}
+      >
+        {children}
+      </Card>
+      <Box
+        sx={{
+          position: 'absolute',
+          width: '100%',
+          height: '1px',
+          zIndex: 101,
+          backgroundColor: grey[300],
+        }}
+      />
+    </Box>
   );
 }
