@@ -22,14 +22,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <SavedSongsRoute />
-            </RequireAuth>
-          }
-        /> */}
         <Route
           path="/"
           element={
