@@ -28,21 +28,16 @@ export function Playbar() {
           sx={{ width: '100%' }}
         >
           <Stack direction="row" alignItems="center" spacing={3}>
-            <Stack direction="column">
-              <Typography variant="h6" noWrap component="div">
-                Spotify Timeline
-              </Typography>
-            </Stack>
-            <DeviceDisplay device={device} isPlaying={is_playing} />
-          </Stack>
-
-          <Stack direction="row" spacing={4}>
-            <PlayButton uri={item?.uri} size="large" color="secondary" />
+            <SyncButton timestamp={timestamp} onClick={pullPlayerState} />
             <CurrentItemDisplay item={item} />
           </Stack>
 
+          <Stack direction="row" spacing={4}>
+            <PlayButton uri={item?.uri} size="large" />
+          </Stack>
+
           <Box>
-            <SyncButton timestamp={timestamp} onClick={pullPlayerState} />
+            <DeviceDisplay device={device} isPlaying={is_playing} />
           </Box>
         </Stack>
       </Toolbar>
