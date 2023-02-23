@@ -121,6 +121,7 @@ export function TimelineRoute() {
             </Stack>
           </Paper>
 
+          {/* Empty state */}
           {isLoaded && !suggestedPlaylists?.length && (
             <Paper elevation={elevation} sx={{ p: 3 }}>
               <Stack sx={{ alignItems: 'center' }}>
@@ -137,13 +138,23 @@ export function TimelineRoute() {
             </Paper>
           )}
 
+          {/* Suggested Playlists */}
           {suggestedPlaylists?.map((playlist, j) => (
             <Paper elevation={elevation} key={playlist.startDate}>
               <ScreenDetector onEnterScreen={() => setCurrentIndex(j)} />
-              <TimelineSuggestedPlaylist playlist={playlist} />
+              <TimelineSuggestedPlaylist
+                playlist={playlist}
+                onSplit={(atIndex) => {
+                  dispatch({
+                    type: 'SPLIT_LIST_AT_INDEX',
+                    data: { atIndex: atIndex + 1, playlist, playlistIndex: j },
+                  });
+                }}
+              />
             </Paper>
           ))}
 
+          {/* End of List */}
           {suggestedPlaylists?.length > 0 && (
             <Paper sx={{ p: 3 }}>
               <Box display="flex" justifyContent="center" alignItems="center">

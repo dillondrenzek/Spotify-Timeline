@@ -38,8 +38,9 @@ function dateRangeDisplay(startDate: string, endDate: string): string {
 
 export function TimelineSuggestedPlaylist(props: {
   playlist: ApiTypes.SuggestedPlaylist;
+  onSplit?: (atIndex: number) => void;
 }) {
-  const { playlist } = props;
+  const { playlist, onSplit } = props;
   const { createPlaylist } = useUserPlaylistsStore();
   const { currentUser } = useUserStore();
 
@@ -102,8 +103,6 @@ export function TimelineSuggestedPlaylist(props: {
     handleReset({ values: state.value });
     setIsTextField(false);
   }, [handleReset, state.value]);
-
-  const handleClickSplit = useCallback(() => {}, []);
 
   return (
     <List>
@@ -182,58 +181,58 @@ export function TimelineSuggestedPlaylist(props: {
       <Divider />
       {!!state.value.tracks?.length ? (
         state.value.tracks.map((track, i) => (
-          <>
-            <ListItem key={i.toString()}>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ width: '100%' }}
-              >
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <PlayButton uri={track?.spotifyUri} />
-                  <Stack direction="column">
-                    <Typography>{track?.title || 'Untitled'}</Typography>
-                    <Stack direction="row" spacing={1}>
-                      {track?.artists.map((artist, i) => (
-                        <Typography
-                          variant="caption"
-                          key={i}
-                          sx={{ color: grey[400] }}
-                        >
-                          {artist.name}
-                        </Typography>
-                      ))}
-                    </Stack>
+          <ListItem key={i.toString()}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ width: '100%' }}
+            >
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <PlayButton uri={track?.spotifyUri} />
+                <Stack direction="column">
+                  <Typography>{track?.title || 'Untitled'}</Typography>
+                  <Stack direction="row" spacing={1}>
+                    {track?.artists.map((artist, i) => (
+                      <Typography
+                        variant="caption"
+                        key={i}
+                        sx={{ color: grey[400] }}
+                      >
+                        {artist.name}
+                      </Typography>
+                    ))}
                   </Stack>
                 </Stack>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <Typography variant="caption">
-                    {formatDate(track.addedAt)}
-                  </Typography>
-                  <IconButton
-                    color="error"
-                    onClick={(ev) => {
-                      ev.preventDefault();
-                      handleClickRemove(track);
-                    }}
-                  >
-                    <ClearIcon fontSize="small" />
-                  </IconButton>
-                </Stack>
               </Stack>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <Typography variant="caption">
+                  {formatDate(track.addedAt)}
+                </Typography>
+                <IconButton
+                  color="error"
+                  onClick={(ev) => {
+                    ev.preventDefault();
+                    handleClickRemove(track);
+                  }}
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              </Stack>
+            </Stack>
+            {onSplit && (
               <InterItemDisplay>
                 <Button
                   variant="outlined"
                   size="small"
                   color="inherit"
-                  onClick={handleClickSplit}
+                  onClick={() => onSplit(i)}
                 >
                   Split
                 </Button>
               </InterItemDisplay>
-            </ListItem>
-          </>
+            )}
+          </ListItem>
         ))
       ) : (
         <ListItem>
