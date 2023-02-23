@@ -28,7 +28,7 @@ type TimelineStore = {
   /**
    * Generates the initial timeline
    */
-  generateTimeline: () => void;
+  generateTimeline: () => Promise<ApiTypes.GetSuggestedPlaylistsResponse>;
 
   /**
    * Increments the current page
@@ -45,7 +45,7 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
 
   isLoading: false,
 
-  async generateTimeline() {
+  async generateTimeline(): Promise<ApiTypes.GetSuggestedPlaylistsResponse> {
     set({ isLoading: true });
 
     const response = await httpRequest(ApiUrls.suggestedPlaylists)
@@ -78,6 +78,8 @@ export const useTimelineStore = create<TimelineStore>((set, get) => ({
       isLoaded: true,
       isLoading: false,
     });
+
+    return response;
   },
 
   async fetchNextPage() {

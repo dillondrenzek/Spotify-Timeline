@@ -31,6 +31,11 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
    * @returns
    */
   pullPlayerState: async () => {
+    const { isAuthenticated } = useUserStore.getState();
+    if (!isAuthenticated) {
+      return;
+    }
+
     set({ isLoading: false });
 
     const playerState = await httpRequest(ApiUrls.player)

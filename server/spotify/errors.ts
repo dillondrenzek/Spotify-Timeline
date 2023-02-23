@@ -21,7 +21,10 @@ export function handleAxiosError(err: unknown) {
 export interface SpotifyApiError {
   reason: string;
   message?: string;
-  response: {
+  /**
+   * `null` if a request was not able to be made
+   */
+  response?: {
     status: AxiosResponse<any>['status'];
     config: AxiosResponse<any>['config'];
     data: AxiosResponse<any>['data'];
@@ -30,7 +33,7 @@ export interface SpotifyApiError {
 }
 
 export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
-  return typeof value === 'object' && 'reason' in value && 'response' in value;
+  return typeof value === 'object' && 'reason' in value;
 }
 
 function toSpotifyApiError(err: AxiosError): SpotifyApiError {

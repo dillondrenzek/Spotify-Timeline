@@ -104,10 +104,11 @@ export class PlaylistController {
       const params = req.params;
 
       // Delete Playlist on Spotify
-      await this.spotifyWebApi.deleteUserPlaylist(params.id);
+      const playlistId = params.id;
+      await this.spotifyWebApi.deleteUserPlaylist(playlistId);
 
       // Respond
-      res.status(204).send();
+      res.status(200).send({ playlistId });
     } catch (err) {
       next(err);
     }

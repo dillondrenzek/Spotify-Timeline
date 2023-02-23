@@ -26,14 +26,6 @@ function App() {
           path="/"
           element={
             <RequireAuth>
-              <SavedSongsRoute />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="timeline"
-          element={
-            <RequireAuth>
               <TimelineRoute />
             </RequireAuth>
           }

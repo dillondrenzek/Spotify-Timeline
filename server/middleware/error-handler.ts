@@ -20,10 +20,11 @@ function errorResponse(err: unknown, res: express.Response) {
 
   if (axios.isAxiosError(err)) {
     debug('  [ERR] Axios Error:', err);
-    status = err.response.status;
+    status = err.response?.status ?? 500;
   } else if (isSpotifyApiError(err)) {
     debug('  [ERR] Spotify Error:', err);
     const { reason } = err;
+    status = err.response?.status >= 200 ? err.response.status : 500;
 
     switch (reason) {
       case 'UNAUTHORIZED':
@@ -31,6 +32,7 @@ function errorResponse(err: unknown, res: express.Response) {
           message: 'Authorization needs to be refreshed.',
           reason: 'UNAUTHORIZED',
         };
+        status = 401;
         break;
       case 'NO_ACTIVE_DEVICE':
         responseJson = {
@@ -41,8 +43,6 @@ function errorResponse(err: unknown, res: express.Response) {
       default:
         break;
     }
-
-    status = err.response.status >= 200 ? err.response.status : 500;
   } else {
     debug('  [ERR] Unhandled Error:', err);
     status = 500;
