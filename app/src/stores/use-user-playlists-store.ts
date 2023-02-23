@@ -76,7 +76,7 @@ export const useUserPlaylistsStore = create<UserPlaylistsStore>((set, get) => ({
       .catch(useUserStore.getState().handleUnauthorized)
       .then(parseJson(isValidResult, convert));
 
-    const playlists = response.items;
+    const playlists = response?.items;
 
     set({ playlists, currentPage: response, isLoading: false, isLoaded: true });
 

@@ -22,6 +22,7 @@ import {
   ButtonProps,
   Tooltip,
 } from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { AuthLinks } from '../lib/auth';
 import { useUserStore } from '../stores/use-user-store';
 import { ApiTypes } from 'api-types';
@@ -40,7 +41,7 @@ export function Nav() {
     <AppBar color="default" position="relative">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Stack direction="row" spacing={3} alignItems="center">
-          {/* <NavLink variant="title" color="success" href="/"> */}
+          {/* Title */}
           <Typography
             variant="h6"
             noWrap
@@ -50,17 +51,15 @@ export function Nav() {
           >
             Spotify Timeline
           </Typography>
-          {/* </NavLink> */}
-          {/* <Stack direction="row" spacing={1} alignItems="center">
+
+          {/* Nav Links */}
+          <Stack direction="row" spacing={1} alignItems="center">
             <NavLink href="/">Home</NavLink>
-            {currentUser ? <NavLink href="/timeline">Timeline</NavLink> : null}
-          </Stack> */}
+          </Stack>
         </Stack>
-        {currentUser ? (
-          <NavProfileDisplay user={currentUser} />
-        ) : (
-          <NavLink href={AuthLinks.login}>Login</NavLink>
-        )}
+
+        {/* User profile */}
+        <NavProfileDisplay user={currentUser} />
       </Toolbar>
     </AppBar>
   );
@@ -75,16 +74,22 @@ function NavProfileDisplay(
   }>
 ) {
   const { user } = props;
-
   const { logout } = useUserStore();
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
 
+  /**
+   * Open menu
+   */
   const handleOpenMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   }, []);
+
+  /**
+   * Close menu
+   */
   const handleCloseMenu = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       setAnchorElNav(null);
@@ -92,35 +97,44 @@ function NavProfileDisplay(
     []
   );
 
+  /**
+   * Avatar Props
+   */
   const avatarProps = useMemo<Partial<AvatarProps>>(() => {
+    if (!user) {
+      return {};
+    }
+
     const src = user.images?.[0]?.url;
+
     return {
       alt: user.display_name,
       src,
       children: src ? null : user.display_name?.charAt(0) ?? '',
+      variant: 'rounded',
+      sx: { width: '50px', height: '50px' },
     };
-  }, [user.display_name, user.images]);
+  }, [user]);
 
-  return (
+  return user ? (
     <Stack direction="row" spacing={1} alignItems="center">
       <Box sx={{ flexGrow: 0 }}>
         <Tooltip
           title={
             <Typography color="inherit">
               Hey there!{' '}
-              <Typography color="inherit" fontWeight={500}>
+              <Typography component={'span'} color="inherit" fontWeight={500}>
                 {user.display_name}
               </Typography>
             </Typography>
           }
         >
-          <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
-            <Avatar
-              variant="rounded"
-              sx={{ width: '50px', height: '50px' }}
-              {...avatarProps}
-            />
-          </IconButton>
+          <Box display="flex" alignItems="center">
+            <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
+              <Avatar {...avatarProps} />
+              <ArrowDropDownIcon />
+            </IconButton>
+          </Box>
         </Tooltip>
 
         <Menu
@@ -154,6 +168,8 @@ function NavProfileDisplay(
         </Menu>
       </Box>
     </Stack>
+  ) : (
+    <NavLink href={AuthLinks.login}>Login</NavLink>
   );
 }
 

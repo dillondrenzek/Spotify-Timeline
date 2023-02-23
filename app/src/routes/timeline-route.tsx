@@ -68,37 +68,16 @@ export function TimelineRoute() {
       <Stack direction="row" spacing={3} sx={{ px: 3, height: '100%' }}>
         <Stack
           direction="column"
-          sx={{
-            height: '100%',
-            overflow: 'auto',
-            flex: '2',
-            py: 2,
-          }}
+          sx={{ height: '100%', overflow: 'auto', flex: '1', py: 2 }}
           spacing={3}
-          ref={playlistsScrollRef}
         >
-          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
-            <Stack direction="column" spacing={2}>
-              <Typography variant="h4" mb={2}>
-                Playlists
-              </Typography>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-around"
-              >
-                <Typography variant="body1">
-                  {userPlaylists?.length ?? '0'} playlists
-                </Typography>
-                <Button onClick={fetchNextUserPlaylists}>
-                  Fetch Next Playlists
-                </Button>
-              </Stack>
-            </Stack>
-          </Paper>
-          <Paper elevation={elevation}>
-            <PlaylistList playlists={userPlaylists} />
-          </Paper>
+          <SuggestedPlaylistStepper
+            activePlaylist={suggestedPlaylists[currentIndex] ?? null}
+            suggestedPlaylists={suggestedPlaylists}
+          />
+          <Button disabled={isLoading} onClick={fetchNextTimelinePage}>
+            Load More
+          </Button>
         </Stack>
 
         <Stack
@@ -182,16 +161,37 @@ export function TimelineRoute() {
 
         <Stack
           direction="column"
-          sx={{ height: '100%', overflow: 'auto', flex: '1', py: 2 }}
+          sx={{
+            height: '100%',
+            overflow: 'auto',
+            flex: '2',
+            py: 2,
+          }}
           spacing={3}
+          ref={playlistsScrollRef}
         >
-          <SuggestedPlaylistStepper
-            activePlaylist={suggestedPlaylists[currentIndex] ?? null}
-            suggestedPlaylists={suggestedPlaylists}
-          />
-          <Button disabled={isLoading} onClick={fetchNextTimelinePage}>
-            Load More
-          </Button>
+          <Paper elevation={elevation} sx={{ p: 3, overflow: 'visible' }}>
+            <Stack direction="column" spacing={2}>
+              <Typography variant="h4" mb={2}>
+                Playlists
+              </Typography>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-around"
+              >
+                <Typography variant="body1">
+                  {userPlaylists?.length ?? '0'} playlists
+                </Typography>
+                <Button onClick={fetchNextUserPlaylists}>
+                  Fetch Next Playlists
+                </Button>
+              </Stack>
+            </Stack>
+          </Paper>
+          <Paper elevation={elevation}>
+            <PlaylistList playlists={userPlaylists} />
+          </Paper>
         </Stack>
       </Stack>
     </BaseRoute>
