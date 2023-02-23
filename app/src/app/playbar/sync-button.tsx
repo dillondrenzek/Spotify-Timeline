@@ -27,11 +27,21 @@ export function SyncButton(props: SyncButtonProps) {
     <Tooltip
       title={
         <Typography color="inherit">
-          <Typography color="inherit" fontWeight={500}>
+          <Typography
+            component="span"
+            display="block"
+            color="inherit"
+            fontWeight={500}
+          >
             Refresh Player State
           </Typography>{' '}
           {renderedTimestamp ? (
-            <Typography variant="caption" sx={{ color: grey[400], mr: 1 }}>
+            <Typography
+              component="span"
+              display="block"
+              variant="caption"
+              sx={{ color: grey[400], mr: 1 }}
+            >
               Last updated: {renderedTimestamp}
             </Typography>
           ) : null}{' '}
