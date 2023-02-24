@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Typography,
@@ -10,9 +10,7 @@ import {
   Button,
   TextField,
   IconButton,
-  BoxProps,
   ButtonGroup,
-  Card,
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -27,6 +25,7 @@ import { useEditSuggestedPlaylist } from '../hooks/use-edit-suggested-playlist';
 import { FormikHelpers, useFormik } from 'formik';
 import { SavePlaylistConfirmationDialog } from './save-playlist-confirmation-dialog';
 import { formatDate } from '../lib/formatters';
+import { InteritemDisplay } from './interitem-display';
 
 type EditTitleForm = {
   title: string;
@@ -221,7 +220,7 @@ export function TimelineSuggestedPlaylist(props: {
               </Stack>
             </Stack>
             {onSplit && (
-              <InterItemDisplay>
+              <InteritemDisplay>
                 <Button
                   variant="outlined"
                   size="small"
@@ -230,7 +229,7 @@ export function TimelineSuggestedPlaylist(props: {
                 >
                   Split
                 </Button>
-              </InterItemDisplay>
+              </InteritemDisplay>
             )}
           </ListItem>
         ))
@@ -240,47 +239,5 @@ export function TimelineSuggestedPlaylist(props: {
         </ListItem>
       )}
     </List>
-  );
-}
-
-function InterItemDisplay(props: { sx?: BoxProps['sx']; children: ReactNode }) {
-  const { sx, children } = props;
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 0,
-        transform: 'translateY(50%)',
-        height: '20px',
-        width: '100%',
-        cursor: 'pointer',
-        zIndex: 100,
-        opacity: 0,
-        '&:hover': {
-          // backgroundColor: grey[100],
-          opacity: 1,
-        },
-        ...sx,
-      }}
-    >
-      <Card
-        elevation={1}
-        sx={{ position: 'relative', backgroundColor: 'white', zIndex: 105 }}
-      >
-        {children}
-      </Card>
-      <Box
-        sx={{
-          position: 'absolute',
-          width: '100%',
-          height: '1px',
-          zIndex: 101,
-          backgroundColor: grey[300],
-        }}
-      />
-    </Box>
   );
 }

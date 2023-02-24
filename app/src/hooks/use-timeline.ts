@@ -17,6 +17,15 @@ type Action =
         playlist: ApiTypes.SuggestedPlaylist;
         playlistIndex: number;
       };
+    }
+  | {
+      type: 'MERGE_LISTS';
+      data: {
+        /**
+         * Sequential indeces of playlists to merge into one
+         */
+        atIndex: number[];
+      };
     };
 
 const reducer: Reducer<State, Action> = (prevState, action) => {
@@ -58,6 +67,38 @@ const reducer: Reducer<State, Action> = (prevState, action) => {
         topPlaylist,
         newPlaylist,
         ...prevState.suggestedPlaylists.slice(playlistIndex + 1),
+      ];
+
+      return {
+        ...prevState,
+        suggestedPlaylists: newPlaylists,
+      };
+    }
+
+    case 'MERGE_LISTS': {
+      const { atIndex } = action.data;
+
+      // Only deal with 2 lists for now
+      if (atIndex.length !== 2) {
+        return prevState;
+      }
+
+      // Assuming top is chronologically before bottom
+      const [topIndex, bottomIndex] = atIndex;
+      const top = prevState.suggestedPlaylists[topIndex];
+      const bottom = prevState.suggestedPlaylists[bottomIndex];
+
+      const newPlaylist: ApiTypes.SuggestedPlaylist = {
+        title: 'Merged Playlist',
+        startDate: top.startDate,
+        endDate: bottom.endDate,
+        tracks: [...top.tracks, ...bottom.tracks],
+      };
+
+      const newPlaylists: ApiTypes.SuggestedPlaylist[] = [
+        ...prevState.suggestedPlaylists.slice(0, topIndex),
+        newPlaylist,
+        ...prevState.suggestedPlaylists.slice(bottomIndex + 1),
       ];
 
       return {
