@@ -179,7 +179,7 @@ export function TimelineSuggestedPlaylist(props: {
       </ListItem>
       <Divider />
       {!!state.value.tracks?.length ? (
-        state.value.tracks.map((track, i) => (
+        state.value.tracks.map((track, i, arr) => (
           <ListItem key={i.toString()}>
             <Stack
               direction="row"
@@ -219,7 +219,7 @@ export function TimelineSuggestedPlaylist(props: {
                 </IconButton>
               </Stack>
             </Stack>
-            {onSplit && (
+            {onSplit && i < arr.length - 1 && (
               <InteritemDisplay>
                 <Button
                   variant="outlined"

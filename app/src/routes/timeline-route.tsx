@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import {
   Typography,
   Stack,
@@ -141,10 +141,7 @@ export function TimelineRoute() {
 
           {/* Suggested Playlists */}
           {suggestedPlaylists?.map((playlist, j) => (
-            <Box
-              sx={{ position: 'relative' }}
-              key={playlist.startDate + playlist.endDate}
-            >
+            <Fragment key={playlist.startDate + playlist.endDate}>
               <Paper elevation={elevation}>
                 <ScreenDetector onEnterScreen={() => setCurrentIndex(j)} />
                 <TimelineSuggestedPlaylist
@@ -161,7 +158,9 @@ export function TimelineRoute() {
                   }}
                 />
               </Paper>
-              <InteritemDisplay>
+              <InteritemDisplay
+                sx={{ position: 'relative', transform: 'none', height: 'auto' }}
+              >
                 <Button
                   variant="outlined"
                   size="small"
@@ -178,7 +177,7 @@ export function TimelineRoute() {
                   Merge
                 </Button>
               </InteritemDisplay>
-            </Box>
+            </Fragment>
           ))}
 
           {/* End of List */}
