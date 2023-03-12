@@ -33,6 +33,10 @@ app.use('/api', api(spotifyWebApi));
 // Auth API
 app.use('/auth', auth(spotifyWebApi));
 
+app.get('/test', (req, res) => {
+  res.status(200).send('Ok');
+});
+
 // Serve Client
 app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../app/public/index.html'));
