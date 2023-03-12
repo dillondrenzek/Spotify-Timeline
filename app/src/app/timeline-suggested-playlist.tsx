@@ -10,11 +10,12 @@ import {
   Button,
   TextField,
   IconButton,
+  ButtonGroup,
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ClearIcon from '@mui/icons-material/Clear';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { grey } from '@mui/material/colors';
+import { green, grey } from '@mui/material/colors';
 import { useToggle } from 'usehooks-ts';
 import { PlayButton } from '../app/play-button';
 import { ApiTypes } from 'api-types';
@@ -24,6 +25,7 @@ import { useEditSuggestedPlaylist } from '../hooks/use-edit-suggested-playlist';
 import { FormikHelpers, useFormik } from 'formik';
 import { SavePlaylistConfirmationDialog } from './save-playlist-confirmation-dialog';
 import { formatDate } from '../lib/formatters';
+import { InteritemDisplay } from './interitem-display';
 
 type EditTitleForm = {
   title: string;
@@ -35,8 +37,9 @@ function dateRangeDisplay(startDate: string, endDate: string): string {
 
 export function TimelineSuggestedPlaylist(props: {
   playlist: ApiTypes.SuggestedPlaylist;
+  onSplit?: (atIndex: number) => void;
 }) {
-  const { playlist } = props;
+  const { playlist, onSplit } = props;
   const { createPlaylist } = useUserPlaylistsStore();
   const { currentUser } = useUserStore();
 
@@ -216,6 +219,18 @@ export function TimelineSuggestedPlaylist(props: {
                 </IconButton>
               </Stack>
             </Stack>
+            {onSplit && (
+              <InteritemDisplay>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="inherit"
+                  onClick={() => onSplit(i)}
+                >
+                  Split
+                </Button>
+              </InteritemDisplay>
+            )}
           </ListItem>
         ))
       ) : (

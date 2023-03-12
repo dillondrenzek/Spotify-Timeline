@@ -17,6 +17,7 @@ import { TimelineSuggestedPlaylist } from '../app/timeline-suggested-playlist';
 import { useInfiniteScroll } from '../hooks/use-infinite-scroll';
 import { SuggestedPlaylistStepper } from '../app/suggested-playlist-stepper';
 import { useTimeline } from '../hooks/use-timeline';
+import { InteritemDisplay } from '../app/interitem-display';
 
 const elevation = 1;
 
@@ -121,6 +122,7 @@ export function TimelineRoute() {
             </Stack>
           </Paper>
 
+          {/* Empty state */}
           {isLoaded && !suggestedPlaylists?.length && (
             <Paper elevation={elevation} sx={{ p: 3 }}>
               <Stack sx={{ alignItems: 'center' }}>
@@ -137,13 +139,49 @@ export function TimelineRoute() {
             </Paper>
           )}
 
+          {/* Suggested Playlists */}
           {suggestedPlaylists?.map((playlist, j) => (
-            <Paper elevation={elevation} key={playlist.startDate}>
-              <ScreenDetector onEnterScreen={() => setCurrentIndex(j)} />
-              <TimelineSuggestedPlaylist playlist={playlist} />
-            </Paper>
+            <Box
+              sx={{ position: 'relative' }}
+              key={playlist.startDate + playlist.endDate}
+            >
+              <Paper elevation={elevation}>
+                <ScreenDetector onEnterScreen={() => setCurrentIndex(j)} />
+                <TimelineSuggestedPlaylist
+                  playlist={playlist}
+                  onSplit={(atIndex) => {
+                    dispatch({
+                      type: 'SPLIT_LIST_AT_INDEX',
+                      data: {
+                        atIndex: atIndex + 1,
+                        playlist,
+                        playlistIndex: j,
+                      },
+                    });
+                  }}
+                />
+              </Paper>
+              <InteritemDisplay>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  color="inherit"
+                  onClick={() =>
+                    dispatch({
+                      type: 'MERGE_LISTS',
+                      data: {
+                        atIndex: [j, j + 1],
+                      },
+                    })
+                  }
+                >
+                  Merge
+                </Button>
+              </InteritemDisplay>
+            </Box>
           ))}
 
+          {/* End of List */}
           {suggestedPlaylists?.length > 0 && (
             <Paper sx={{ p: 3 }}>
               <Box display="flex" justifyContent="center" alignItems="center">
