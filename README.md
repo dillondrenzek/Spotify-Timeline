@@ -2,6 +2,8 @@
 
 A web app that takes your Spotify account and creates a timeline of all your songs, when they were added and attempts to make playlists or 'eras' of your music listening history.
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/68687a01-f57a-485a-92d4-53577bb6c2d0/deploy-status)](https://app.netlify.com/sites/subtle-biscochitos-218225/deploys)
+
 ---
 
 ## How to Start

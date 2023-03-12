@@ -1,11 +1,21 @@
 import React, { useEffect } from 'react';
-import { AppBar, Toolbar, Stack, Typography, Box } from '@mui/material';
+import { AppBar, Toolbar, Stack, styled, StackProps } from '@mui/material';
 import { usePlayerStore } from '../stores/use-player-store';
 import { useDevicesStore } from '../stores/use-devices-store';
 import { PlayButton } from './play-button';
 import { SyncButton } from './playbar/sync-button';
 import { CurrentItemDisplay } from './playbar/current-item-display';
 import { DeviceDisplay } from './playbar/device-display';
+
+/**
+ * Container that divides the playbar into thirds
+ */
+const PlaybarThird = styled((props: StackProps) => (
+  <Stack direction="row" {...props} />
+))({
+  flex: '1 1 33%',
+  alignItems: 'center',
+});
 
 export function Playbar() {
   const { pullPlayerState, player } = usePlayerStore();
@@ -27,18 +37,18 @@ export function Playbar() {
           justifyContent="space-between"
           sx={{ width: '100%' }}
         >
-          <Stack direction="row" alignItems="center" spacing={3}>
+          <PlaybarThird justifyContent="flex-start" spacing={3}>
             <SyncButton timestamp={timestamp} onClick={pullPlayerState} />
             <CurrentItemDisplay item={item} />
-          </Stack>
+          </PlaybarThird>
 
-          <Stack direction="row" spacing={4}>
+          <PlaybarThird justifyContent="center" spacing={4}>
             <PlayButton uri={item?.uri} size="large" />
-          </Stack>
+          </PlaybarThird>
 
-          <Box>
+          <PlaybarThird justifyContent="flex-end">
             <DeviceDisplay device={device} isPlaying={is_playing} />
-          </Box>
+          </PlaybarThird>
         </Stack>
       </Toolbar>
     </AppBar>
