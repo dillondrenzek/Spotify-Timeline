@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import { queryParser } from 'express-query-parser';
 import { SpotifyWebApi } from './spotify/spotify-web-api';
+import { logger } from './middleware/logger';
 import loadEnv from './env';
 import api from './api';
 import auth from './auth';
@@ -12,10 +13,7 @@ const spotifyWebApi = new SpotifyWebApi(env);
 const port = env.APP_PORT; // default port to listen
 
 // Log Requests
-app.use((req, res, next) => {
-  console.log(`[${req.method.toUpperCase()}] ${req.path}`);
-  next();
-});
+app.use(logger());
 
 // Query Param parsing
 app.use(
