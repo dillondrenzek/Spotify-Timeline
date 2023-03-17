@@ -22,6 +22,20 @@ A web app that takes your Spotify account and creates a timeline of all your son
 
 ---
 
+## CI/CD
+
+### Production
+
+_Branch:_ `main`
+[![Netlify Status](https://api.netlify.com/api/v1/badges/68687a01-f57a-485a-92d4-53577bb6c2d0/deploy-status?branch=main)](https://app.netlify.com/sites/subtle-biscochitos-218225/deploys)
+
+### Development
+
+_Branch:_ `develop`
+[![Netlify Status](https://api.netlify.com/api/v1/badges/68687a01-f57a-485a-92d4-53577bb6c2d0/deploy-status?branch=develop)](https://app.netlify.com/sites/subtle-biscochitos-218225/deploys)
+
+---
+
 ## Important Links
 
 [Wiki](https://github.com/dillondrenzek/Spotify-Timeline/wiki)
