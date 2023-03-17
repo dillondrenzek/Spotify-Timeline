@@ -31,6 +31,7 @@ app.use('/api', api(spotifyWebApi));
 // Auth API
 app.use('/auth', auth(spotifyWebApi));
 
+// Test Endpoint
 app.get('/test', (req, res) => {
   res.status(200).send('Ok');
 });
