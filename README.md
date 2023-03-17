@@ -24,6 +24,8 @@ _Branch:_ `develop`
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/68687a01-f57a-485a-92d4-53577bb6c2d0/deploy-status?branch=develop)](https://app.netlify.com/sites/subtle-biscochitos-218225/deploys)
 
+_Example URL:_ `https://develop--subtle-biscochitos-218225.netlify.app/.netlify/functions/api`
+
 ---
 
 ## Important Links
