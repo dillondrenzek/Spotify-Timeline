@@ -7,3 +7,5 @@ Spotify-Timeline.code-workspace
 node_modules
 
 functions
+# Local Netlify folder
+.netlify
