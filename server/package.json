@@ -19,7 +19,9 @@
   "homepage": "https://github.com/dillondrenzek/Spotify-Timeline#readme",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build-ts": "tsc",
+    "prebuild": "npm run lint; npm run build-ts",
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
