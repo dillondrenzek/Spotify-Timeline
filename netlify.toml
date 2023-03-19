@@ -1,6 +1,6 @@
 [build]
   functions = "functions"
-  publish = "app/build"
+  publish = "app"
 
 [[redirects]]
   from = "/*"
