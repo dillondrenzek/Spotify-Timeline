@@ -27,6 +27,17 @@ export class SpotifyWebApi {
     return `https://api.spotify.com/v1${path}`;
   }
 
+  public static spotifyScope = [
+    'user-read-private',
+    'user-read-email',
+    'user-library-read',
+    'playlist-read-private',
+    'playlist-modify-public',
+    'user-modify-playback-state',
+    'user-read-playback-state',
+    'user-read-currently-playing',
+  ];
+
   private authorizationHeader: string;
   private accessToken: string = null;
 

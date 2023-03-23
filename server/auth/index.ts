@@ -7,16 +7,7 @@ export default function (spotifyWebApi: SpotifyWebApi) {
   const api = express();
 
   api.get('/login', (req, res) => {
-    const scope = [
-      'user-read-private',
-      'user-read-email',
-      'user-library-read',
-      'playlist-read-private',
-      'playlist-modify-public',
-      'user-modify-playback-state',
-      'user-read-playback-state',
-      'user-read-currently-playing',
-    ].join(' ');
+    const scope = SpotifyWebApi.spotifyScope.join(' ');
 
     const params = new URLSearchParams([
       ['client_id', env.SPOTIFY_API_CLIENT_ID],
