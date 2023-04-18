@@ -1,6 +1,6 @@
 import express from 'express';
 import loadEnv from '../env';
-import { SpotifyWebApi } from '../../spotify/spotify-web-api';
+import { SpotifyWebApi } from '../spotify/spotify-web-api';
 
 export default function (spotifyWebApi: SpotifyWebApi) {
   const env = loadEnv();
