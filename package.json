@@ -31,6 +31,7 @@
     "build-prod": "./node_modules/.bin/tsc",
     "prestart-prod": "yarn run build-prod",
     "start-prod": "node .",
+    "start": "yarn run start-prod",
     "test": "jest",
     "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start\""
   },
