@@ -23,14 +23,14 @@
     "yarn": "1.22.19"
   },
   "scripts": {
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build": "tsc",
-    "prestart": "yarn run build",
-    "start": "node .",
-    "prebuild:prod": "yarn install",
-    "build:prod": "tsc",
-    "prestart:prod": "yarn run build:prod",
-    "start:prod": "node .",
+    "prebuild-dev": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build-dev": "tsc",
+    "prestart-dev": "yarn run build",
+    "start-dev": "node .",
+    "prebuild-prod": "yarn install",
+    "build-prod": "tsc",
+    "prestart-prod": "yarn run build-prod",
+    "start-prod": "node .",
     "test": "jest",
     "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start\""
   },
