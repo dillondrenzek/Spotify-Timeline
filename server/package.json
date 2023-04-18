@@ -18,6 +18,10 @@
   },
   "homepage": "https://github.com/dillondrenzek/Spotify-Timeline#readme",
   "main": "dist/index.js",
+  "engines": {
+    "node": "18.13.0",
+    "yarn": "1.22.19"
+  },
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
