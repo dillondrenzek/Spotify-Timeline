@@ -1,7 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import { ApiTypes } from 'api-types';
-import { isSpotifyApiError } from '../spotify/errors';
+import { isSpotifyApiError } from '../../spotify/errors';
 
 const DEBUG_MODE = true;
 

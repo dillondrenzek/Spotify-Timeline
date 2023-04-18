@@ -3,3 +3,15 @@
 
 # VS Code Workspace
 Spotify-Timeline.code-workspace
+
+*.log
+npm-debug.log*
+
+# Build output directory
+dist
+
+# Dependency directory
+node_modules
+
+# Local environment file
+.env
