@@ -10,7 +10,7 @@ import auth from './auth';
 const env = loadEnv();
 const app = express();
 const spotifyWebApi = new SpotifyWebApi(env);
-const port = env.APP_PORT; // default port to listen
+const port = env.PORT; // default port to listen
 
 // Log Requests
 app.use(logger());
