@@ -33,3 +33,8 @@ _Example URL:_ `https://develop--subtle-biscochitos-218225.netlify.app/.netlify/
 [Wiki](https://github.com/dillondrenzek/Spotify-Timeline/wiki)
 [Spotify Developer API](https://developer.spotify.com/documentation/web-api/)
 [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+
+_Papertrail_
+
+- _Create Papertrail addon_ `heroku addons:create papertrail`
+- _View Docs:_ `heroku addons:docs papertrail`
