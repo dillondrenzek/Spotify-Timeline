@@ -16,5 +16,6 @@
         "./api-types/index.d.ts"
       ]
     }
-  }
+  },
+  "exclude": ["app"]
 }
