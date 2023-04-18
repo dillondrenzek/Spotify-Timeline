@@ -3,3 +3,7 @@
 
 # VS Code Workspace
 Spotify-Timeline.code-workspace
+
+node_modules
+
+functions

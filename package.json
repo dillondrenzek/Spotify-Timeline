@@ -1,0 +1,19 @@
+{
+  "name": "spotify-timeline",
+  "version": "0.9.0",
+  "description": "A web app that takes your Spotify account and creates a timeline of all your songs, when they were added and attempts to make playlists or 'eras' of your music listening history.",
+  "main": "index.js",
+  "repository": "https://github.com/dillondrenzek/Spotify-Timeline.git",
+  "author": "Dillon Drenzek <dillon@drenzek.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "./node_modules/.bin/netlify-lambda serve /src",
+    "build": "./node_modules/.bin/netlify-lambda build /src"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "netlify-lambda": "^2.0.16",
+    "serverless-http": "^3.2.0"
+  }
+}
