@@ -24,11 +24,11 @@
   },
   "scripts": {
     "prebuild-dev": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build-dev": "./node_modules/.bin/tsc",
+    "build-dev": "tsc",
     "prestart-dev": "yarn run build",
     "start-dev": "node .",
     "prebuild-prod": "yarn install",
-    "build-prod": "./node_modules/.bin/tsc",
+    "build-prod": "tsc",
     "prestart-prod": "yarn run build-prod",
     "start-prod": "node .",
     "start": "yarn run start-prod",
