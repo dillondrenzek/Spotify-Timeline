@@ -23,6 +23,10 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node .",
+    "prebuild:prod": "npm install",
+    "build:prod": "tsc",
+    "prestart:prod": "npm run build:prod",
+    "start:prod": "node .",
     "test": "jest",
     "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start\""
   },
