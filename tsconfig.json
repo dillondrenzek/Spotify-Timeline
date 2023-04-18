@@ -13,7 +13,7 @@
         "node_modules/*"
       ],
       "api-types": [
-        "../api-types/index.d.ts"
+        "./api-types/index.d.ts"
       ]
     }
   }
