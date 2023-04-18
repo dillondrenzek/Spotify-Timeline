@@ -25,11 +25,11 @@
   "scripts": {
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
-    "prestart": "npm run build",
+    "prestart": "yarn run build",
     "start": "node .",
-    "prebuild:prod": "npm install",
+    "prebuild:prod": "yarn install",
     "build:prod": "tsc",
-    "prestart:prod": "npm run build:prod",
+    "prestart:prod": "yarn run build:prod",
     "start:prod": "node .",
     "test": "jest",
     "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start\""
