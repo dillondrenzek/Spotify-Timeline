@@ -1,5 +1,5 @@
 import express from 'express';
-import https from 'https';
+import http from 'http';
 import path from 'path';
 import { queryParser } from 'express-query-parser';
 import { SpotifyWebApi } from './spotify/spotify-web-api';
@@ -39,11 +39,11 @@ app.get('/test', (req, res) => {
 
 // Serve Client
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './app/public/index.html'));
+  res.sendFile(path.resolve(__dirname, '../app/public/index.html'));
 });
 
 // start the Express server
-https.createServer(app).listen(port, () => {
+http.createServer(app).listen(port, () => {
   console.log(
     [
       '*******************************',
