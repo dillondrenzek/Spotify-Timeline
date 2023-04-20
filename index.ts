@@ -39,7 +39,7 @@ app.get('/test', (req, res) => {
 
 // Serve Client
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../app/public/index.html'));
+  res.sendFile(path.resolve(__dirname, '../app/build/index.html'));
 });
 
 // start the Express server
