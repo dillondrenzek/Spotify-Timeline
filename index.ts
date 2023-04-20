@@ -41,12 +41,13 @@ app.use(express.static(path.resolve(__dirname, '../app/build')));
 
 app.use((req, res) => {
   console.log('dirname', __dirname);
-  console.log('req path', req.path);
 });
 
 // Serve Client
 app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../app/build/index.html'));
+  const resolvedPath = path.resolve(__dirname, '../app/build/index.html');
+  console.log('resolved path:', resolvedPath);
+  res.sendFile(resolvedPath);
 });
 
 // start the Express server
