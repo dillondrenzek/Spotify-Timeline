@@ -23,16 +23,16 @@
     "yarn": "1.22.19"
   },
   "scripts": {
-    "prebuild-dev": "tslint -c tslint.json -p tsconfig.json --fix",
-    "build-dev": "./node_modules/typescript/bin/tsc",
-    "prestart-dev": "yarn run build",
-    "start-dev": "node .",
-    "build-prod": "./node_modules/typescript/bin/tsc",
-    "start-prod": "node .",
-    "build": "yarn run build-prod",
     "start": "yarn run start-prod",
-    "test": "jest",
-    "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start\""
+    "build": "yarn run build-prod",
+    "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start-dev\"",
+    "start-prod": "node .",
+    "build-prod": "./node_modules/typescript/bin/tsc",
+    "start-dev": "node .",
+    "prestart-dev": "yarn run build-dev",
+    "build-dev": "./node_modules/typescript/bin/tsc",
+    "prebuild-dev": "tslint -c tslint.json -p tsconfig.json --fix",
+    "test": "jest"
   },
   "dependencies": {
     "axios": "0.21.2",

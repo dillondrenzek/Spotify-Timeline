@@ -4,9 +4,9 @@ import { SpotifyWebApi } from '../spotify/spotify-web-api';
 
 export default function (spotifyWebApi: SpotifyWebApi) {
   const env = loadEnv();
-  const api = express();
+  const auth = express();
 
-  api.get('/login', (req, res) => {
+  auth.get('/login', (req, res) => {
     const scope = [
       'user-read-private',
       'user-read-email',
@@ -30,12 +30,12 @@ export default function (spotifyWebApi: SpotifyWebApi) {
     res.redirect(url);
   });
 
-  api.get('/logout', (req, res) => {
+  auth.get('/logout', (req, res) => {
     res.clearCookie('access_token');
     res.redirect(env.CLIENT_BASE_URL);
   });
 
-  api.get('/callback', (req, res) => {
+  auth.get('/callback', (req, res) => {
     if (req.query?.error) {
       console.error('Error Spotify callback', req.query.error);
     }
@@ -54,5 +54,5 @@ export default function (spotifyWebApi: SpotifyWebApi) {
       });
   });
 
-  return api;
+  return auth;
 }

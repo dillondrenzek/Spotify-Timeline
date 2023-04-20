@@ -37,8 +37,11 @@ app.get('/test', (req, res) => {
   res.status(200).send('Ok');
 });
 
+app.use(express.static(path.resolve(__dirname, '../app/build')));
+
 // Serve Client
 app.get('/', (req, res) => {
+  console.log('dirname', __dirname);
   res.sendFile(path.resolve(__dirname, '../app/build/index.html'));
 });
 
