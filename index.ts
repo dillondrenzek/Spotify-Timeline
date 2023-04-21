@@ -37,11 +37,7 @@ app.get('/test', (req, res) => {
   res.status(200).send('Ok');
 });
 
-app.use(express.static(path.resolve(__dirname, '../app/build')));
-
-app.use((req, res) => {
-  console.log('dirname', __dirname);
-});
+app.use('/app/build', express.static(path.resolve(__dirname, '../app/build')));
 
 // Serve Client
 app.get('/*', (req, res) => {
@@ -52,6 +48,7 @@ app.get('/*', (req, res) => {
 
 // start the Express server
 http.createServer(app).listen(port, () => {
+  console.log('__dirname', __dirname);
   console.log(
     [
       '*******************************',
