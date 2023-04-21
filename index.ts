@@ -1,4 +1,5 @@
 import express from 'express';
+import fs from 'fs';
 import http from 'http';
 import path from 'path';
 import { queryParser } from 'express-query-parser';
@@ -42,7 +43,20 @@ app.use('/app/build', express.static(path.resolve(__dirname, '../app/build')));
 // Serve Client
 app.get('/*', (req, res) => {
   const resolvedPath = path.resolve(__dirname, '../app/build/index.html');
-  console.log('resolved path:', resolvedPath);
+  console.log('resolved:', resolvedPath);
+
+  fs.readdir('./', (err, files) => {
+    // handling error
+    if (err) {
+      return console.log('Unable to scan directory: ' + err);
+    }
+    // listing all files using forEach
+    files.forEach((file) => {
+      // Do whatever you want to do with the file
+      console.log(file);
+    });
+  });
+
   res.sendFile(resolvedPath);
 });
 
