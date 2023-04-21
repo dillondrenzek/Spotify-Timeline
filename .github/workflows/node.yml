@@ -25,8 +25,6 @@ jobs:
           node-version: 18.13.0
           cache: 'yarn'
 
-      - name: Install
+      - name: Install & Build Server
         run: yarn install --prod
-
-      - name: Build Server
-        run: yarn run build-server-prod --if-present
+        run: yarn run build-server-prod
