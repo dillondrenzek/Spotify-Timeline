@@ -26,7 +26,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install
-        run: yarn install --prod
+        run: yarn install
 
       - name: Build Server
         run: yarn run build-server-prod
