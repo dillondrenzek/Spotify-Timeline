@@ -28,7 +28,7 @@
     "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start-dev\"",
     "start-prod": "node dist/index.js",
     "build-server-prod": "./node_modules/typescript/bin/tsc",
-    "build-client-prod": "cd app; yarn run build",
+    "build-client-prod": "cd app; yarn install && yarn run build",
     "start-dev": "node .",
     "prestart-dev": "yarn run build-dev",
     "build-dev": "./node_modules/typescript/bin/tsc",
