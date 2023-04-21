@@ -43,6 +43,7 @@ app.use('/app/build', express.static(path.resolve(__dirname, '../app/build')));
 // Serve Client
 app.get('/*', (req, res) => {
   const resolvedPath = path.resolve(process.cwd(), '/app/build/index.html');
+
   console.log('resolved:', resolvedPath);
 
   fs.readdir('./', (err, files) => {
@@ -51,10 +52,10 @@ app.get('/*', (req, res) => {
       return console.log('Unable to scan directory: ' + err);
     }
     // listing all files using forEach
-    files.forEach((file) => {
-      // Do whatever you want to do with the file
-      console.log(file);
-    });
+    // files.forEach((file) => {
+    // Do whatever you want to do with the file
+    console.log(files.join('\n'));
+    // });
   });
 
   res.sendFile(resolvedPath);
