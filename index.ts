@@ -42,7 +42,7 @@ app.use('/app/build', express.static(path.resolve(__dirname, '../app/build')));
 
 // Serve Client
 app.get('/*', (req, res) => {
-  const resolvedPath = path.resolve(__dirname, '../app/build/index.html');
+  const resolvedPath = path.resolve(process.cwd(), '/app/build/index.html');
   console.log('resolved:', resolvedPath);
 
   fs.readdir('./', (err, files) => {
