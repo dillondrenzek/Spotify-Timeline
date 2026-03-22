@@ -25,7 +25,9 @@
   "scripts": {
     "start": "yarn run start-prod",
     "build": "yarn run build-server-prod && yarn run build-client-prod",
-    "dev": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start-dev\"",
+    "dev": "concurrently -n server,client -c blue,green \"yarn dev:server\" \"yarn dev:client\"",
+    "dev:server": "nodemon --watch \".\" --ext \"ts\" --exec \"yarn start-dev\"",
+    "dev:client": "yarn --cwd app start",
     "start-prod": "node dist/index.js",
     "build-server-prod": "./node_modules/typescript/bin/tsc",
     "build-client-prod": "cd app; yarn install && yarn run build",
@@ -56,6 +58,7 @@
     "@types/lodash": "^4.14.182",
     "@types/luxon": "^2.3.2",
     "@types/node": "14.0.24",
+    "concurrently": "^8.2.2",
     "jest": "^29.5.0",
     "nodemon": "^2.0.20",
     "ts-jest": "^29.1.0",
