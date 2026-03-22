@@ -50,7 +50,8 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const httpsEnabled = env.HTTPS_ENABLED === true;
+const httpsEnabled =
+  env.LOCAL_HTTPS_ENABLED === true && process.env.NODE_ENV !== 'production';
 
 const server = (() => {
   if (!httpsEnabled) {
@@ -82,11 +83,26 @@ const server = (() => {
 
 // start the Express server
 server.listen(port, () => {
+  const protocol = httpsEnabled ? 'https' : 'http';
+
   console.log('__dirname', __dirname);
+
+  if (process.env.NODE_ENV === 'production') {
+    console.log(
+      'Production: HTTPS is terminated by the platform (e.g., Heroku). Running HTTP internally.'
+    );
+  } else if (httpsEnabled) {
+    console.log(
+      'Development: HTTPS enabled using local certificates.'
+    );
+  } else {
+    console.log('Development: HTTPS disabled. Running HTTP locally.');
+  }
+
   console.log(
     [
       '*******************************',
-      `  Server started on ${httpsEnabled ? 'https' : 'http'}://localhost:${port}`,
+      `  Server started on ${protocol}://localhost:${port}`,
       '*******************************',
     ].join('\n')
   );

@@ -17,7 +17,7 @@ A web app that takes your Spotify account and creates a timeline of all your son
 
 ## Environment Variables
 
-Example `.env`:
+Development `.env` (example):
 
 ```env
 PORT=8080
@@ -25,16 +25,33 @@ CLIENT_BASE_URL=https://127.0.0.1:3000
 SPOTIFY_API_CLIENT_ID=your_spotify_client_id
 SPOTIFY_API_CLIENT_SECRET=your_spotify_client_secret
 SPOTIFY_API_REDIRECT_URI=https://127.0.0.1:8080/auth/callback
-HTTPS_ENABLED=true
+LOCAL_HTTPS_ENABLED=true
 HTTPS_KEY_PATH=./certs/localhost-key.pem
 HTTPS_CERT_PATH=./certs/localhost-cert.pem
 HTTPS_CA_PATH=./certs/localhost-ca.pem
 ```
 
+Production env (example):
+
+```env
+PORT=8080
+CLIENT_BASE_URL=https://your-app.example.com
+SPOTIFY_API_CLIENT_ID=your_spotify_client_id
+SPOTIFY_API_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_API_REDIRECT_URI=https://your-app.example.com/auth/callback
+LOCAL_HTTPS_ENABLED=false
+```
+
 Notes:
 1. The server listens on `PORT`.
 1. The React dev server runs on `https://127.0.0.1:3000` and proxies API requests to the backend at `https://127.0.0.1:8080`.
-1. To enable HTTPS, set `HTTPS_ENABLED=true` and provide valid certificate paths. `HTTPS_CA_PATH` is optional.
+1. To enable HTTPS locally, set `LOCAL_HTTPS_ENABLED=true` and provide valid certificate paths. `HTTPS_CA_PATH` is optional.
+1. In production (e.g., Heroku), HTTPS is terminated by the platform, so the server runs HTTP internally and ignores `LOCAL_HTTPS_ENABLED`.
+1. Spotify redirect URI rules: HTTPS is required unless you use a loopback IP like `http://127.0.0.1:PORT`, and `localhost` is not allowed. Source:
+
+```text
+https://developer.spotify.com/documentation/web-api/concepts/redirect_uri
+```
 
 ---
 
@@ -54,7 +71,7 @@ mkcert -install
 yarn run certs:mkcert
 ```
 
-3. Ensure your `.env` has `HTTPS_ENABLED=true` and the cert paths match `certs/`.
+3. Ensure your `.env` has `LOCAL_HTTPS_ENABLED=true` and the cert paths match `certs/`.
 4. Run `yarn run dev` and open `https://127.0.0.1:3000`.
 
 ---
@@ -80,6 +97,7 @@ Client-only:
 
 1. The backend serves the built React app from `app/build` at the root path when `NODE_ENV=production`.
 1. Build order: `yarn run build` then `yarn run start`.
+1. On Heroku, do not upload local certs or set `HTTPS_ENABLED=true`. Use Heroku’s SSL/ACM instead.
 
 ---
 
