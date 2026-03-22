@@ -39,39 +39,42 @@ export function isSpotifyApiError(value: unknown): value is SpotifyApiError {
 function toSpotifyApiError(err: AxiosError): SpotifyApiError {
   const { response: spotifyResponse } = err;
 
-  const response: SpotifyApiError['response'] = {
-    config: spotifyResponse.config,
-    data: spotifyResponse.data,
-    status: spotifyResponse.status,
-  };
+  const response: SpotifyApiError['response'] = spotifyResponse
+    ? {
+        config: spotifyResponse.config,
+        data: spotifyResponse.data,
+        status: spotifyResponse.status,
+      }
+    : undefined;
 
-  const data: SpotifyApiError['data'] = spotifyResponse.data;
+  const data = spotifyResponse?.data;
+  const spotifyErrorData = isSpotifyErrorData(data) ? data : undefined;
 
-  if (!data) {
+  if (!spotifyErrorData) {
     return {
       reason: 'UNKNOWN_ERROR',
-      message: null,
+      message: err.message || null,
       response,
     };
   }
 
   // Handle Specific API errors
-  if (spotifyResponse.status === 401) {
+  if (spotifyResponse?.status === 401) {
     return {
       reason: 'UNAUTHORIZED',
       message: null,
       response,
-      data,
+      data: spotifyErrorData,
     };
   }
 
-  const { error } = data;
+  const { error } = spotifyErrorData;
 
   return {
     reason: error.reason,
     message: error.message,
     response,
-    data,
+    data: spotifyErrorData,
   };
 }
 
@@ -116,4 +119,13 @@ export enum SpotifyErrorCode {
 
 interface SpotifyErrorData {
   error: { status: SpotifyErrorCode; reason?: string; message: string };
+}
+
+function isSpotifyErrorData(value: unknown): value is SpotifyErrorData {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'error' in value &&
+    typeof (value as SpotifyErrorData).error === 'object'
+  );
 }
