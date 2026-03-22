@@ -21,15 +21,41 @@ Example `.env`:
 
 ```env
 PORT=8080
-CLIENT_BASE_URL=http://localhost:3000
+CLIENT_BASE_URL=https://127.0.0.1:3000
 SPOTIFY_API_CLIENT_ID=your_spotify_client_id
 SPOTIFY_API_CLIENT_SECRET=your_spotify_client_secret
-SPOTIFY_API_REDIRECT_URI=http://localhost:3000
+SPOTIFY_API_REDIRECT_URI=https://127.0.0.1:8080/auth/callback
+HTTPS_ENABLED=true
+HTTPS_KEY_PATH=./certs/localhost-key.pem
+HTTPS_CERT_PATH=./certs/localhost-cert.pem
+HTTPS_CA_PATH=./certs/localhost-ca.pem
 ```
 
 Notes:
 1. The server listens on `PORT`.
-1. The React dev server runs on `http://localhost:3000` and proxies API requests to the backend at `http://localhost:8080`.
+1. The React dev server runs on `https://127.0.0.1:3000` and proxies API requests to the backend at `https://127.0.0.1:8080`.
+1. To enable HTTPS, set `HTTPS_ENABLED=true` and provide valid certificate paths. `HTTPS_CA_PATH` is optional.
+
+---
+
+## Local HTTPS Setup
+
+1. Install `mkcert` (once).
+   macOS (Homebrew):
+
+```bash
+brew install mkcert
+mkcert -install
+```
+
+1. Generate local certificates:
+
+```bash
+yarn run certs:mkcert
+```
+
+3. Ensure your `.env` has `HTTPS_ENABLED=true` and the cert paths match `certs/`.
+4. Run `yarn run dev` and open `https://127.0.0.1:3000`.
 
 ---
 

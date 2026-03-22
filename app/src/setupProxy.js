@@ -4,22 +4,25 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:8080',
+      target: 'https://127.0.0.1:8080',
       changeOrigin: true,
+      secure: false,
     })
   );
   app.use(
     '/spotify',
     createProxyMiddleware({
-      target: 'http://localhost:8080',
+      target: 'https://127.0.0.1:8080',
       changeOrigin: true,
+      secure: false,
     })
   );
   app.use(
     '/auth',
     createProxyMiddleware({
-      target: 'http://localhost:8080',
+      target: 'https://127.0.0.1:8080',
       changeOrigin: true,
+      secure: false,
     })
   );
 };

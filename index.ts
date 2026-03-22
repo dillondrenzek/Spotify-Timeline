@@ -1,5 +1,7 @@
 import express from 'express';
+import fs from 'fs';
 import http from 'http';
+import https from 'https';
 import path from 'path';
 import { queryParser } from 'express-query-parser';
 import { SpotifyWebApi } from './spotify/spotify-web-api';
@@ -48,13 +50,43 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+const httpsEnabled = env.HTTPS_ENABLED === true;
+
+const server = (() => {
+  if (!httpsEnabled) {
+    return http.createServer(app);
+  }
+
+  if (!env.HTTPS_KEY_PATH || !env.HTTPS_CERT_PATH) {
+    console.error(
+      'HTTPS is enabled but HTTPS_KEY_PATH or HTTPS_CERT_PATH is missing.'
+    );
+    process.exit(1);
+  }
+
+  const keyPath = path.resolve(env.HTTPS_KEY_PATH);
+  const certPath = path.resolve(env.HTTPS_CERT_PATH);
+
+  const httpsOptions: https.ServerOptions = {
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certPath),
+  };
+
+  if (env.HTTPS_CA_PATH) {
+    const caPath = path.resolve(env.HTTPS_CA_PATH);
+    httpsOptions.ca = fs.readFileSync(caPath);
+  }
+
+  return https.createServer(httpsOptions, app);
+})();
+
 // start the Express server
-http.createServer(app).listen(port, () => {
+server.listen(port, () => {
   console.log('__dirname', __dirname);
   console.log(
     [
       '*******************************',
-      '  Server started on port:' + port,
+      `  Server started on ${httpsEnabled ? 'https' : 'http'}://localhost:${port}`,
       '*******************************',
     ].join('\n')
   );
